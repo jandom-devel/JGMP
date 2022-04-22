@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <!-- Basics -->
-    <groupId>it.unich.scalafix</groupId>
+    <groupId>it.unich.jgmp</groupId>
     <artifactId>jgmp</artifactId>
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -57,7 +57,7 @@
                 <version>1.6.12</version>
                 <configuration>
                     <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
             </plugin>
@@ -112,7 +112,7 @@
         <snapshotRepository>
             <id>ossrh</id>
             <name>Sonatype OSSRH for snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
