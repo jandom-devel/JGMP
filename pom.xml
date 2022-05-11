@@ -52,6 +52,31 @@
                 <version>3.11.0</version>
             </plugin>
             <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-gpg-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.sonatype.plugins</groupId>
                 <artifactId>nexus-staging-maven-plugin</artifactId>
                 <version>1.6.12</version>
@@ -76,7 +101,7 @@
     <!-- More project informations -->
     <name>Java GMP bindings</name>
     <description>Java bindings for the GNU MP Library.</description>
-    <url>https://github.com/amato-gianluca/JGMP</url>
+    <url>https://github.com/jandom-devel/JGMP</url>
     <inceptionYear>2022</inceptionYear>
     <licenses>
         <license>
@@ -100,15 +125,15 @@
     <!-- Environment Settings -->
     <issueManagement>
         <system>GitHub</system>
-        <url>https://github.com/amato-gianluca/JGMP/issues</url>
+        <url>https://github.com/jandom-devel/JGMP/issues</url>
     </issueManagement>
     <scm>
-        <connection>scm:git:https://github.com/amato-gianluca/JGMP.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com/amato-gianluca/JGMP.git</developerConnection>
-        <url>https://github.com/amato-gianluca/JGMPL</url>
+        <connection>scm:git:https://github.com/jandom-devel/JGMP.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/jandom-devel/JGMP.git</developerConnection>
+        <url>https://github.com/jandom-devel/JGMP</url>
     </scm>
     <distributionManagement>
-        <downloadUrl>https://raw.githubusercontent.com/amato-gianluca/JGMP/master/pom.xml</downloadUrl>
+        <downloadUrl>https://raw.githubusercontent.com/jandom-devel/JGMP/master/pom.xml</downloadUrl>
         <snapshotRepository>
             <id>ossrh</id>
             <name>Sonatype OSSRH for snapshots</name>
