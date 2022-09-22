@@ -9,33 +9,65 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
+/**
+ * The class containing the static native methods corresponding to GMP
+ * functions. This class also contains constants for the size of native GMP
+ * structures and some global variables.
+ *
+ * <p>
+ * Direct mapping is used for almost all the functions, with the exception of a
+ * few varargs functions which require interface mapping. We strived to be type
+ * safe, by defining different subclasses of {@code com.sun.jna.PointerType} and
+ * {@code com.sun.jna.IntegerType} for different native types. GMP macros have
+ * been reimplemented. <em>Integer Special Functions</em> and <em>Low-level
+ * Function</em>, as defined in the GMP documentation, have been omitted.
+ * </p>
+ */
 public class LibGMP {
 
-    private static final String LIBNAME = "gmp";
+    /**
+     * The undecorated name of the GMP library.
+     */
+    static final String LIBNAME = "gmp";
 
-    private static final LibGmpExtra gmpextra;
+    /**
+     * The size of the {@code mpz_t} native type.
+     */
+    static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
 
-    static final String __gmp_version;
+    /**
+     * The size of the {@code __gmp_randstate_struct} structure.
+     */
+    static final int RANDSTATE_SIZE = MPZ_SIZE + 4 + Native.POINTER_SIZE;
+
+    /**
+     * Version of the GMP library.
+     */
+    public static final String __gmp_version;
 
     static {
         var library = NativeLibrary.getInstance(LIBNAME);
         Native.register(LIBNAME);
         gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class);
-
         __gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
     }
 
     /**
-     * Interface for native functions with a variable number of arguments. They are
-     * not supported by direct mapping, so we need to register them separately.
+     * Interface for the native functions with a variable number of arguments. These
+     * are not supported by direct mapping, so we need to register them separately.
      */
-    static interface LibGmpExtra extends Library {
+    private static interface LibGmpExtra extends Library {
         int __gmp_printf(String fmt, Object... args);
 
         void __gmpz_inits(MPZPointer... xs);
 
         void __gmpz_clears(MPZPointer... xs);
     }
+
+    /**
+     * Instance of the {@code LibGmpExtra} interface created at initialization time.
+     */
+    private static final LibGmpExtra gmpextra;
 
     // Integer functions
 
@@ -318,11 +350,11 @@ public class LibGMP {
 
     public static native SizeT __gmpz_inp_raw(MPZPointer rop, Pointer stream);
 
-    public static native void __gmpz_urandomb(MPZPointer rop, RandomStatePointer state, MPBitCntT n);
+    public static native void __gmpz_urandomb(MPZPointer rop, RandStatePointer state, MPBitCntT n);
 
-    public static native void __gmpz_urandomm(MPZPointer rop, RandomStatePointer state, MPZPointer n);
+    public static native void __gmpz_urandomm(MPZPointer rop, RandStatePointer state, MPZPointer n);
 
-    public static native void __gmpz_rrandomb(MPZPointer rop, RandomStatePointer state, MPBitCntT n);
+    public static native void __gmpz_rrandomb(MPZPointer rop, RandStatePointer state, MPBitCntT n);
 
     public static native void __gmpz_random(MPZPointer rop, MPSizeT max_size);
 
@@ -350,20 +382,20 @@ public class LibGMP {
 
     // Random Number Functions
 
-    public static native void __gmp_randinit_default(RandomStatePointer state);
+    public static native void __gmp_randinit_default(RandStatePointer state);
 
-    public static native void __gmp_randinit_mt(RandomStatePointer state);
+    public static native void __gmp_randinit_mt(RandStatePointer state);
 
-    public static native void __gmp_randinit_lc_2exp(RandomStatePointer state, MPZPointer a, NativeLong c,
+    public static native void __gmp_randinit_lc_2exp(RandStatePointer state, MPZPointer a, NativeLong c,
             NativeLong m2exp);
 
-    public static native int __gmp_randinit_lc_2exp_size(RandomStatePointer state, NativeLong m2exp);
+    public static native int __gmp_randinit_lc_2exp_size(RandStatePointer state, NativeLong m2exp);
 
-    public static native void __gmp_randinit_set(RandomStatePointer rop, RandomStatePointer op);
+    public static native void __gmp_randinit_set(RandStatePointer rop, RandStatePointer op);
 
-    public static native void __gmp_randinit(RandomStatePointer state, int alg, NativeLong l);
+    public static native void __gmp_randinit(RandStatePointer state, int alg, NativeLong l);
 
-    public static native void __gmp_randclear(RandomStatePointer state);
+    public static native void __gmp_randclear(RandStatePointer state);
 
     // Formatted Output
 

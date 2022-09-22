@@ -4,24 +4,22 @@ import com.sun.jna.IntegerType;
 import com.sun.jna.Native;
 
 /**
- * The native unsigned long data type, which may be 32 or 64 bits.
+ * The native unsigned long data type, which may be a 32 or 64 bit integer.
  */
 public class NativeUnsignedLong extends IntegerType {
 
-    private static final int SIZE = Native.LONG_SIZE;
-
     /**
-     * Creates a {@code size_t} with value 0
+     * Creates a native {@code unsigned long} with value 0
      */
     public NativeUnsignedLong() {
         this(0);
     }
 
     /**
-     * Creates a {@code mp_size_t} with the specified {@code value}. The value is
-     * truncated when {@code size_t} is a 32 bit integer.
+     * Creates a native {@code unsigned long} with the specified {@code value}. The
+     * value is truncated when the native {@code unsigned long} is a 32 bit integer.
      */
     public NativeUnsignedLong(long value) {
-        super(SIZE, value, true);
+        super(Native.LONG_SIZE, value, true);
     }
 }

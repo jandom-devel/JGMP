@@ -4,7 +4,8 @@ import com.sun.jna.IntegerType;
 import com.sun.jna.Native;
 
 /**
- * The native {@code size_t} data type, which may be 32 or 64 bits.
+ * The native {@code size_t} data type, which may be a 32 or 64 bit unsigned
+ * integer.
  */
 public class SizeT extends IntegerType {
     /**

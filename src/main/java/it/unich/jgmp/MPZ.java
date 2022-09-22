@@ -21,11 +21,12 @@ import it.unich.jgmp.nativelib.SizeT;
 import it.unich.jgmp.nativelib.SizeTByReference;
 
 /**
- * The class for the `MPZ` data type, i.e., multi-precision integer numbers.
+ * The class encapsulating the {@code mpz_t} data type, i.e., multi-precision
+ * integer numbers.
  */
 public class MPZ extends Number implements Comparable<MPZ> {
     /**
-     * The pointer to the native MPZ object.
+     * The pointer to the native {@code mpz_t} object.
      */
     private MPZPointer mpzPointer;
 
@@ -38,7 +39,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Dummy type used to mark operations which treat a `long` variable as it were
+     * Dummy type used to mark operations which treat a {@code long} variable as it were
      * unsigned.
      */
     public static enum Unsigned {
@@ -46,14 +47,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Result type of the `probablePrime` method.
+     * Result type of the {@link isProbabPrime} method.
      */
     public static enum PrimalityStatus {
         NON_PRIME, PROBABLY_PRIME, PRIME
     }
 
     /**
-     * Cleaner for the `MPZ` class.
+     * Cleaner for the {@code MPZ} class.
      */
     private static class MPZCleaner implements Runnable {
         private MPZPointer mpzPointer;
@@ -1092,11 +1093,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
     // Integer Import and Export
 
     /**
-     * Convert the content of a `ByteBuffer` into an multi-precision integer number.
+     * Convert the content of a {@link ByteBuffer} into an multi-precision integer number.
      *
-     * See the GMP documentation of the `mpz_import` function for the meaning of the
-     * parameters. Since a `ByteBuffer` in the JVM is at most 4GB long, `size` is
-     * declared to be of type `int`.
+     * See the GMP documentation of the {@code mpz_import} function for the meaning of the
+     * parameters. Since a {@link ByteBuffer} in the JVM is at most 4GB long, {@code size} is
+     * declared to be of type {@code int}.
      */
     public MPZ importAssign(int order, int size, int endian, long nails, ByteBuffer op) {
         var count = op.limit() / size + (op.limit() % size == 0 ? 0 : 1);
@@ -1110,12 +1111,12 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Convert `this` into a `ByteBuffer`.
+     * Convert {@code this} into a {@link ByteBuffer}.
      *
-     * See the GMP documentation of the `mpz_export` function for the meaning of the
-     * parameters. Note that, since a `ByteBuffer` in the JVM is at most 4GB long,
-     * this method might fail for big numbers. For the same reason, `size` is
-     * declared to be of type `int`.
+     * See the GMP documentation of the {@code mpz_export} function for the meaning of the
+     * parameters. Note that, since a {@link ByteBuffer} in the JVM is at most 4GB long,
+     * this method might fail for big numbers. For the same reason, {@code size} is
+     * declared to be of type {@code int}.
      */
     public ByteBuffer export(int order, int size, int endian, long nails) {
         var count = new SizeTByReference();
@@ -1125,68 +1126,38 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     // Miscellaneous Integer Functions
 
-    /**
-     * Determines whether `this` fits into a native unsigned long.
-     */
     public boolean fitsUlong() {
         return __gmpz_fits_ulong_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` fits into a native signed long.
-     */
     public boolean fitsSlong() {
         return __gmpz_fits_slong_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` fits into a native unsigned int.
-     */
     public boolean fitsUint() {
         return __gmpz_fits_uint_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` fits into a native signed int.
-     */
     public boolean fitsSint() {
         return __gmpz_fits_sint_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` fits into a native unsigned short.
-     */
     public boolean fitsUshort() {
         return __gmpz_fits_ushort_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` fits into a native signed short.
-     */
     public boolean fitsSshort() {
         return __gmpz_fits_sshort_p(mpzPointer);
     }
 
-    /**
-     * Determines whether `this` is odd.
-     */
     public boolean isOdd() {
         return fdiv(2) != 0;
     }
 
-    /**
-     * Determines whether `this` is even.
-     */
     public boolean isEven() {
         return fdiv(2) == 0;
     }
 
-    /**
-     * Return the size of op measured in number of digits in the given base.
-     *
-     * @param base can vary from 2 to 62.
-     * @throws IllegalArgumentException if base is outside its valid interval.
-     */
     public long sizeinbase(int base) {
         if (base < 2 || base > 62)
             throw new IllegalArgumentException("The value of base can vary from 2 to 62");
