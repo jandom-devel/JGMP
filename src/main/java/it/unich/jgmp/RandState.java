@@ -15,7 +15,7 @@ import it.unich.jgmp.nativelib.RandStatePointer;
  * The class encapsulating the {@code gmp_randstate_t} data type, which holds
  * the current state of a random number generator.
  */
-public class RandomState {
+public class RandState {
 
     /**
      * The pointer to the native {@code gmp_randstate_t}  object.
@@ -38,50 +38,50 @@ public class RandomState {
         }
     }
 
-    private RandomState(RandStatePointer randstate) {
+    private RandState(RandStatePointer randstate) {
         randstatePointer = randstate;
         GMP.cleaner.register(this, new RandomStateCleaner(randstate));
     }
 
-    public RandomState() {
+    public RandState() {
         randstatePointer = new RandStatePointer();
         __gmp_randinit_default(randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
 
-    public RandomState(RandomState state) {
+    public RandState(RandState state) {
         randstatePointer = new RandStatePointer();
         __gmp_randinit_set(randstatePointer, state.randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
 
-    public static RandomState create() {
-        return new RandomState();
+    public static RandState create() {
+        return new RandState();
     }
 
-    public static RandomState mt() {
+    public static RandState mt() {
         var m = new RandStatePointer();
         __gmp_randinit_mt(m);
-        return new RandomState(m);
+        return new RandState(m);
     }
 
-    public static RandomState lc(MPZ a, long c, long m2exp) {
+    public static RandState lc(MPZ a, long c, long m2exp) {
         var m = new RandStatePointer();
         __gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
-        return new RandomState(m);
+        return new RandState(m);
     }
 
-    public static RandomState lc(long size) {
+    public static RandState lc(long size) {
         var m = new RandStatePointer();
         var res = __gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
             throw new IllegalArgumentException("Parameter size is too big");
         }
-        return new RandomState(m);
+        return new RandState(m);
     }
 
-    public static RandomState valueOf(RandomState state) {
-        return new RandomState(state);
+    public static RandState valueOf(RandState state) {
+        return new RandState(state);
     }
 
     public RandStatePointer getPointer() {

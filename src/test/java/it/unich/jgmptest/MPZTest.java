@@ -14,41 +14,56 @@ import org.junit.jupiter.api.Test;
 
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
-import it.unich.jgmp.MPZ.Reserve;
-import it.unich.jgmp.MPZ.Unsigned;
-import it.unich.jgmp.RandomState;
+import it.unich.jgmp.RandState;
 
 public class MPZTest {
 
+    public static final String MAX_ULONG = "18446744073709551615";
+
+    public static final MPZ zMaxUlong = new MPZ(MAX_ULONG);
+
     @Test
     void test_init() {
-        assertEquals(new MPZ(0), new MPZ());
-        assertEquals(new MPZ(0), new MPZ(100, Reserve.RESERVE));
-        var z = new MPZ(15);
-        z.realloc2(10000);
-        assertEquals(new MPZ(15), z);
+        assertEquals(new MPZ(0), MPZ.init());
+        assertEquals(new MPZ(0), MPZ.init2(1000));
+        assertEquals(new MPZ(15), new MPZ(15).realloc2(10000));
     }
 
     @Test
     void test_assignment() {
         var z = new MPZ();
-        assertEquals(new MPZ(15), z.setValue(new MPZ(15)));
-        assertEquals(new MPZ(2), z.setValue(2));
-        assertEquals(new MPZ(-3), z.setValueSigned(-3));
-        assertEquals(new MPZ(5), z.setValue(5.2));
-        assertEquals(new MPZ(-26), z.setValue("-1A", 16));
-        assertEquals(new MPZ(-12), z.setValue("-12"));
-        var z2 = new MPZ(2).swap(z);
-        assertEquals(new MPZ(-12), z2);
-        assertEquals(new MPZ(2), z);
+        assertEquals(new MPZ(15), z.set(new MPZ(15)));
+        assertEquals(zMaxUlong, z.set(-1));
+        assertEquals(new MPZ(-3), z.setSi(-3));
+        assertEquals(new MPZ(5), z.set(5.2));
+        assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
+        assertEquals(0, z.set("-1A", 16));
+        assertEquals(new MPZ(-26), z);
+        assertEquals(-1, z.set("2", 63));
+        assertEquals(new MPZ(-26), z);
+        var z2 = new MPZ(-26);
+        var z3 = new MPZ(2).swap(z2);
+        assertEquals(new MPZ(-26), z3);
+        assertEquals(new MPZ(2), z2);
     }
 
     @Test
     void test_initandassignment() {
-        assertEquals(new MPZ(15), new MPZ(new MPZ(15)));
-        assertEquals(new MPZ(15), new MPZ(15, Unsigned.UNSIGNED));
-        assertEquals(new MPZ(15), new MPZ(15.2));
+        assertEquals(new MPZ(15), MPZ.initSet(new MPZ(15)));
+        assertEquals(new MPZ(15), MPZ.initSet(15));
+        assertEquals(zMaxUlong, MPZ.initSet(-1));
+        assertEquals(new MPZ(-1), MPZ.initSetSi(-1));
+        assertEquals(new MPZ(15), MPZ.initSet(15.2));
+        assertEquals(new Pair<>(0, new MPZ(15)), MPZ.initSet("15", 10));
+        assertEquals(new Pair<>(-1, new MPZ(0)), MPZ.initSet("15", 63));
+        assertEquals(new Pair<>(-1, new MPZ(0)), MPZ.initSet("99", 7));
+    }
+
+    @Test
+    void test_constructors() {
+        assertEquals(new MPZ(0), new MPZ());
         assertEquals(new MPZ(15), new MPZ("15"));
+        assertEquals(new MPZ(15), new MPZ(15.4));
     }
 
     @Test
@@ -58,6 +73,7 @@ public class MPZTest {
         assertEquals(-4.0, new MPZ(-4).getD());
         assertEquals(new Pair<>(-0.5, 3l), new MPZ(-4).getD2Exp());
         assertEquals("125", new MPZ(125).getStr(10));
+        assertEquals(null, new MPZ(125).getStr(63));
     }
 
     @Test
@@ -69,7 +85,7 @@ public class MPZTest {
         assertEquals(new MPZ(-1), new MPZ(8).subReverse(7));
         assertEquals(new MPZ(56), new MPZ(8).mul(new MPZ(7)));
         assertEquals(new MPZ(56), new MPZ(8).mul(7));
-        assertEquals(new MPZ(-56), new MPZ(8).mulSigned(-7));
+        assertEquals(new MPZ(-56), new MPZ(8).mulSi(-7));
         assertEquals(new MPZ(14), new MPZ(2).addmul(new MPZ(4), new MPZ(3)));
         assertEquals(new MPZ(14), new MPZ(2).addmul(new MPZ(4), 3));
         assertEquals(new MPZ(-10), new MPZ(2).submul(new MPZ(4), new MPZ(3)));
@@ -127,7 +143,7 @@ public class MPZTest {
 
     @Test
     void test_roots() {
-        assertEquals(new MPZ(2), new MPZ(17).root(4));
+        assertEquals(new Pair<>(false, new MPZ(2)), new MPZ(17).root(4));
         assertEquals(new Pair<>(new MPZ(2), new MPZ(1)), new MPZ(17).rootrem(4));
         assertEquals(new MPZ(8), new MPZ(65).sqrt());
         assertEquals(new Pair<>(new MPZ(8), new MPZ(1)), new MPZ(65).sqrtrem());
@@ -142,19 +158,22 @@ public class MPZTest {
         assertEquals(new MPZ(19), new MPZ(17).nextprime());
         assertEquals(new MPZ(6), new MPZ(30).gcd(new MPZ(24)));
         assertEquals(6, new MPZ(30).gcd(24));
+        assertEquals(30, new MPZ(30).gcd(0));
+        assertEquals(0, new MPZ(0).gcd(0));
+        assertEquals(0, new MPZ(0).gcd(0));
+        assertEquals(0, zMaxUlong.add(1).gcd(0));
         assertEquals(new Triplet<>(new MPZ(6), new MPZ(1), new MPZ(-1)), new MPZ(30).gcdext(new MPZ(24)));
         assertEquals(new MPZ(120), new MPZ(30).lcm(new MPZ(24)));
         assertEquals(new MPZ(120), new MPZ(30).lcm(24));
         assertEquals(Optional.of(new MPZ(3)), new MPZ(5).invert(new MPZ(7)));
-        assertEquals(Optional.empty(), new MPZ(5).invert(new MPZ(5)));
         assertEquals(-1, new MPZ(5).jacobi(new MPZ(3)));
         assertEquals(0, new MPZ(9).legendre(new MPZ(3)));
         assertEquals(1, new MPZ(5).kronecker(new MPZ(4)));
+        assertEquals(-1, new MPZ(27).kroneckerSi(28));
         assertEquals(-1, new MPZ(27).kronecker(28));
-        assertEquals(-1, new MPZ(27).kronecker(28, Unsigned.UNSIGNED));
+        assertEquals(1, new MPZ(27).siKronecker(28));
         assertEquals(1, new MPZ(27).kroneckerReverse(28));
-        assertEquals(1, new MPZ(27).kroneckerReverse(28, Unsigned.UNSIGNED));
-        assertEquals(new Pair<>(new MPZ(3), 2l), new MPZ(12).remove(new MPZ(2)));
+        assertEquals(new Pair<>(2l, new MPZ(3)), new MPZ(12).remove(new MPZ(2)));
         assertEquals(new MPZ(40320), MPZ.fac(8));
         assertEquals(new MPZ(945), MPZ.dfac(9));
         assertEquals(new MPZ(28), MPZ.mfac(7, 3));
@@ -169,14 +188,14 @@ public class MPZTest {
 
     @Test
     void test_randomstate() {
-        var a = new RandomState();
-        assertDoesNotThrow(() -> new RandomState());
-        assertDoesNotThrow(() -> RandomState.create());
-        assertDoesNotThrow(() -> RandomState.mt());
-        assertDoesNotThrow(() -> RandomState.lc(10));
-        assertDoesNotThrow(() -> new RandomState(a));
-        assertDoesNotThrow(() -> RandomState.valueOf(a));
-        assertThrows(IllegalArgumentException.class, () -> RandomState.lc(200));
+        var a = new RandState();
+        assertDoesNotThrow(() -> new RandState());
+        assertDoesNotThrow(() -> RandState.create());
+        assertDoesNotThrow(() -> RandState.mt());
+        assertDoesNotThrow(() -> RandState.lc(10));
+        assertDoesNotThrow(() -> new RandState(a));
+        assertDoesNotThrow(() -> RandState.valueOf(a));
+        assertThrows(IllegalArgumentException.class, () -> RandState.lc(200));
     }
 
     @Test
@@ -184,14 +203,14 @@ public class MPZTest {
         var a = new MPZ(10);
         var b = new MPZ(2);
         assertTrue(a.compareTo(b) > 0);
-        assertEquals(0, a.compareTo(10.0));
-        assertTrue(a.compareTo(-1l) > 0);
-        assertTrue(a.compareTo(-1l, Unsigned.UNSIGNED) < 0);
-
-        assertTrue(a.compareAbsTo(b) > 0);
-        assertEquals(0, a.compareAbsTo(-10.0));
-        assertTrue(a.compareAbsTo(-1l) > 0);
-        assertTrue(a.compareAbsTo(-1l, Unsigned.UNSIGNED) < 0);
+        assertEquals(0, a.cmp(10.0));
+        assertTrue(a.cmpSi(-1) > 0);
+        assertTrue(a.cmp(-1) < 0);
+        assertTrue(a.cmpabs(b) > 0);
+        assertEquals(0, a.cmpabs(-10.0));
+        assertTrue(a.cmpabsSi(-1) > 0);
+        assertTrue(a.cmpabs(-1) < 0);
+        assertTrue(a.sgn() > 0);
     }
 
     @Test
@@ -216,17 +235,18 @@ public class MPZTest {
     }
 
     @Test
+    @SuppressWarnings( "deprecation" )
     void test_random() {
-        var s = new RandomState();
+        var s = new RandState();
         var a = MPZ.urandomb(s, 2);
-        assertTrue(a.compareTo(0) >= 0);
-        assertTrue(a.compareTo(3) <= 0);
+        assertTrue(a.cmp(0) >= 0);
+        assertTrue(a.cmp(3) <= 0);
         var b = MPZ.urandomm(s, new MPZ(10));
-        assertTrue(b.compareTo(0) >= 0);
-        assertTrue(b.compareTo(10) <= 0);
+        assertTrue(b.cmp(0) >= 0);
+        assertTrue(b.cmp(10) <= 0);
         var c = MPZ.rrandomb(s, 2);
-        assertTrue(c.compareTo(0) >= 0);
-        assertTrue(c.compareTo(3) <= 0);
+        assertTrue(c.cmp(0) >= 0);
+        assertTrue(c.cmp(3) <= 0);
         MPZ.random(10);
         MPZ.random2(10);
     }
@@ -234,9 +254,8 @@ public class MPZTest {
     @Test
     void test_importexport() {
         var a = new MPZ("124485");
-        var buffer = a.export(1, 1, 0, 0);
-        var b = new MPZ();
-        b.importAssign(1, 1, 0, 0, buffer);
+        var buffer = a.bufferExport(1, 1, 0, 0);
+        var b = MPZ.bufferImport(1, 1, 0, 0, buffer);
         assertEquals(a, b);
     }
 

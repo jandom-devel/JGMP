@@ -10,17 +10,47 @@ import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
 /**
- * The class containing the static native methods corresponding to GMP
- * functions. This class also contains constants for the size of native GMP
- * structures and some global variables.
+ * This class contains the static native methods corresponding to GMP functions.
+ * This class also contains constants for the size of native GMP structures and
+ * some global variables.
  *
  * <p>
  * Direct mapping is used for almost all the functions, with the exception of a
- * few varargs functions which require interface mapping. We strived to be type
- * safe, by defining different subclasses of {@code com.sun.jna.PointerType} and
- * {@code com.sun.jna.IntegerType} for different native types. GMP macros have
- * been reimplemented. <em>Integer Special Functions</em> and <em>Low-level
- * Function</em>, as defined in the GMP documentation, have been omitted.
+ * few ones with a variable number of arguments which require interface mapping.
+ * The use of direct mapping forces us to adopt the real names of the functions
+ * in the C library object files, which are different from the ones publicly
+ * documented: the C preprocessor is used to convert from the real names to the
+ * public ones. The difference between the twos is just in the prefix: for
+ * example, all the GMP functions documented as {@code mpz_xxx} should be
+ * written here as {@code __gmpz_xxx}. The following is the table of conversion
+ * from GMP name prefixes to JGMP name prefixes.
+ * </p>
+ * <table border="1" style="text-align:center; border-collapse: collapse;">
+ * <caption style="display: none;">Conversion table from GMP to JGMP
+ * prefixes</caption>
+ * <tr>
+ * <th style="padding: 0ex 1ex 0ex 1ex;">GMP name prefix</th>
+ * <th style="padding: 0ex 1ex 0ex 1ex;">JGMP name prefix</th>
+ * </tr>
+ * <tr>
+ * <td>{@code mpz_}</td>
+ * <td>{@code __gmpz_}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code gmp_}</td>
+ * <td>{@code __gmp_}</td>
+ * </tr>
+ * </table>
+ * <p>
+ * Some documented GMP functions are actually macros: they have been
+ * reimplemented here, keeping the JGMP naming convention. <em>Integer Special
+ * Functions</em> and <em>Low-level Function</em>, as defined in the GMP
+ * documentation, have been omitted entirely.
+ * </p>
+ * <p>
+ * We strived to be type safe, by defining different subclasses of
+ * {@code com.sun.jna.PointerType} and {@code com.sun.jna.IntegerType} for
+ * different native types.
  * </p>
  */
 public class LibGMP {
@@ -45,11 +75,18 @@ public class LibGMP {
      */
     public static final String __gmp_version;
 
+    /**
+     * The  0 (assumign no one changes it)
+     */
+    public static MPZPointer __gmpz_zero;
+
     static {
         var library = NativeLibrary.getInstance(LIBNAME);
-        Native.register(LIBNAME);
-        gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class);
         __gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
+        Native.register(library);
+        gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class);
+        __gmpz_zero = new MPZPointer();
+        __gmpz_init(__gmpz_zero);
     }
 
     /**
@@ -121,7 +158,7 @@ public class LibGMP {
 
     public static native double __gmpz_get_d_2exp(NativeLongByReference exp, MPZPointer op);
 
-    public static native Pointer __gmpz_get_str(Pointer str, int base, MPZPointer op);
+    public static native Pointer __gmpz_get_str(ByteBuffer str, int base, MPZPointer op);
 
     public static native void __gmpz_add(MPZPointer rop, MPZPointer op1, MPZPointer op2);
 
@@ -242,7 +279,7 @@ public class LibGMP {
 
     public static native void __gmpz_ui_pow_ui(MPZPointer rop, NativeUnsignedLong base, NativeUnsignedLong exp);
 
-    public static native void __gmpz_root(MPZPointer rop, MPZPointer op, NativeUnsignedLong n);
+    public static native boolean __gmpz_root(MPZPointer rop, MPZPointer op, NativeUnsignedLong n);
 
     public static native void __gmpz_rootrem(MPZPointer rop, MPZPointer rem, MPZPointer op, NativeUnsignedLong n);
 
@@ -317,6 +354,10 @@ public class LibGMP {
     public static native int __gmpz_cmpabs_d(MPZPointer op1, double op2);
 
     public static native int __gmpz_cmpabs_ui(MPZPointer op1, NativeUnsignedLong op2);
+
+    public static int __gmpz_sgn(MPZPointer op) {
+        return __gmpz_cmp(op, __gmpz_zero);
+    }
 
     public static native void __gmpz_and(MPZPointer rop, MPZPointer op1, MPZPointer op2);
 
