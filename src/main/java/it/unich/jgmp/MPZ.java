@@ -119,10 +119,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
     private MPZPointer mpzPointer;
 
     /**
-     * Result type of the {@link isProbabPrime} method.
+     * Result enumeration for the {@link isProbabPrime isProbabPrime} method.
      */
     public static enum PrimalityStatus {
-        NON_PRIME, PROBABLY_PRIME, PRIME
+        /**
+         * The tested number is definitely non-prime.
+         */
+        NON_PRIME,
+        /**
+         * The tested number is probably prime.
+         */
+        PROBABLY_PRIME,
+        /**
+         * The tested number is definitely prime.
+         */
+        PRIME
     }
 
     /**
