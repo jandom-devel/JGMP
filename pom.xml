@@ -37,7 +37,6 @@
         <maven.compiler.release>11</maven.compiler.release>
         <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
         <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
-        <doclint>all,-missing</doclint>
     </properties>
 
     <!-- Build settings -->
@@ -78,6 +77,13 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <doclint>all,-missing</doclint>
+                    <links>
+                        <link>https://javadoc.io/doc/org.javatuples/javatuples/latest/</link>
+                        <link>https://javadoc.io/doc/net.java.dev.jna/jna/latest/</link>
+                    </links>
+                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-gpg-plugin</artifactId>
