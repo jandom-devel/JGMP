@@ -1,6 +1,5 @@
 package it.unich.jgmptest;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -189,17 +188,6 @@ public class MPZTest {
         assertEquals(new Pair<>(new MPZ(34), new MPZ(21)), MPZ.fib2Ui(9));
         assertEquals(new MPZ(18), MPZ.lucnumUi(6));
         assertEquals(new Pair<>(new MPZ(18), new MPZ(11)), MPZ.lucnum2Ui(6));
-    }
-
-    @Test
-    void test_randomstate() {
-        var a = new RandState();
-        assertDoesNotThrow(() -> new RandState());
-        assertDoesNotThrow(() -> RandState.create());
-        assertDoesNotThrow(() -> RandState.mt());
-        assertDoesNotThrow(() -> RandState.lc2ExpSize(10));
-        assertDoesNotThrow(() -> new RandState(a));
-        assertThrows(IllegalArgumentException.class, () -> RandState.lc2ExpSize(200));
     }
 
     @Test

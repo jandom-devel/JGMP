@@ -438,6 +438,14 @@ public class LibGMP {
 
     public static native void __gmp_randclear(RandStatePointer state);
 
+    public static native void __gmp_randseed (RandStatePointer state, MPZPointer seed);
+
+    public static native void __gmp_randseed_ui (RandStatePointer state, NativeUnsignedLong seed);
+
+    public static native NativeLong __gmp_urandomb_ui (RandStatePointer state, NativeUnsignedLong n);
+
+    public static native NativeLong __gmp_urandomm_ui (RandStatePointer state, NativeUnsignedLong n);
+
     // Formatted Output
 
     public static int __gmp_printf(String fmt, Object... args) {
