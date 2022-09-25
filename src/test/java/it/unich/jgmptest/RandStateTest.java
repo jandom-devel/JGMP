@@ -14,14 +14,14 @@ public class RandStateTest {
     @Test
     void test_initialization() {
         assertDoesNotThrow(() -> new RandState());
-        assertDoesNotThrow(() -> RandState.create());
-        assertDoesNotThrow(() -> RandState.mt());
-        assertDoesNotThrow(() -> RandState.lc2ExpSize(10));
-        assertThrows(IllegalArgumentException.class, () -> RandState.lc2ExpSize(200));
+        assertDoesNotThrow(() -> RandState.randinitDefault());
+        assertDoesNotThrow(() -> RandState.randinitMt());
+        assertDoesNotThrow(() -> RandState.randinitLc2ExpSize(10));
+        assertThrows(IllegalArgumentException.class, () -> RandState.randinitLc2ExpSize(200));
 
         var rs1 = new RandState().randseedUi(100);
         var rs2 = new RandState(rs1);
-        var rs3 = new RandState().set(rs1);
+        var rs3 = new RandState().randinitSet(rs1);
         var a = rs1.urandommUi(10000);
         var b = rs2.urandommUi(10000);
         var c = rs3.urandommUi(10000);

@@ -36,6 +36,28 @@ import it.unich.jgmp.nativelib.RandStatePointer;
 /**
  * The class encapsulating the {@code gmp_randstate_t} data type, which holds
  * the current state of a random number generator.
+ *
+ * <p>
+ * An element of {@code RandState} contains a pointer to a native
+ * {@code gmp_randstate_t} variable and registers itself with
+ * {@link GMP#cleaner} for freeing all allocated memory during garbage
+ * collection.
+ * <p>
+ * In determining the names and prototypes of the methods of the {@code MPZ}
+ * class, we adopted the following rules:
+ * <ul>
+ * <li>functions {@code gmp_randclear} and {@code gmp_randinit} are not exposed
+ * by the {@code RandState} class;
+ * <li>if {@code baseName} begins with {@code randinit}, we create a static
+ * method {@code baseName} which returns a new {@code RandState} object;
+ * <li>otherwise, we create a method {@code baseName} which calls the original
+ * function, implicitly using {@code this} as the first non-constant
+ * {@code gmp_randstate_t} parameter;
+ * </ul>
+ * <p>
+ * In general, all the parameters which are not provided implicitly to the
+ * original GMP function through {@code this} should be provided explicitly by
+ * having them in the method prototype.
  */
 public class RandState {
 
@@ -97,7 +119,7 @@ public class RandState {
     /**
      * Returns the default random state.
      */
-    public static RandState create() {
+    public static RandState randinitDefault() {
         return new RandState();
     }
 
@@ -105,7 +127,7 @@ public class RandState {
      * Returns a random state for a Mersenne Twister algorithm. This algorithm is
      * fast and has good randomness properties.
      */
-    public static RandState mt() {
+    public static RandState randinitMt() {
         var m = new RandStatePointer();
         __gmp_randinit_mt(m);
         return new RandState(m);
@@ -119,7 +141,7 @@ public class RandState {
      * @apiNote both {@code c} and {@code m2exp} should be treated as unsigned
      *          longs.
      */
-    public static RandState lc2Exp(MPZ a, long c, long m2exp) {
+    public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
         var m = new RandStatePointer();
         __gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
         return new RandState(m);
@@ -132,7 +154,7 @@ public class RandState {
      *
      * @apiNote both {@code size} should be treated as an unsigned long.
      */
-    public static RandState lc2ExpSize(long size) {
+    public static RandState randinitLc2ExpSize(long size) {
         var m = new RandStatePointer();
         var res = __gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
@@ -144,7 +166,7 @@ public class RandState {
     /**
      * Returns a random state which is a copy of {@code op}.
      */
-    public RandState set(RandState op) {
+    public RandState randinitSet(RandState op) {
         return new RandState(op);
     }
 
