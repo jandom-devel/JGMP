@@ -2,6 +2,10 @@ package it.unich.jgmp;
 
 import static it.unich.jgmp.nativelib.LibGMP.*;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
@@ -115,10 +119,14 @@ import it.unich.jgmp.nativelib.SizeTByReference;
  * {@code MPZ} class, not directly corresponding to any GMP function.
  */
 public class MPZ extends Number implements Comparable<MPZ> {
+
+    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    private static final long serialVersionUID = 1L;
+
     /**
      * The pointer to the native {@code mpz_t} object.
      */
-    private MPZPointer mpzPointer;
+    private transient MPZPointer mpzPointer;
 
     /**
      * Result enumeration for the {@link isProbabPrime isProbabPrime} method.
@@ -2525,4 +2533,24 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public String toString() {
         return getStr(10);
     }
+
+    private void writeObject(ObjectOutputStream out) throws IOException {
+        // writeUTF seems more efficient, but has a limit of 64Kb
+        // use base 62 to have a more compact representation
+        out.writeObject(toString(62));
+    }
+
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        mpzPointer = new MPZPointer();
+        __gmpz_init_set_str(mpzPointer, (String) in.readObject(), 62);
+        GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
+    }
+
+    @SuppressWarnings("unused")
+    private void readObjectNoData() throws ObjectStreamException {
+        mpzPointer = new MPZPointer();
+        __gmpz_init(mpzPointer);
+        GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
+    }
+
 }

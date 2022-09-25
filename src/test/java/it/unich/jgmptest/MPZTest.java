@@ -6,6 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Optional;
 
 import org.javatuples.Pair;
@@ -273,6 +278,21 @@ public class MPZTest {
         assertTrue(a.sizeinbase(10) >= 6);
         assertTrue(a.sizeinbase(10) <= 7);
         assertThrows(IllegalArgumentException.class, () -> a.sizeinbase(-20));
+    }
+
+    @Test
+    void test_serialize() throws IOException, ClassNotFoundException {
+        var n = new MPZ(1524132);
+        var baos = new ByteArrayOutputStream();
+        var oos = new ObjectOutputStream(baos);
+        oos.writeObject(n);
+        var arr = baos.toByteArray();
+        oos.close();
+
+        var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
+        var n2 = ois.readObject();
+        assertEquals(n, n2);
+
     }
 
 }
