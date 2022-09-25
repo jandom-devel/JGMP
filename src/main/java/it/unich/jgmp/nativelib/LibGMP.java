@@ -60,8 +60,8 @@ import com.sun.jna.ptr.NativeLongByReference;
  * <p>
  * Some documented GMP functions are actually macros: they have been
  * reimplemented here, keeping the JGMP naming convention. <em>Integer Special
- * Functions</em> and <em>Low-level Function</em>, as defined in the GMP
- * documentation, have been omitted entirely.
+ * Functions</em> and <em>Low-level Function</em>, as defined in the GMP Integer
+ * Functions documentation, have been omitted entirely.
  * </p>
  * <p>
  * We strived to be type safe, by defining different subclasses of
@@ -92,7 +92,7 @@ public class LibGMP {
     public static final String __gmp_version;
 
     /**
-     * The  0 (assumign no one changes it)
+     * The 0 (assumign no one changes it)
      */
     public static MPZPointer __gmpz_zero;
 
@@ -339,10 +339,13 @@ public class LibGMP {
 
     public static native void __gmpz_fac_ui(MPZPointer rop, NativeUnsignedLong n);
 
+    // This has been introduced in GMP 5.1.0
     public static native void __gmpz_2fac_ui(MPZPointer rop, NativeUnsignedLong n);
 
+    // This has been introduced in GMP 5.1.0
     public static native void __gmpz_mfac_uiui(MPZPointer rop, NativeUnsignedLong n, NativeUnsignedLong m);
 
+    // This has been introduced in GMP 5.1.0
     public static native void __gmpz_primorial_ui(MPZPointer rop, NativeUnsignedLong n);
 
     public static native void __gmpz_bin_ui(MPZPointer rop, MPZPointer n, NativeUnsignedLong k);
@@ -454,13 +457,13 @@ public class LibGMP {
 
     public static native void __gmp_randclear(RandStatePointer state);
 
-    public static native void __gmp_randseed (RandStatePointer state, MPZPointer seed);
+    public static native void __gmp_randseed(RandStatePointer state, MPZPointer seed);
 
-    public static native void __gmp_randseed_ui (RandStatePointer state, NativeUnsignedLong seed);
+    public static native void __gmp_randseed_ui(RandStatePointer state, NativeUnsignedLong seed);
 
-    public static native NativeLong __gmp_urandomb_ui (RandStatePointer state, NativeUnsignedLong n);
+    public static native NativeLong __gmp_urandomb_ui(RandStatePointer state, NativeUnsignedLong n);
 
-    public static native NativeLong __gmp_urandomm_ui (RandStatePointer state, NativeUnsignedLong n);
+    public static native NativeLong __gmp_urandomm_ui(RandStatePointer state, NativeUnsignedLong n);
 
     // Formatted Output
 
