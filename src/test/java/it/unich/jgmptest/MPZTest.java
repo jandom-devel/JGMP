@@ -197,10 +197,9 @@ public class MPZTest {
         assertDoesNotThrow(() -> new RandState());
         assertDoesNotThrow(() -> RandState.create());
         assertDoesNotThrow(() -> RandState.mt());
-        assertDoesNotThrow(() -> RandState.lc(10));
+        assertDoesNotThrow(() -> RandState.lc2ExpSize(10));
         assertDoesNotThrow(() -> new RandState(a));
-        assertDoesNotThrow(() -> RandState.valueOf(a));
-        assertThrows(IllegalArgumentException.class, () -> RandState.lc(200));
+        assertThrows(IllegalArgumentException.class, () -> RandState.lc2ExpSize(200));
     }
 
     @Test

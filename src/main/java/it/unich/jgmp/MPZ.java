@@ -121,7 +121,9 @@ import it.unich.jgmp.nativelib.SizeTByReference;
  */
 public class MPZ extends Number implements Comparable<MPZ> {
 
-    /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    /**
+     * Version for serializability.
+     */
     private static final long serialVersionUID = 1L;
 
     /**
@@ -164,8 +166,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * A private constructor which build an MPZ starting from a pointer to its
-     * native data object. The native object needs to be already initialized.
+     * A private constructor which build an {@code MPZ} starting from a pointer to
+     * its native data object. The native object needs to be already initialized.
      */
     private MPZ(MPZPointer pointer) {
         this.mpzPointer = pointer;
@@ -2368,6 +2370,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @deprecated use {@link urandombAssign} or {@link urandommAssign} instead.
      * @return this {@code MPZ}.
      */
+    @Deprecated
     public MPZ randomAssign(long max_size) {
         __gmpz_random(mpzPointer, new MPSizeT(max_size));
         return this;
@@ -2381,6 +2384,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @deprecated use {@link urandomb} or {@link urandomm} instead.
      */
+    @Deprecated
     public static MPZ random(long max_size) {
         return (new MPZ()).randomAssign(max_size);
     }
@@ -2395,6 +2399,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @deprecated use {@link rrandombAssign} instead.
      * @return this {@code MPZ}.
      */
+    @Deprecated
     public MPZ random2Assign(long max_size) {
         __gmpz_random2(mpzPointer, new MPSizeT(max_size));
         return this;
@@ -2409,6 +2414,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @deprecated use {@link rrandomb} instead.
      */
+    @Deprecated
     public static MPZ random2(long max_size) {
         return (new MPZ()).random2Assign(max_size);
     }
