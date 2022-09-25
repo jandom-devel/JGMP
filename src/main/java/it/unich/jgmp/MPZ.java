@@ -38,9 +38,10 @@ import it.unich.jgmp.nativelib.SizeTByReference;
  * already know the C GMP library. For each GMP function named {@code mpz_xyz},
  * a <em>base name</em> is determined as follows:
  * <ul>
- * <li>the prefix {@code mpz_} and the components {@code _ui_}, {@code _d_} and
- * {@code _str_} are removed, everywhere but in the {@code get} family of
- * functions, where this would cause a clash of prototypes;
+ * <li>the prefix {@code mpz_} and the components {@code _si}, {@code _d} and
+ * {@code _str} are removed, everywhere but in the {@code get} family of
+ * functions, where this would cause a clash of prototypes: the component
+ * {@code _ui} is kept to help the user distinguish unsigned long parameters;
  * <li>the postfix {@code _p}, which sometimes marks functions returning
  * booleans, is either removed or replaced by the prefix {@code is} when it
  * makes sense;
@@ -172,7 +173,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns the native pointer to the {@code MPZ} object.
+     * Returns the native pointer to the GMP object.
      */
     public MPZPointer getPointer() {
         return mpzPointer;
@@ -195,6 +196,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * by GMP when needed. See the GMP function
      * <a href= "https://gmplib.org/manual/Initializing-Integers" target=
      * "_blank">{@code mpz_init2}</a>.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long
      */
     static public MPZ init2(long n) {
         var mpzPointer = new MPZPointer();
@@ -207,9 +210,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * preserved if it fits, otherwise it is set to 0.
      *
      * Calling this function is never necessary; reallocation is handled
-     * automatically by GMP when needed. But this function can be used to increase
-     * the space for a variable in order to avoid repeated automatic reallocations,
-     * or to decrease it to give memory back to the heap.
+     * automatically by GMP when needed. This function can be used to increase the
+     * space for a variable in order to avoid repeated automatic reallocations, or
+     * to decrease it to give memory back to the heap.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ realloc2(long n) {
         __gmpz_realloc2(mpzPointer, new MPBitCntT(n));
@@ -229,21 +234,23 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPZ} to the signed long {@code op}.
+     * Sets this {@code MPZ} to {@code op}.
      *
      * @return this {@code MPZ}.
      */
-    public MPZ setSi(long op) {
+    public MPZ set(long op) {
         __gmpz_set_si(mpzPointer, new NativeLong(op));
         return this;
     }
 
     /**
-     * Sets this {@code MPZ} to the the unsigned long {@code op}.
+     * Sets this {@code MPZ} to {@code op}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public MPZ set(long op) {
+    public MPZ setUi(long op) {
         __gmpz_set_ui(mpzPointer, new NativeUnsignedLong(op));
         return this;
     }
@@ -275,7 +282,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the number represented by the string {@code str} in
-     * the given {@code base}. See the GMP function
+     * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Integers" target="
      * _blank">{@code mpz_set_str}</a>.
      *
@@ -287,7 +294,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Swap this {@code MPZ} with the value of {@code op}.
+     * Swap the value of this {@code MPZ} with the value of {@code op}.
      *
      * @return this {@code MPZ}.
      */
@@ -306,16 +313,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is the signed long {@code op}.
+     * Returns an {@code MPZ} whose value is {@code op}.
      */
-    public static MPZ initSetSi(long op) {
+    public static MPZ initSet(long op) {
         return new MPZ(op);
     }
 
     /**
-     * Returns an {@code MPZ} whose value is the unsigned long {@code op}.
+     * Returns an {@code MPZ} whose value is {@code op}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public static MPZ initSet(long op) {
+    public static MPZ initSetUi(long op) {
         var mpzPointer = new MPZPointer();
         __gmpz_init_set_ui(mpzPointer, new NativeUnsignedLong(op));
         return new MPZ(mpzPointer);
@@ -329,16 +338,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Determines an {@code MPZ} whose value is the number represented by the string
-     * {@code str} in the given {@code base}. See the GMP function
+     * Returns an {@code MPZ} whose value is the number represented by the string
+     * {@code str} in the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
      * target="_blank">{@code mpz_init_set_str}</a>.
      *
      * @return a pair whose first component is {@code 0} if the operation succeeded,
      *         and {@code -1} if either {@code base} is not valid, or {@code str} is
-     *         not a valid numeric representation in the given base. The second
-     *         component of the pair is the number represented in {@code str}. In
-     *         case of error, the second component is {@code 0}.
+     *         not a valid numeric representation in the specified base. The second
+     *         component of the pair is the number represented in {@code str} if the
+     *         operation succeeded, {@code 0} otherwise.
      */
 
     public static Pair<Integer, MPZ> initSet(String str, int base) {
@@ -352,26 +361,28 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Converts this {@code MPZ} to an unsigned long.
      *
-     * If this number is too big to fit an unsigned long, then just the least
+     * If this number is too big to fit a native unsigned long, then just the least
      * significant bits that do fit are returned. The sign of this number is
      * ignored, only the absolute value is used.
+     *
+     * @apiNote the return value should be treated as an unsigned long.
      */
     public long getUi() {
         return __gmpz_get_ui(mpzPointer).longValue();
     }
 
     /**
-     * Converts this {@code MPZ} to an signed long.
+     * Converts this {@code MPZ} to a signed long.
      *
-     * If this number is too big to fit a signed long, return the least significant
-     * part, preserving the sign.
+     * If this number is too big to fit a native signed long, return the least
+     * significant part, preserving the sign.
      */
     public long getSi() {
         return __gmpz_get_si(mpzPointer).longValue();
     }
 
     /**
-     * Converts this {@code MPZ} to a float, truncating if necessary. If the
+     * Converts this {@code MPZ} to a double, truncating if necessary. If the
      * exponent from the conversion is too big, the result is system dependent. An
      * infinity is returned where available. A hardware overflow trap may or may not
      * occur.
@@ -393,7 +404,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns the String representation of this {@code MPZ} in the given
+     * Returns the String representation of this {@code MPZ} in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Integers" target=
      * "_blank">{@code mpz_get_str}</a>.
@@ -430,17 +441,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to {@code (op1 + op2)}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ addAssign(MPZ op1, long op2) {
+    public MPZ addUiAssign(MPZ op1, long op2) {
         __gmpz_add_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code (this + op)}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public MPZ add(long op) {
-        return new MPZ().addAssign(this, op);
+    public MPZ addUi(long op) {
+        return new MPZ().addUiAssign(this, op);
     }
 
     /**
@@ -454,26 +469,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is {@code this - op}.
+     * Returns an {@code MPZ} whose value is {@code (this - op)}.
      */
     public MPZ sub(MPZ op) {
-        return new MPZ().subAssign(this, op);
-    }
-
-    /**
-     * Sets this {@code MPZ} to {@code (op1 - op2}.
-     *
-     * @return this {@code MPZ}.
-     */
-    public MPZ subAssign(MPZ op1, long op2) {
-        __gmpz_sub_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
-        return this;
-    }
-
-    /**
-     * Returns an {@code MPZ} whose value is {@code this - op}.
-     */
-    public MPZ sub(long op) {
         return new MPZ().subAssign(this, op);
     }
 
@@ -481,17 +479,42 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to {@code (op1 - op2)}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ subAssign(long op1, MPZ op2) {
+    public MPZ subUiAssign(MPZ op1, long op2) {
+        __gmpz_sub_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
+        return this;
+    }
+
+    /**
+     * Returns an {@code MPZ} whose value is {@code (this - op)}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ subUi(long op) {
+        return new MPZ().subUiAssign(this, op);
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code (op1 - op2)}.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op1} should be treated as an unsigned long.
+     */
+    public MPZ uiSubAssign(long op1, MPZ op2) {
         __gmpz_ui_sub(mpzPointer, new NativeUnsignedLong(op1), op2.mpzPointer);
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code (op - this)}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public MPZ subReverse(long op) {
-        return new MPZ().subAssign(op, this);
+    public MPZ uiSub(long op) {
+        return new MPZ().uiSubAssign(op, this);
     }
 
     /**
@@ -515,9 +538,30 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to {@code (op1 * op2)}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
+     */
+    public MPZ mulUiAssign(MPZ op1, long op2) {
+        __gmpz_mul_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
+        return this;
+    }
+
+    /**
+     * Returns an {@code MPZ} whose value is {@code (this * op)}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ mulUi(long op) {
+        return new MPZ().mulUiAssign(this, op);
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code (op1 * op2)}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ mulAssign(MPZ op1, long op2) {
-        __gmpz_mul_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
+        __gmpz_mul_si(mpzPointer, op1.mpzPointer, new NativeLong(op2));
         return this;
     }
 
@@ -526,23 +570,6 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     public MPZ mul(long op) {
         return new MPZ().mulAssign(this, op);
-    }
-
-    /**
-     * Sets this {@code MPZ} to {@code (op1 * op2)}.
-     *
-     * @return this {@code MPZ}.
-     */
-    public MPZ mulAssignSi(MPZ op1, long op2) {
-        __gmpz_mul_si(mpzPointer, op1.mpzPointer, new NativeLong(op2));
-        return this;
-    }
-
-    /**
-     * Returns an {@code MPZ} whose value is {@code (this * op)}.
-     */
-    public MPZ mulSi(long op) {
-        return new MPZ().mulAssignSi(this, op);
     }
 
     /**
@@ -566,17 +593,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Adds {@code (op1 * op2)} to this {@code MPZ}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ addmulAssign(MPZ op1, long op2) {
+    public MPZ addmulUiAssign(MPZ op1, long op2) {
         __gmpz_addmul_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code (this + op1 * op2)}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ addmul(MPZ op1, long op2) {
-        return new MPZ(this).addmulAssign(op1, op2);
+    public MPZ addmulUi(MPZ op1, long op2) {
+        return new MPZ(this).addmulUiAssign(op1, op2);
     }
 
     /**
@@ -600,34 +631,42 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Subtracts {@code (op1 * op2)} to this {@code MPZ}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ submulAssign(MPZ op1, long op2) {
+    public MPZ submulUiAssign(MPZ op1, long op2) {
         __gmpz_submul_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code (this - op1 * op2)}.
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ submul(MPZ op1, long op2) {
-        return new MPZ(this).submulAssign(op1, op2);
+    public MPZ submulUi(MPZ op1, long op2) {
+        return new MPZ(this).submulUiAssign(op1, op2);
     }
 
     /**
-     * Sets this {@code MPZ} to <code>(op1 * 2<sup>op2</sup>)</code>.
+     * Sets this {@code MPZ} to <code>(op * 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
-    public MPZ mul2ExpAssign(MPZ op1, long op2) {
-        __gmpz_mul_2exp(mpzPointer, op1.mpzPointer, new MPBitCntT(op2));
+    public MPZ mul2ExpAssign(MPZ op, long b) {
+        __gmpz_mul_2exp(mpzPointer, op.mpzPointer, new MPBitCntT(b));
         return this;
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(op1 * 2<sup>op2</sup>)</code>.
+     * Returns an {@code MPZ} whose value is <code>(op1 * 2<sup>b</sup>)</code>.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public MPZ mul2Exp(long op) {
-        return new MPZ().mul2ExpAssign(this, op);
+    public MPZ mul2Exp(long b) {
+        return new MPZ().mul2ExpAssign(this, b);
     }
 
     /**
@@ -689,8 +728,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards zero.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards zero.
      *
      * @return this {@code MPZ}.
      */
@@ -703,27 +742,35 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (n / d)}, rounded towards zero; tt also returns the remainder.
+     * {@code (n / d)}, rounded towards zero; it also returns the remainder.
      *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
      */
-    public long cdivqAssign(MPZ n, long d) {
+    public long cdivqUiAssign(MPZ n, long d) {
         return __gmpz_cdiv_q_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the remainder.
+     *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
      */
-    public long cdivrAssign(MPZ n, long d) {
+    public long cdivrUiAssign(MPZ n, long d) {
         return __gmpz_cdiv_r_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards zero; it
-     * also returns the remainder.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards zero; it also returns the
+     * remainder.
+     *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
      */
-    public long cdivqrAssign(MPZ r, MPZ n, long d) {
+    public long cdivqrUiAssign(MPZ r, MPZ n, long d) {
         if (mpzPointer == r.mpzPointer)
             throw new IllegalArgumentException("The target of this method cannot point to the same object as r");
         return __gmpz_cdiv_qr_ui(mpzPointer, r.mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
@@ -732,8 +779,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns the remainder of the integer division {@code (this / d)}, rounded
      * towards zero.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public long cdiv(long d) {
+    public long cdivUi(long d) {
         return __gmpz_cdiv_ui(mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
@@ -742,6 +791,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivq2ExpAssign(MPZ n, long b) {
         __gmpz_cdiv_q_2exp(mpzPointer, n.mpzPointer, new MPBitCntT(b));
@@ -753,6 +804,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivr2ExpAssign(MPZ n, long b) {
         __gmpz_cdiv_r_2exp(mpzPointer, n.mpzPointer, new MPBitCntT(b));
@@ -788,6 +841,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivq2Exp(long b) {
         return new MPZ().cdivq2ExpAssign(this, b);
@@ -796,6 +851,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivr2Exp(long b) {
         return new MPZ().cdivr2ExpAssign(this, b);
@@ -824,9 +881,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards negative
-     * infinity.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards negative infinity.
      *
      * @return this {@code MPZ}.
      */
@@ -841,8 +897,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the quotient of the integer division
      * {@code (n / d)}, rounded towards negative infinity; it also returns the
      * absolute value of the remainder.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public long fdivqAssign(MPZ n, long d) {
+    public long fdivqUiAssign(MPZ n, long d) {
         return __gmpz_fdiv_q_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
@@ -850,17 +908,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards negative infinity; it also returns the
      * absolute value of the remainder.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public long fdivrAssign(MPZ n, long d) {
+    public long fdivrUiAssign(MPZ n, long d) {
         return __gmpz_fdiv_r_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards negative
-     * infinity; it also returns the absolute value of the remainder.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards negative infinity; it also
+     * returns the absolute value of the remainder.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public long fdivqrAssign(MPZ r, MPZ n, long d) {
+    public long fdivqrUiAssign(MPZ r, MPZ n, long d) {
         if (mpzPointer == r.mpzPointer)
             throw new IllegalArgumentException("The target of this method cannot point to the same object as r");
         return __gmpz_fdiv_qr_ui(mpzPointer, r.mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
@@ -869,8 +931,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns the remainder of the integer division {@code (this / d)}, rounded
      * towards negative infinity.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public long fdiv(long d) {
+    public long fdivUi(long d) {
         return __gmpz_fdiv_ui(mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
@@ -879,6 +943,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward negative infinity.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ fdivq2ExpAssign(MPZ n, long b) {
         __gmpz_fdiv_q_2exp(mpzPointer, n.mpzPointer, new NativeUnsignedLong(b));
@@ -890,6 +956,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward negative infinity.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ fdivr2ExpAssign(MPZ n, long b) {
         __gmpz_fdiv_r_2exp(mpzPointer, n.mpzPointer, new NativeUnsignedLong(b));
@@ -925,6 +993,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards negative infinity.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ fdivq2Exp(long b) {
         return new MPZ().fdivq2ExpAssign(this, b);
@@ -933,6 +1003,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards negative infinity.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ fdivr2Exp(long b) {
         return new MPZ().fdivr2ExpAssign(this, b);
@@ -961,8 +1033,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards zero.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards zero.
      *
      * @return this {@code MPZ}.
      */
@@ -977,8 +1049,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the quotient of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the absolute value of
      * the remainder.
+     *
+     * @apiNote both {@code d} and the returned value should be treateds as unsigned
+     *          longs.
      */
-    public long tdivqAssign(MPZ n, long d) {
+    public long tdivqUiAssign(MPZ n, long d) {
         return __gmpz_tdiv_q_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
@@ -986,17 +1061,23 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the absolute value of
      * the remainder.
+     *
+     * @apiNote both {@code d} and the returned value should be treated as unsigned
+     *          longs.
      */
-    public long tdivrAssign(MPZ n, long d) {
+    public long tdivrUiAssign(MPZ n, long d) {
         return __gmpz_tdiv_r_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
     /**
-     * Sets the values of this {@code MPZ} and of {@code r} to the quotient and
-     * remainder of the integer division {@code (n / d)}, rounded towards zero; it
-     * also returns the absolute value of the remainder.
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (n / d)}, rounded towards zero; it also returns the
+     * absolute value of the remainder.
+     *
+     * @apiNote both {@code d} and the returned value should be treated as unsigned
+     *          longs.
      */
-    public long tdivqrAssign(MPZ r, MPZ n, long d) {
+    public long tdivqrUiAssign(MPZ r, MPZ n, long d) {
         if (mpzPointer == r.mpzPointer)
             throw new IllegalArgumentException("The target of this method cannot point to the same object as r");
         return __gmpz_tdiv_qr_ui(mpzPointer, r.mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
@@ -1005,8 +1086,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns the remainder of the integer division {@code (this / d)}, rounded
      * towards zero.
+     *
+     * @apiNote both {@code d} and the returned value should be treated as unsigned
+     *          longs.
      */
-    public long tdiv(long d) {
+    public long tdivUi(long d) {
         return __gmpz_tdiv_ui(mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
@@ -1015,6 +1099,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ tdivq2ExpAssign(MPZ n, long b) {
         __gmpz_tdiv_q_2exp(mpzPointer, n.mpzPointer, new NativeUnsignedLong(b));
@@ -1026,6 +1112,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ tdivr2ExpAssign(MPZ n, long b) {
         __gmpz_tdiv_r_2exp(mpzPointer, n.mpzPointer, new NativeUnsignedLong(b));
@@ -1061,6 +1149,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ tdivq2Exp(long b) {
         return new MPZ().tdivq2ExpAssign(this, b);
@@ -1069,6 +1159,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
      * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ tdivr2Exp(long b) {
         return new MPZ().tdivr2ExpAssign(this, b);
@@ -1096,17 +1188,23 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Sets this {@code MPZ} to {@code (n mod d)}; it also returns the result. The
      * sign of the divisor is ignored, the result is always non-negative.
+     *
+     * @apiNote both {@code d} and the retuened value should be treated as unsigned
+     *          longs.
      */
-    public long modAssign(MPZ n, long d) {
+    public long modUiAssign(MPZ n, long d) {
         return __gmpz_mod_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d)).longValue();
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code (this mod d)}. The sign of the
      * divisor is ignored, the result is always non-negative.
+     *
+     * @apiNote both {@code d} and the retuened value should be treated as unsigned
+     *          longs.
      */
-    public long mod(long d) {
-        return fdiv(d);
+    public long modUi(long d) {
+        return fdivUi(d);
     }
 
     /**
@@ -1136,8 +1234,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * divides {@code n}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public MPZ divexactAssign(MPZ n, long d) {
+    public MPZ divexactUiAssign(MPZ n, long d) {
         __gmpz_divexact_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(d));
         return this;
     }
@@ -1146,9 +1246,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns an {@code MPZ} whose value is the quotient of {@code (this / d)}.
      * This method produces correct results only when it is known in advance that
      * {@code d} divides {@code this}.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public MPZ divexact(long d) {
-        return new MPZ().divexactAssign(this, d);
+    public MPZ divexactUi(long d) {
+        return new MPZ().divexactUiAssign(this, d);
     }
 
     /**
@@ -1160,14 +1262,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns {@code true} if and only if {@code d} divides {@code this}.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public boolean isDivisible(long d) {
+    public boolean isDivisibleUi(long d) {
         return __gmpz_divisible_ui_p(mpzPointer, new NativeUnsignedLong(d));
     }
 
     /**
      * Returns {@code true} if and only if <code>2<sup>b</sup></code> divides
      * {@code this}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public boolean isDivisible2Exp(long b) {
         return __gmpz_divisible_2exp_p(mpzPointer, new MPBitCntT(b));
@@ -1184,14 +1290,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns {@code true} if and only if {@code this} is congruent to {@code c}
      * modulo {@code d}.
+     *
+     * @apiNote {@code c} and {@code d} should be treated as unsigned longs.
      */
-    public boolean isCongruent(long c, long d) {
+    public boolean isCongruentUi(long c, long d) {
         return __gmpz_congruent_ui_p(mpzPointer, new NativeUnsignedLong(c), new NativeUnsignedLong(d));
     }
 
     /**
      * Returns {@code true} if and only if {@code this} is congruent to {@code c}
      * modulo <code>2<sup>b</sup></code>.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public boolean isCongruent2Exp(MPZ c, long b) {
         return __gmpz_congruent_2exp_p(mpzPointer, c.mpzPointer, new MPBitCntT(b));
@@ -1203,7 +1313,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo
      * {@code mod}.
      *
-     * @return this {@code MPZ}..
+     * @return this {@code MPZ}.
      */
     public MPZ powmAssign(MPZ base, MPZ exp, MPZ mod) {
         __gmpz_powm(mpzPointer, base.mpzPointer, exp.mpzPointer, mod.mpzPointer);
@@ -1211,7 +1321,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(base<sup>exp</sup>)</code>
+     * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>
      * modulo {@code mod}.
      */
     public MPZ powm(MPZ exp, MPZ mod) {
@@ -1222,19 +1332,23 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo
      * {@code mod}.
      *
-     * @return this {@code MPZ}..
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
-    public MPZ powmAssign(MPZ base, long exp, MPZ mod) {
+    public MPZ powmUiAssign(MPZ base, long exp, MPZ mod) {
         __gmpz_powm_ui(mpzPointer, base.mpzPointer, new NativeUnsignedLong(exp), mod.mpzPointer);
         return this;
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(base<sup>exp</sup>)</code>
+     * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>
      * modulo {@code mod}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
-    public MPZ powm(long exp, MPZ mod) {
-        return new MPZ().powmAssign(this, exp, mod);
+    public MPZ powmUi(long exp, MPZ mod) {
+        return new MPZ().powmUiAssign(this, exp, mod);
     }
 
     /**
@@ -1243,7 +1357,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * odd. This function is intended for cryptographic purposes, where resilience
      * to side-channel attacks is desired.
      *
-     * @return this {@code MPZ}..
+     * @return this {@code MPZ}.
      */
     public MPZ powmSecAssign(MPZ base, MPZ exp, MPZ mod) {
         __gmpz_powm_sec(mpzPointer, base.mpzPointer, exp.mpzPointer, mod.mpzPointer);
@@ -1251,7 +1365,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(base<sup>exp</sup>)</code>
+     * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>
      * modulo {@code mod}. It is required that {@code (exp > 0)} and that
      * {@code mod} is odd. This function is intended for cryptographic purposes,
      * where resilience to side-channel attacks is desired.
@@ -1265,18 +1379,22 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>0<sup>0</sup></code> yields {@code 1}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
      */
-    public MPZ powAssign(MPZ base, long exp) {
+    public MPZ powUiAssign(MPZ base, long exp) {
         __gmpz_pow_ui(mpzPointer, base.mpzPointer, new NativeUnsignedLong(exp));
         return this;
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(base<sup>exp</sup>)</code>. The
+     * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>. The
      * case <code>0<sup>0</sup></code> yields {@code 1}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
-    public MPZ pow(long exp) {
-        return new MPZ().powAssign(this, exp);
+    public MPZ powUi(long exp) {
+        return new MPZ().powUiAssign(this, exp);
     }
 
     /**
@@ -1284,8 +1402,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>0<sup>0</sup></code> yields {@code 1}.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
-    public MPZ powAssign(long base, long exp) {
+    public MPZ powUiAssign(long base, long exp) {
         __gmpz_ui_pow_ui(mpzPointer, new NativeUnsignedLong(base), new NativeUnsignedLong(exp));
         return this;
     }
@@ -1293,9 +1413,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is <code>(base<sup>exp</sup>)</code>. The
      * case <code>0<sup>0</sup></code> yields {@code 1}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
-    public static MPZ pow(long base, long exp) {
-        return new MPZ().powAssign(base, exp);
+    public static MPZ powUi(long base, long exp) {
+        return new MPZ().powUiAssign(base, exp);
     }
 
     // Integer Roots
@@ -1305,6 +1427,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * of {@code op}.
      *
      * @return true if the computation is exact.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public boolean rootAssign(MPZ op, long n) {
         return __gmpz_root(mpzPointer, op.mpzPointer, new NativeUnsignedLong(n));
@@ -1314,6 +1438,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns an {@code MPZ} whose value is the truncated integer part of the
      * {@code n}th root of {@code this}, and a boolean flag which is true when the
      * result is exact.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public Pair<Boolean, MPZ> root(long n) {
         var root = new MPZ();
@@ -1327,6 +1453,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <code>(u - root<sup>n</sup>)</code>.
      *
      * @return this {@code MPZ}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ rootremAssign(MPZ rem, MPZ u, long n) {
         __gmpz_rootrem(mpzPointer, rem.mpzPointer, u.mpzPointer, new NativeUnsignedLong(n));
@@ -1337,6 +1465,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns two {@code MPZ}s whose values are the truncated integer part of the
      * {@code n}th root of {@code this} and the remainder, i.e.,
      * <code>(u - root<sup>n</sup>)</code>.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public Pair<MPZ, MPZ> rootrem(long n) {
         MPZ res = new MPZ(), rem = new MPZ();
@@ -1474,16 +1604,22 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * long, then 0 si returned.
      *
      * @see gcdAssign(MPZ, MPZ)
+     *
+     * @apiNote both {@code op2} and the returned value should be treated as
+     *          unsigned longs.
      */
-    public long gcdAssign(MPZ op1, long op2) {
+    public long gcdUiAssign(MPZ op1, long op2) {
         return __gmpz_gcd_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2)).longValue();
     }
 
     /**
      * Returns the greatest commond divisor of {@code this} and {@code op}. If the
      * result does not fit into an unsigned long, 0 is returned.
+     *
+     * @apiNote both {@code op2} and the returned value should be treated as
+     *          unsigned longs.
      */
-    public long gcd(long op) {
+    public long gcdUi(long op) {
         return __gmpz_gcd_ui(null, mpzPointer, new NativeUnsignedLong(op)).longValue();
     }
 
@@ -1540,8 +1676,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * {@code op2}.
      *
      * @see lcmAssign(MPZ, MPZ)
+     *
+     * @apiNote {@code op2} should be treated as an unsigned long.
      */
-    public MPZ lcmAssign(MPZ op1, long op2) {
+    public MPZ lcmUiAssign(MPZ op1, long op2) {
         __gmpz_lcm_ui(mpzPointer, op1.mpzPointer, new NativeUnsignedLong(op2));
         return this;
     }
@@ -1550,9 +1688,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns the least common multiple of {@code this} and {@code op}.
      *
      * @see lcmAssign(MPZ, MPZ)
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public MPZ lcm(long op) {
-        return new MPZ().lcmAssign(this, op);
+    public MPZ lcmUi(long op) {
+        return new MPZ().lcmUiAssign(this, op);
     }
 
     /**
@@ -1610,7 +1750,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @see kronecker(MPZ)
      */
-    public int kroneckerSi(long b) {
+    public int kronecker(long b) {
         return __gmpz_kronecker_si(mpzPointer, new NativeLong(b));
     }
 
@@ -1618,8 +1758,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns the Jacobi symbol {@code (this / b)} with the Kronecker extension.
      *
      * @see kronecker(MPZ)
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
-    public int kronecker(long b) {
+    public int kroneckerUi(long b) {
         return __gmpz_kronecker_ui(mpzPointer, new NativeUnsignedLong(b));
     }
 
@@ -1628,7 +1770,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @see kronecker(MPZ)
      */
-    public int siKronecker(long a) {
+    public int kroneckerReverse(long a) {
         return __gmpz_si_kronecker(new NativeLong(a), mpzPointer);
     }
 
@@ -1636,8 +1778,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns the Jacobi symbol {@code (a / this)} with the Kronecker extension.
      *
      * @see kronecker(MPZ)
+     *
+     * @apiNote {@code a} should be treated as an unsigned long.
      */
-    public int kroneckerReverse(long a) {
+    public int uiKronecker(long a) {
         return __gmpz_ui_kronecker(new NativeUnsignedLong(a), mpzPointer);
     }
 
@@ -1653,6 +1797,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns the result of removing the factor{@code f} from {@code this},
      * together with the number of occurrences which were removed.
+     *
+     * @apiNote the first element of the returned value should be treated as an
+     *          unsigned long.
      */
     public Pair<Long, MPZ> remove(MPZ f) {
         var res = new MPZ();
@@ -1662,38 +1809,48 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the factorial of {@code n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ facAssign(long n) {
+    public MPZ facUiAssign(long n) {
         __gmpz_fac_ui(mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is the factorial of {@code n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static MPZ fac(long n) {
-        return new MPZ().facAssign(n);
+    public static MPZ facUi(long n) {
+        return new MPZ().facUiAssign(n);
     }
 
     /**
      * Sets this {@code MPZ} to the double factorial of {@code n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ dfacAssign(long n) {
+    public MPZ dfacUiAssign(long n) {
         __gmpz_2fac_ui(mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value the double factorial of {@code n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static MPZ dfac(long n) {
-        return new MPZ().dfacAssign(n);
+    public static MPZ dfacUi(long n) {
+        return new MPZ().dfacUiAssign(n);
     }
 
     /**
      * Sets this {@code MPZ} to the {@code m}-multi factorial of {@code n}.
+     *
+     * @apiNote both {@code n} and {@code m} should be treated as unsigned longs.
      */
-    public MPZ mfacAssign(long n, long m) {
+    public MPZ mfacUiUiAssign(long n, long m) {
         __gmpz_mfac_uiui(mpzPointer, new NativeUnsignedLong(n), new NativeUnsignedLong(m));
         return this;
     }
@@ -1701,16 +1858,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the {@code m}-multi factorial of
      * {@code n}.
+     *
+     * @apiNote both {@code n} and {@code m} should be treated as unsigned longs.
      */
-    public static MPZ mfac(long n, long m) {
-        return new MPZ().mfacAssign(n, m);
+    public static MPZ mfacUiUi(long n, long m) {
+        return new MPZ().mfacUiUiAssign(n, m);
     }
 
     /**
      * Sets this {@code MPZ} to the primorial of {@code n}, i.e., the product of all
      * positive prime numbers {@code <= n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ primorialAssign(long n) {
+    public MPZ primorialUiAssign(long n) {
         __gmpz_primorial_ui(mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
@@ -1718,9 +1879,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the primorial of {@code n}, i.e., the
      * product of all positive prime numbers {@code <= n}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static MPZ primorial(long n) {
-        return new MPZ().primorialAssign(n);
+    public static MPZ primorialUi(long n) {
+        return new MPZ().primorialUiAssign(n);
     }
 
     /**
@@ -1728,8 +1891,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Negative values of {@code n} are supported using the identity
      * {@code (bin(-n,k) = (-1)^k * bin(n+k-1,k))}, see Knuth volume 1 section 1.2.6
      * part G.
+     *
+     * @apiNote {@code k} should be treated as an unsigned long.
      */
-    public MPZ binAssign(MPZ n, long k) {
+    public MPZ binUiAssign(MPZ n, long k) {
         __gmpz_bin_ui(mpzPointer, n.mpzPointer, new NativeUnsignedLong(k));
         return this;
     }
@@ -1737,16 +1902,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the binomial coefficient {@code this}
      * over {@code k}. Negative values of {@code this} are supported as in
-     * {@link binAssign(MPZ, long)}.
+     * {@link binUiAssign(MPZ, long)}.
+     *
+     * @apiNote {@code k} should be treated as an unsigned long.
      */
-    public MPZ bin(long k) {
-        return new MPZ().binAssign(this, k);
+    public MPZ binUi(long k) {
+        return new MPZ().binUiAssign(this, k);
     }
 
     /**
      * Sets this {@code MPZ} to the binomial coefficient {@code n} over {@code k}.
+     *
+     * @apiNote both {@code n} and {@code k} should be treated as unsigned longs.
      */
-    public MPZ binAssign(long n, long k) {
+    public MPZ binUiUiAssign(long n, long k) {
         __gmpz_bin_uiui(mpzPointer, new NativeUnsignedLong(n), new NativeUnsignedLong(k));
         return this;
     }
@@ -1754,31 +1923,39 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the binomial coefficient {@code n} over
      * {@code k}.
+     *
+     * @apiNote both {@code n} and {@code k} should be treated as unsigned longs.
      */
-    public static MPZ bin(long n, long k) {
-        return new MPZ().binAssign(n, k);
+    public static MPZ binUiUi(long n, long k) {
+        return new MPZ().binUiUiAssign(n, k);
     }
 
     /**
      * Sets this {@code MPZ} to the {@code n}-th Fibonacci number.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ fibAssign(long n) {
+    public MPZ fibUiAssign(long n) {
         __gmpz_fib_ui(mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is the {@code n}-th Fibonacci number.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static MPZ fib(long n) {
-        return new MPZ().fibAssign(n);
+    public static MPZ fibUi(long n) {
+        return new MPZ().fibUiAssign(n);
     }
 
     /**
      * Sets the value of {@code this} and {@code fnsub1} to the {@code n}-th and
      * {@code (n-1)}-th Fibonacci numbers respecively.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ fib2Assign(MPZ fnsub1, long n) {
+    public MPZ fib2UiAssign(MPZ fnsub1, long n) {
         __gmpz_fib2_ui(mpzPointer, fnsub1.mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
@@ -1786,33 +1963,41 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns two {@code MPZ} whose values are the {@code n}-th and
      * {@code (n-1)}-th Fibonacci numbers.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static Pair<MPZ, MPZ> fib2(long n) {
+    public static Pair<MPZ, MPZ> fib2Ui(long n) {
         MPZ fnsub1 = new MPZ(), fn = new MPZ();
-        fn.fib2Assign(fnsub1, n);
+        fn.fib2UiAssign(fnsub1, n);
         return new Pair<>(fn, fnsub1);
     }
 
     /**
      * Sets this {@code MPZ} to the {@code n}-th Lucas number.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ lucnumAssign(long n) {
+    public MPZ lucnumUiAssign(long n) {
         __gmpz_lucnum_ui(mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
 
     /**
      * Returns an {@code MPZ} whose value is the {@code n}-th Lucas number.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static MPZ lucnum(long n) {
-        return new MPZ().lucnumAssign(n);
+    public static MPZ lucnumUi(long n) {
+        return new MPZ().lucnumUiAssign(n);
     }
 
     /**
      * Sets the value of {@code this} and {@code fnsub1} to the {@code n}-th and
      * {@code (n-1)}-th Lucas numbers respecively.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public MPZ lucnum2Assign(MPZ fnsub1, long n) {
+    public MPZ lucnum2UiAssign(MPZ fnsub1, long n) {
         __gmpz_lucnum2_ui(mpzPointer, fnsub1.mpzPointer, new NativeUnsignedLong(n));
         return this;
     }
@@ -1820,10 +2005,12 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns two {@code MPZ} whose values are the {@code n}-th and
      * {@code (n-1)}-th Lucas numbers.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
-    public static Pair<MPZ, MPZ> lucnum2(long n) {
+    public static Pair<MPZ, MPZ> lucnum2Ui(long n) {
         MPZ lnsub1 = new MPZ(), ln = new MPZ();
-        ln.lucnum2Assign(lnsub1, n);
+        ln.lucnum2UiAssign(lnsub1, n);
         return new Pair<>(ln, lnsub1);
     }
 
@@ -1853,7 +2040,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * {@code (this > op)}, zero if {@code this = op}, or a negative value if
      * {@code this < op}.
      */
-    public int cmpSi(long op) {
+    public int cmp(long op) {
         return __gmpz_cmp_si(mpzPointer, new NativeLong(op));
     }
 
@@ -1861,8 +2048,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Compares {@code this} with {@code op}. Returns a positive value if
      * {@code (this > op)}, zero if {@code this = op}, or a negative value if
      * {@code this < op}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public int cmp(long op) {
+    public int cmpUi(long op) {
         return __gmpz_cmp_ui(mpzPointer, new NativeUnsignedLong(op));
     }
 
@@ -1892,18 +2081,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * positive value if {@code (abs(this) > abs(op))}, zero if
      * {@code abs(this) = abs(op)}, or a negative value if
      * {@code abs(this) < abs(op)}.
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
      */
-    public int cmpabsSi(long op) {
-        return __gmpz_cmpabs_ui(mpzPointer, new NativeUnsignedLong(Math.abs(op)));
-    }
-
-    /**
-     * Compares the absolute values of {@code this} and {@code op}. Returns a
-     * positive value if {@code (abs(this) > abs(op))}, zero if
-     * {@code abs(this) = abs(op)}, or a negative value if
-     * {@code abs(this) < abs(op)}.
-     */
-    public int cmpabs(long op) {
+    public int cmpabsUi(long op) {
         return __gmpz_cmpabs_ui(mpzPointer, new NativeUnsignedLong(op));
     }
 
@@ -1982,6 +2163,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * the number of {@code 1} bits in its binary representation. If this
      * {@code MPZ} is negative, the number of {@code 1}s is infinite, and the return
      * value is the largest possible value for the native type {@code mp_bitcnt_t}.
+     *
+     * @apiNote the returned value should be treated as an unigned long.
      */
     public long popcount() {
         return __gmpz_popcount(mpzPointer).longValue();
@@ -1994,6 +2177,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * operand is {@code >= 0} and the other {@code < 0} then the number of bits
      * different is infinite, and the return value is the largest possible value for
      * the native type {@code mp_bitcnt_t}.
+     *
+     * @apiNote the returned value should be treated as an unigned long.
      */
     public long hamdist(MPZ op) {
         return __gmpz_hamdist(mpzPointer, op.mpzPointer).longValue();
@@ -2003,6 +2188,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Scans this {@code MPZ}, starting from bit {@code starting_bit}, towards more
      * significant bits, until the first {@code 0} bit is found. Returns the index
      * of the found bit.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public long scan0(long starting_bit) {
         return __gmpz_scan0(mpzPointer, new MPBitCntT(starting_bit)).longValue();
@@ -2012,6 +2200,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Scans {@code this}, starting from bit {@code starting_bit}, towards more
      * significant bits, until the first {@code 1} bit is found. Returns the index
      * of the found bit.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public long scan1(long starting_bit) {
         return __gmpz_scan1(mpzPointer, new MPBitCntT(starting_bit)).longValue();
@@ -2019,6 +2210,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets the bit {@code index} of this {@code MPZ}.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ setbitAssign(long index) {
         __gmpz_setbit(mpzPointer, new MPBitCntT(index));
@@ -2028,6 +2222,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is
      * <code>(this | 2<sup>index</sup>)</code>.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ setbit(long index) {
         return new MPZ(this).setbitAssign(index);
@@ -2035,6 +2232,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Clears the bit {@code index} of this {@code MPZ}.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ clrbitAssign(long index) {
         __gmpz_clrbit(mpzPointer, new MPBitCntT(index));
@@ -2044,6 +2244,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is
      * <code>(this &amp; ~ 2<sup>index</sup>)</code>.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ clrbit(long index) {
         return new MPZ(this).clrbitAssign(index);
@@ -2051,6 +2254,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Complements the bit {@code index} of this {@code MPZ}.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ combitAssign(long index) {
         __gmpz_combit(mpzPointer, new MPBitCntT(index));
@@ -2060,6 +2266,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is
      * <code>(this ^ 2<sup>index</sup>)</code>.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public MPZ combit(long index) {
         return new MPZ(this).combitAssign(index);
@@ -2067,6 +2276,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns the bit {@code index} of this {@code MPZ}.
+     *
+     * @apiNote both {@code starting_bit} and the returned value should be treated
+     *          as unsigned longs.
      */
     public int tstbit(long index) {
         return __gmpz_tstbit(mpzPointer, new MPBitCntT(index));
@@ -2077,6 +2289,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Sets this {@code MPZ} to a uniformly distributed random integer in the range
      * {@code 0} to <code>(2<sup>n</sup> - 1)</code>, inclusive.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ urandombAssign(RandState s, long n) {
         __gmpz_urandomb(mpzPointer, s.getPointer(), new MPBitCntT(n));
@@ -2086,6 +2300,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is an uniformly distributed random integer
      * in the range {@code 0}} to <code>(2<sup>n</sup> - 1)</code>, inclusive.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public static MPZ urandomb(RandState s, long n) {
         var z = new MPZ();
@@ -2119,6 +2335,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * corner-case bugs. The random number will be in the range
      * <code>(2<sup>n - 1</sup>)</code> to <code>(2<sup>n</sup> - 1)</code>,
      * inclusive.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ rrandombAssign(RandState s, long n) {
         __gmpz_rrandomb(mpzPointer, s.getPointer(), new MPBitCntT(n));
@@ -2132,6 +2350,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * to trigger corner-case bugs. The random number will be in the range
      * <code>(2<sup>n - 1</sup>)</code> to <code>(2<sup>n</sup> - 1)</code>,
      * inclusive.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
      */
     public static MPZ rrandomb(RandState s, long n) {
         var z = new MPZ();
@@ -2202,6 +2422,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * "_blank">{@code mpz_import}</a>. The parameter {@code count} in the prototype
      * of {@code mpz_import} is automatically computed by the capacity of the buffer
      * {@code op}.
+     *
+     * @apiNote {@code nails} should be treated as an unsigned long.
      */
     public MPZ bufferImportAssign(int order, int size, int endian, long nails, ByteBuffer op) {
         var count = op.capacity() / size + (op.capacity() % size == 0 ? 0 : 1);
@@ -2214,6 +2436,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * at {@code op}.
      *
      * @see bufferImportAssign
+     *
+     * @apiNote {@code nails} should be treated as an unsigned long.
      */
     public static MPZ bufferImport(int order, int size, int endian, long nails, ByteBuffer op) {
         return new MPZ().bufferImportAssign(order, size, endian, nails, op);
@@ -2227,6 +2451,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * since it the easier and safer. The output {@code count} of the original GMP
      * function is not needed, since it corresponds to the capacity of the resulting
      * {@link ByteBuffer}.
+     *
+     * @apiNote {@code nails} should be treated as an unsigned long.
      */
     public ByteBuffer bufferExport(int order, int size, int endian, long nails) {
         var count = new SizeTByReference();
@@ -2288,21 +2514,23 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns {@code true} if and only if this {@code MPZ} is odd.
      */
     public boolean isOdd() {
-        return fdiv(2) != 0;
+        return fdivUi(2) != 0;
     }
 
     /**
      * Returns {@code true} if and only if this {@code MPZ} is even
      */
     public boolean isEven() {
-        return fdiv(2) == 0;
+        return fdivUi(2) == 0;
     }
 
     /**
      * Returns the size of this {@code MPZ} measured in number of digits in the
-     * given {@code base}. See the the GMP function
+     * specified {@code base}. See the the GMP function
      * <a href="https://gmplib.org/manual/Miscellaneous-Integer-Functions" target=
      * "_blank">{@code mpz_sizeinbase}</a>.
+     *
+     * @apiNote the return value should be treated as an unsigned long.
      */
     public long sizeinbase(int base) {
         if (base < 2 || base > 62)
@@ -2331,7 +2559,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Builds an {@code MPZ} whose value is the signed long {@code op}.
+     * Builds an {@code MPZ} whose value is {@code op}.
      */
     public MPZ(long op) {
         mpzPointer = new MPZPointer();
@@ -2340,7 +2568,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Builds an {@code MPZ} whose value is the truncation of {@code d}.
+     * Builds an {@code MPZ} whose value is the truncation of {@code op}.
      */
     public MPZ(double op) {
         mpzPointer = new MPZPointer();
@@ -2350,13 +2578,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Builds an {@code MPZ} whose value is the number represented by the string
-     * {@code str} in the given {@code base}. See the GMP function
+     * {@code str} in the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
      * target="_blank">{@code mpz_init_set_str}</a>.
      *
      * @throws IllegalArgumentException if either {@code base} is not valid or
      *                                  {@code str} is not a valid string in the
-     *                                  given {@code base}.
+     *                                  specified {@code base}.
      *
      */
     public MPZ(String str, int base) {
@@ -2365,18 +2593,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (result == -1) {
             __gmpz_clear(mpzPointer);
             throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the given base");
+                    "either base is not valid or str is not a valid number in the specified base");
         }
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
 
     /**
      * Builds an {@code MPZ} whose value is the number represented by the string
-     * {@code str} in base ten.
+     * {@code str} in decimal base. See the GMP function
+     * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
+     * target="_blank">{@code mpz_init_set_str}</a>.
      *
      * @throws IllegalArgumentException if {@code str} is not a valid number
      *                                  representation in decimal base.
-     * @see MPZ(String, int)
      */
     public MPZ(String str) {
         this(str, 10);
@@ -2393,7 +2622,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to signed long {@code op}.
      */
     public MPZ setValue(long op) {
-        return setSi(op);
+        return set(op);
     }
 
     /**
@@ -2408,20 +2637,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Set this {@code MPZ} to the number represented by the string {@code str} in
-     * the given {@code base}. See the GMP function
+     * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Integers" target="
      * _blank">{@code mpz_set_str}</a>.
      *
      * @throws IllegalArgumentException if either {@code base} is not valid or
      *                                  {@code str} is not a valid number
-     *                                  representation in the given base. In this
-     *                                  case, {@code this} is not altered.
+     *                                  representation in the specified base. In
+     *                                  this case, {@code this} is not altered.
      */
     public MPZ setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
             throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the given base");
+                    "either base is not valid or str is not a valid number in the specified base");
         return this;
     }
 
@@ -2517,13 +2746,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Converts this {@code MPZ} to its string representation in the given
-     * {@code radix}, or {@code null} if the radix is not valid. See the GMP
-     * function <a href="https://gmplib.org/manual/Converting-Integers" target=
+     * Converts this {@code MPZ} to its string representation in the specified
+     * {@code base}, or {@code null} if the base is not valid. See the GMP function
+     * <a href="https://gmplib.org/manual/Converting-Integers" target=
      * "_blank">{@code mpz_get_str}</a>.
      */
-    public String toString(int radix) {
-        return getStr(radix);
+    public String toString(int base) {
+        return getStr(base);
     }
 
     /**

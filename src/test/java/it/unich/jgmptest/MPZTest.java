@@ -38,8 +38,8 @@ public class MPZTest {
     void test_assignment() {
         var z = new MPZ();
         assertEquals(new MPZ(15), z.set(new MPZ(15)));
-        assertEquals(zMaxUlong, z.set(-1));
-        assertEquals(new MPZ(-3), z.setSi(-3));
+        assertEquals(zMaxUlong, z.setUi(-1));
+        assertEquals(new MPZ(-3), z.set(-3));
         assertEquals(new MPZ(5), z.set(5.2));
         assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
         assertEquals(0, z.set("-1A", 16));
@@ -55,9 +55,9 @@ public class MPZTest {
     @Test
     void test_initandassignment() {
         assertEquals(new MPZ(15), MPZ.initSet(new MPZ(15)));
-        assertEquals(new MPZ(15), MPZ.initSet(15));
-        assertEquals(zMaxUlong, MPZ.initSet(-1));
-        assertEquals(new MPZ(-1), MPZ.initSetSi(-1));
+        assertEquals(new MPZ(15), MPZ.initSetUi(15));
+        assertEquals(zMaxUlong, MPZ.initSetUi(-1));
+        assertEquals(new MPZ(-1), MPZ.initSet(-1));
         assertEquals(new MPZ(15), MPZ.initSet(15.2));
         assertEquals(new Pair<>(0, new MPZ(15)), MPZ.initSet("15", 10));
         assertEquals(new Pair<>(-1, new MPZ(0)), MPZ.initSet("15", 63));
@@ -84,17 +84,17 @@ public class MPZTest {
     @Test
     void test_arithmetic() {
         assertEquals(new MPZ(15), new MPZ(8).add(new MPZ(7)));
-        assertEquals(new MPZ(15), new MPZ(8).add(7));
+        assertEquals(new MPZ(15), new MPZ(8).addUi(7));
         assertEquals(new MPZ(1), new MPZ(8).sub(new MPZ(7)));
-        assertEquals(new MPZ(1), new MPZ(8).sub(7));
-        assertEquals(new MPZ(-1), new MPZ(8).subReverse(7));
+        assertEquals(new MPZ(1), new MPZ(8).subUi(7));
+        assertEquals(new MPZ(-1), new MPZ(8).uiSub(7));
         assertEquals(new MPZ(56), new MPZ(8).mul(new MPZ(7)));
-        assertEquals(new MPZ(56), new MPZ(8).mul(7));
-        assertEquals(new MPZ(-56), new MPZ(8).mulSi(-7));
+        assertEquals(new MPZ(56), new MPZ(8).mulUi(7));
+        assertEquals(new MPZ(-56), new MPZ(8).mul(-7));
         assertEquals(new MPZ(14), new MPZ(2).addmul(new MPZ(4), new MPZ(3)));
-        assertEquals(new MPZ(14), new MPZ(2).addmul(new MPZ(4), 3));
+        assertEquals(new MPZ(14), new MPZ(2).addmulUi(new MPZ(4), 3));
         assertEquals(new MPZ(-10), new MPZ(2).submul(new MPZ(4), new MPZ(3)));
-        assertEquals(new MPZ(-10), new MPZ(2).submul(new MPZ(4), 3));
+        assertEquals(new MPZ(-10), new MPZ(2).submulUi(new MPZ(4), 3));
         assertEquals(new MPZ(48), new MPZ(3).mul2Exp(4));
         assertEquals(new MPZ(-5), new MPZ(5).neg());
         assertEquals(new MPZ(5), new MPZ(-5).abs());
@@ -105,14 +105,14 @@ public class MPZTest {
         assertEquals(new MPZ(4), new MPZ(15).cdivq(new MPZ(4)));
         assertEquals(new MPZ(-1), new MPZ(15).cdivr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(4), new MPZ(-1)), new MPZ(15).cdivqr(new MPZ(4)));
-        assertEquals(1, new MPZ(15).cdiv(4));
+        assertEquals(1, new MPZ(15).cdivUi(4));
         assertEquals(new MPZ(4), new MPZ(15).cdivq2Exp(2));
         assertEquals(new MPZ(-1), new MPZ(15).cdivr2Exp(2));
 
         assertEquals(new MPZ(3), new MPZ(15).fdivq(new MPZ(4)));
         assertEquals(new MPZ(3), new MPZ(15).fdivr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(3), new MPZ(3)), new MPZ(15).fdivqr(new MPZ(4)));
-        assertEquals(3, new MPZ(15).fdiv(4));
+        assertEquals(3, new MPZ(15).fdivUi(4));
         assertEquals(new MPZ(3), new MPZ(15).fdivq2Exp(2));
         assertEquals(new MPZ(3), new MPZ(15).fdivr2Exp(2));
 
@@ -120,30 +120,30 @@ public class MPZTest {
         assertEquals(new MPZ(3), new MPZ(15).tdivr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(3), new MPZ(3)), new MPZ(15).tdivqr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(-3), new MPZ(-3)), new MPZ(-15).tdivqr(new MPZ(4)));
-        assertEquals(3, new MPZ(15).tdiv(4));
+        assertEquals(3, new MPZ(15).tdivUi(4));
         assertEquals(new MPZ(3), new MPZ(15).tdivq2Exp(2));
         assertEquals(new MPZ(3), new MPZ(15).tdivr2Exp(2));
 
         assertEquals(new MPZ(3), new MPZ(15).mod(new MPZ(6)));
         assertEquals(new MPZ(3), new MPZ(-15).mod(new MPZ(-6)));
         assertEquals(new MPZ(4), new MPZ(12).divexact(new MPZ(3)));
-        assertEquals(new MPZ(4), new MPZ(12).divexact(3));
+        assertEquals(new MPZ(4), new MPZ(12).divexactUi(3));
         assertTrue(new MPZ(15).isDivisible(new MPZ(3)));
-        assertTrue(new MPZ(15).isDivisible(3));
+        assertTrue(new MPZ(15).isDivisibleUi(3));
         assertFalse(new MPZ(15).isDivisible2Exp(3));
 
         assertTrue(new MPZ(15).isCongruent(new MPZ(3), new MPZ(4)));
-        assertTrue(new MPZ(15).isCongruent(3, 4));
+        assertTrue(new MPZ(15).isCongruentUi(3, 4));
         assertFalse(new MPZ(15).isCongruent2Exp(new MPZ(1), 3));
     }
 
     @Test
     void test_exponentiation() {
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(3)));
-        assertEquals(new MPZ(1), new MPZ(2).powm(4, new MPZ(3)));
+        assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmSec(new MPZ(4), new MPZ(3)));
-        assertEquals(new MPZ(16), new MPZ(2).pow(4));
-        assertEquals(new MPZ(16), MPZ.pow(2, 4));
+        assertEquals(new MPZ(16), new MPZ(2).powUi(4));
+        assertEquals(new MPZ(16), MPZ.powUi(2, 4));
     }
 
     @Test
@@ -162,33 +162,33 @@ public class MPZTest {
         assertEquals(PrimalityStatus.PRIME, new MPZ(17).isProbabPrime(15));
         assertEquals(new MPZ(19), new MPZ(17).nextprime());
         assertEquals(new MPZ(6), new MPZ(30).gcd(new MPZ(24)));
-        assertEquals(6, new MPZ(30).gcd(24));
-        assertEquals(30, new MPZ(30).gcd(0));
-        assertEquals(0, new MPZ(0).gcd(0));
-        assertEquals(0, new MPZ(0).gcd(0));
-        assertEquals(0, zMaxUlong.add(1).gcd(0));
+        assertEquals(6, new MPZ(30).gcdUi(24));
+        assertEquals(30, new MPZ(30).gcdUi(0));
+        assertEquals(0, new MPZ(0).gcdUi(0));
+        assertEquals(0, new MPZ(0).gcdUi(0));
+        assertEquals(0, zMaxUlong.addUi(1).gcdUi(0));
         assertEquals(new Triplet<>(new MPZ(6), new MPZ(1), new MPZ(-1)), new MPZ(30).gcdext(new MPZ(24)));
         assertEquals(new MPZ(120), new MPZ(30).lcm(new MPZ(24)));
-        assertEquals(new MPZ(120), new MPZ(30).lcm(24));
+        assertEquals(new MPZ(120), new MPZ(30).lcmUi(24));
         assertEquals(Optional.of(new MPZ(3)), new MPZ(5).invert(new MPZ(7)));
         assertEquals(-1, new MPZ(5).jacobi(new MPZ(3)));
         assertEquals(0, new MPZ(9).legendre(new MPZ(3)));
         assertEquals(1, new MPZ(5).kronecker(new MPZ(4)));
-        assertEquals(-1, new MPZ(27).kroneckerSi(28));
         assertEquals(-1, new MPZ(27).kronecker(28));
-        assertEquals(1, new MPZ(27).siKronecker(28));
+        assertEquals(-1, new MPZ(27).kroneckerUi(28));
         assertEquals(1, new MPZ(27).kroneckerReverse(28));
+        assertEquals(1, new MPZ(27).uiKronecker(28));
         assertEquals(new Pair<>(2l, new MPZ(3)), new MPZ(12).remove(new MPZ(2)));
-        assertEquals(new MPZ(40320), MPZ.fac(8));
-        assertEquals(new MPZ(945), MPZ.dfac(9));
-        assertEquals(new MPZ(28), MPZ.mfac(7, 3));
-        assertEquals(new MPZ(210), MPZ.primorial(8));
-        assertEquals(new MPZ(21), new MPZ(7).bin(2));
-        assertEquals(new MPZ(21), MPZ.bin(7, 2));
-        assertEquals(new MPZ(34), MPZ.fib(9));
-        assertEquals(new Pair<>(new MPZ(34), new MPZ(21)), MPZ.fib2(9));
-        assertEquals(new MPZ(18), MPZ.lucnum(6));
-        assertEquals(new Pair<>(new MPZ(18), new MPZ(11)), MPZ.lucnum2(6));
+        assertEquals(new MPZ(40320), MPZ.facUi(8));
+        assertEquals(new MPZ(945), MPZ.dfacUi(9));
+        assertEquals(new MPZ(28), MPZ.mfacUiUi(7, 3));
+        assertEquals(new MPZ(210), MPZ.primorialUi(8));
+        assertEquals(new MPZ(21), new MPZ(7).binUi(2));
+        assertEquals(new MPZ(21), MPZ.binUiUi(7, 2));
+        assertEquals(new MPZ(34), MPZ.fibUi(9));
+        assertEquals(new Pair<>(new MPZ(34), new MPZ(21)), MPZ.fib2Ui(9));
+        assertEquals(new MPZ(18), MPZ.lucnumUi(6));
+        assertEquals(new Pair<>(new MPZ(18), new MPZ(11)), MPZ.lucnum2Ui(6));
     }
 
     @Test
@@ -209,12 +209,11 @@ public class MPZTest {
         var b = new MPZ(2);
         assertTrue(a.compareTo(b) > 0);
         assertEquals(0, a.cmp(10.0));
-        assertTrue(a.cmpSi(-1) > 0);
-        assertTrue(a.cmp(-1) < 0);
+        assertTrue(a.cmp(-1) > 0);
+        assertTrue(a.cmpUi(-1) < 0);
         assertTrue(a.cmpabs(b) > 0);
         assertEquals(0, a.cmpabs(-10.0));
-        assertTrue(a.cmpabsSi(-1) > 0);
-        assertTrue(a.cmpabs(-1) < 0);
+        assertTrue(a.cmpabsUi(-1) < 0);
         assertTrue(a.sgn() > 0);
     }
 
