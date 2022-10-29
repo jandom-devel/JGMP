@@ -126,7 +126,7 @@ public class LibGMP {
 
     public static native void __gmpz_init(MPZPointer x);
 
-    public static void __gmpz_inits(MPZPointer xs) {
+    public static void __gmpz_inits(MPZPointer... xs) {
         gmpextra.__gmpz_inits(xs);
     }
 
@@ -134,7 +134,7 @@ public class LibGMP {
 
     public static native void __gmpz_clear(MPZPointer x);
 
-    public static void __gmpz_clears(MPZPointer xs) {
+    public static void __gmpz_clears(MPZPointer... xs) {
         gmpextra.__gmpz_clears(xs);
     }
 
