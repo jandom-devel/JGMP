@@ -2064,8 +2064,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns {@code +1} if {@code (op > 0)}, {@code 0} if {@code (op = 0)} and
-     * {@code -1} if {@code op < 0}.
+     * Returns {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
+     * {@code -1} if {@code this < 0}.
      */
     public int sgn() {
         return __gmpz_sgn(mpzPointer);
