@@ -82,6 +82,11 @@ public class LibGMP {
     static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
 
     /**
+     * The size of the {@code mpq_t} native type.
+     */
+    static final int MPQ_SIZE = 2 * MPZ_SIZE;
+
+    /**
      * The size of the {@code __gmp_randstate_struct} structure.
      */
     static final int RANDSTATE_SIZE = MPZ_SIZE + 4 + Native.POINTER_SIZE;
@@ -92,9 +97,15 @@ public class LibGMP {
     public static final String __gmp_version;
 
     /**
-     * The 0 (assumign no one changes it)
+     * The integer 0 (assumign no one changes it)
      */
     public static MPZPointer __gmpz_zero;
+
+    /**
+     * The rational 0 (assumign no one changes it)
+     */
+    public static MPQPointer __gmpq_zero;
+
 
     static {
         var library = NativeLibrary.getInstance(LIBNAME);
@@ -103,6 +114,8 @@ public class LibGMP {
         gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class);
         __gmpz_zero = new MPZPointer();
         __gmpz_init(__gmpz_zero);
+        __gmpq_zero = new MPQPointer();
+        __gmpq_init(__gmpq_zero);
     }
 
     /**
@@ -115,6 +128,10 @@ public class LibGMP {
         void __gmpz_inits(MPZPointer... xs);
 
         void __gmpz_clears(MPZPointer... xs);
+
+        void __gmpq_inits(MPQPointer... xs);
+
+        void __gmpq_clears(MPQPointer... xs);
     }
 
     /**
@@ -470,4 +487,80 @@ public class LibGMP {
     public static int __gmp_printf(String fmt, Object... args) {
         return gmpextra.__gmp_printf(fmt, args);
     }
+
+    // Rational Number Functions
+
+    public static native void __gmpq_canonicalize(MPQPointer x);
+
+    public static native void __gmpq_init(MPQPointer x);
+
+    public static void __gmpq_inits(MPQPointer... xs) {
+        gmpextra.__gmpq_inits(xs);
+    }
+
+    public static native void __gmpq_clear(MPQPointer x);
+
+    public static void __gmpq_clears(MPQPointer... xs) {
+        gmpextra.__gmpq_clears(xs);
+    }
+
+    public static native void __gmpq_set(MPQPointer rop, MPQPointer op);
+
+    public static native void __gmpq_set_z(MPQPointer rop, MPZPointer op);
+
+    public static native void __gmpq_set_ui(MPQPointer rop, NativeUnsignedLong op1, NativeUnsignedLong op2);
+
+    public static native void __gmpq_set_si(MPQPointer rop, NativeLong op1, NativeLong op2);
+
+    public static native int __gmpq_set_str(MPQPointer rop, String str, int base);
+
+    public static native void __gmpq_swap(MPQPointer rop1, MPQPointer rop2);
+
+    public static native double __gmpq_get_d(MPQPointer op);
+
+    public static native void __gmpq_set_d(MPQPointer rop, double op);
+
+    public static native void __gmpq_set_f(MPQPointer rop, Pointer op);
+
+    public static native Pointer __gmpq_get_str(ByteBuffer str, int base, MPQPointer op);
+
+    public static native void __gmpq_add(MPQPointer rop, MPQPointer addend1, MPQPointer addend2);
+
+    public static native void __gmpq_sub(MPQPointer rop, MPQPointer minuend, MPQPointer subtrahend);
+
+    public static native void __gmpq_mul(MPQPointer rop, MPQPointer multiplier, MPQPointer multiplicand);
+
+    public static native void __gmpq_mul_2exp(MPQPointer rop, MPQPointer op1, MPBitCntT op2);
+
+    public static native void __gmpq_div(MPQPointer rop, MPQPointer dividend, MPQPointer divisor);
+
+    public static native void __gmpq_div_2exp(MPQPointer rop, MPQPointer op1, MPBitCntT op2);
+
+    public static native void __gmpq_neg(MPQPointer rop, MPQPointer operand);
+
+    public static native void __gmpq_abs(MPQPointer rop, MPQPointer operand);
+
+    public static native void __gmpq_inv(MPQPointer rop, MPQPointer number);
+
+    public static native int __gmpq_cmp(MPQPointer op1, MPQPointer op2);
+
+    public static native int __gmpq_cmp_z(MPQPointer op1, MPZPointer op2);
+
+    public static native int __gmpq_cmp_ui(MPQPointer op1, NativeUnsignedLong num2, NativeUnsignedLong den2);
+
+    public static native int __gmpq_cmp_si(MPQPointer op1, NativeLong op2, NativeUnsignedLong den2);
+
+    public static int __gmpq_sgn(MPQPointer op) {
+        return __gmpq_cmp(op, __gmpq_zero);
+    }
+
+    public static native boolean __gmpq_equal(MPQPointer op1, MPQPointer op2);
+
+    public static native void __gmpq_get_num(MPZPointer numerator, MPQPointer rational);
+
+    public static native void __gmpq_get_den(MPZPointer denominator, MPQPointer rational);
+
+    public static native void __gmpq_set_num(MPQPointer rational, MPZPointer numerator);
+
+    public static native void __gmpq_set_den(MPQPointer rational, MPZPointer denominator);
 }
