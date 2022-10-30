@@ -6,7 +6,7 @@
  * JGMP. This rules may be overriden in particular cases.
  * </p>
  *
- * <h1>Naming conventions</h1>
+ * <h2>Naming conventions</h2>
  * <p>
  * In developing the interface of JGMP classes, we tried to adhere to Java
  * naming conventions, while keeping methods discoverable by people who already
@@ -30,7 +30,7 @@
  * The base name is then used to give a name to the corresponding JVM method,
  * following different rules for different classes.
  *
- * <h1>Type mapping</h1>
+ * <h2>Type mapping</h2>
  * <p>
  * The types of the formal parameters and return value of a GMP function are
  * mapped to the types of the JGMP method as follows:
@@ -44,6 +44,7 @@
  * native size of these types is only 32 bit. Moreover, with the exception of
  * {@code mp_size_t}, they are natively unsigned. Handle with care.
  * <li>{@code mpz_t}) Mapped to {@code MPZ}.
+ * <li>{@code mpq_t}) Mapped to {@code MPQ}.
  * <li>{@code gmp_randstate_t}) Mapped to {@code RandState}.
  * <li>{@code const char*}) Mapped to {@code String}.
  * <li>{@code char*}) All functions requiring a non-const {@code char*} may be

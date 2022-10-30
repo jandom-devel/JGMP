@@ -59,7 +59,7 @@ import it.unich.jgmp.nativelib.SizeTByReference;
  * <li>if {@code baseName} begins with {@code realloc2}, {@code set} or
  * {@code swap}, we create a method called {@code baseName} which calls the
  * original function, implicitly using {@code this} as the first {@code mpz_t}
- * parameter.
+ * parameter;
  * <li>if {@code baseName} begins with {@code init}, we create a side-effect
  * free static method (see later);
  * <li>for all the other functions:
@@ -636,9 +636,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is <code>(op1 * 2<sup>b</sup>)</code>.
+     * Returns an {@code MPZ} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
-     * @apiNote {@code op} should be treated as an unsigned long.
+     * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ mul2Exp(long b) {
         return new MPZ().mul2ExpAssign(this, b);
@@ -2651,7 +2651,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Compares this {@code MPZ} with {@code op}. Returns a positive value if
      * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}.This order is compatible with equality.
+     * {@code this < op}. This order is compatible with equality.
      */
     @Override
     public int compareTo(MPZ op) {
@@ -2659,7 +2659,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Compates this {@code MPZ} with the object {@code op} for equality. It returns
+     * Compares this {@code MPZ} with the object {@code op} for equality. It returns
      * {@code true} if and only if {@code op} is an {@code MPZ} with the same value
      * of {@code this}.
      */
