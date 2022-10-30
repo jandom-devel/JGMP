@@ -16,6 +16,7 @@ import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.junit.jupiter.api.Test;
 
+import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
 import it.unich.jgmp.RandState;
@@ -40,6 +41,7 @@ public class MPZTest {
         assertEquals(zMaxUlong, z.setUi(-1));
         assertEquals(new MPZ(-3), z.set(-3));
         assertEquals(new MPZ(5), z.set(5.2));
+        assertEquals(new MPZ(5), z.set(new MPQ(21, 4)));
         assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
         assertEquals(0, z.set("-1A", 16));
         assertEquals(new MPZ(-26), z);
@@ -68,7 +70,9 @@ public class MPZTest {
         assertEquals(new MPZ(0), new MPZ());
         assertEquals(new MPZ(15), new MPZ("15"));
         assertEquals(new MPZ(15), new MPZ(15.4));
+        assertEquals(new MPZ(5), new MPZ(new MPQ(21, 4)));
     }
+
 
     @Test
     void test_conversion() {

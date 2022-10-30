@@ -165,7 +165,7 @@ public class LibGMP {
 
     public static native void __gmpz_set_d(MPZPointer rop, double op);
 
-    public static native void __gmpz_set_q(MPZPointer rop, Pointer op);
+    public static native void __gmpz_set_q(MPZPointer rop, MPQPointer op);
 
     public static native void __gmpz_set_f(MPZPointer rop, Pointer op);
 

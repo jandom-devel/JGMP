@@ -244,12 +244,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
         return this;
     }
 
-    /*
-     * public MPZ set(MPQ op) {
-     * __gmpz_set_q(mpzPointer, op.mpqPointer);
-     * return this;
-     * }
-     *
+    /**
+     * Sets this {@code MPZ} to the truncation of {@code op}.
+     */
+    public MPZ set(MPQ op) {
+       __gmpz_set_q(mpzPointer, op.getPointer());
+       return this;
+    }
+
+     /*
      * public MPZ set(MPF op) {
      * __gmpz_set_f(mpzPointer, op.mpfPointer);
      * return this;
@@ -2556,6 +2559,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Builds an {@code MPZ} whose value is the truncation of {@code op}.
+     */
+    public MPZ(MPQ op) {
+        mpzPointer = new MPZPointer();
+        __gmpz_init(mpzPointer);
+        __gmpz_set_q(mpzPointer, op.getPointer());
+        GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
+    }
+
+    /**
      * Builds an {@code MPZ} whose value is the number represented by the string
      * {@code str} in the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
@@ -2611,6 +2624,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *                                  this case, {@code this} is not altered.
      */
     public MPZ setValue(double op) {
+        return set(op);
+    }
+
+    /**
+     * Sets this {@code MPZ} to the truncation op {@code op}.
+     */
+    public MPZ setValue(MPQ op) {
         return set(op);
     }
 
