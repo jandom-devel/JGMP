@@ -87,6 +87,11 @@ public class LibGMP {
     static final int MPQ_SIZE = 2 * MPZ_SIZE;
 
     /**
+     * The size of the {@code mpf_t} native type.
+     */
+    static final int MPF_SIZE = 4 + 4 + MPExpT.SIZE + Native.POINTER_SIZE;
+
+    /**
      * The size of the {@code __gmp_randstate_struct} structure.
      */
     static final int RANDSTATE_SIZE = MPZ_SIZE + 4 + Native.POINTER_SIZE;
@@ -97,15 +102,19 @@ public class LibGMP {
     public static final String __gmp_version;
 
     /**
-     * The integer 0 (assumign no one changes it)
+     * The integer 0 (assuming no one changes it)
      */
     public static MPZPointer __gmpz_zero;
 
     /**
-     * The rational 0 (assumign no one changes it)
+     * The rational 0 (assuming no one changes it)
      */
     public static MPQPointer __gmpq_zero;
 
+    /**
+     * The floating point 0 (assuming no one changes it)
+     */
+    public static MPFPointer __gmpf_zero;
 
     static {
         var library = NativeLibrary.getInstance(LIBNAME);
@@ -116,6 +125,9 @@ public class LibGMP {
         __gmpz_init(__gmpz_zero);
         __gmpq_zero = new MPQPointer();
         __gmpq_init(__gmpq_zero);
+        __gmpf_zero = new MPFPointer();
+        __gmpf_init(__gmpf_zero);
+
     }
 
     /**
@@ -132,6 +144,10 @@ public class LibGMP {
         void __gmpq_inits(MPQPointer... xs);
 
         void __gmpq_clears(MPQPointer... xs);
+
+        void __gmpf_inits(MPFPointer... xs);
+
+        void __gmpf_clears(MPFPointer... xs);
     }
 
     /**
@@ -563,4 +579,144 @@ public class LibGMP {
     public static native void __gmpq_set_num(MPQPointer rational, MPZPointer numerator);
 
     public static native void __gmpq_set_den(MPQPointer rational, MPZPointer denominator);
+
+    // Floating-point functions
+
+    public static native void __gmpf_set_default_prec(MPBitCntT prec);
+
+    public static native MPBitCntT __gmpf_get_default_prec();
+
+    public static native void __gmpf_init(MPFPointer x);
+
+    public static native void __gmpf_init2(MPFPointer x, MPBitCntT n);
+
+    public static void __gmpf_inits(MPFPointer... xs) {
+        gmpextra.__gmpf_inits(xs);
+    }
+
+    public static native void __gmpf_clear(MPFPointer x);
+
+    public static void __gmpf_clears(MPFPointer... xs) {
+        gmpextra.__gmpf_clears(xs);
+    }
+
+    public static native MPBitCntT __gmpf_get_prec(MPFPointer op);
+
+    public static native void __gmpf_set_prec(MPFPointer rop, MPBitCntT prec);
+
+    public static native void __gmpf_set_prec_raw(MPFPointer rop, MPBitCntT prec);
+
+    public static native int __gmpf_cmp(MPFPointer op1, MPFPointer op2);
+
+    public static native int __gmpf_cmp_z(MPFPointer op1, MPZPointer op2);
+
+    public static native int __gmpf_cmp_d(MPFPointer op1, double op2);
+
+    public static native int __gmpf_cmp_ui(MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native int __gmpf_cmp_si(MPFPointer op1, NativeLong op2);
+
+    public static native boolean __gmpf_eq(MPFPointer op1, MPFPointer op2, MPBitCntT op3);
+
+    public static native int __gmpf_reldiff(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static int __gmpf_sgn(MPFPointer op) {
+        return __gmpf_cmp(op, __gmpf_zero);
+    }
+
+    public static native void __gmpf_set(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_set_ui(MPFPointer rop, NativeUnsignedLong op);
+
+    public static native void __gmpf_set_si(MPFPointer rop, NativeLong op);
+
+    public static native void __gmpf_set_d(MPFPointer rop, double op);
+
+    public static native void __gmpf_set_z(MPFPointer rop, MPZPointer op);
+
+    public static native void __gmpf_set_q(MPFPointer rop, MPQPointer op);
+
+    public static native int __gmpf_set_str(MPFPointer rop, String str, int base);
+
+    public static native void __gmpf_swap(MPFPointer rop1, MPFPointer rop2);
+
+    public static native void __gmpf_init_set(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_init_set_ui(MPFPointer rop, NativeUnsignedLong op);
+
+    public static native void __gmpf_init_set_si(MPFPointer rop, NativeLong op);
+
+    public static native void __gmpf_init_set_d(MPFPointer rop, double op);
+
+    public static native int __gmpf_init_set_str(MPFPointer rop, String str, int base);
+
+    public static native NativeUnsignedLong __gmpf_get_ui(MPFPointer op);
+
+    public static native NativeLong __gmpf_get_si(MPFPointer op);
+
+    public static native double __gmpf_get_d(MPFPointer op);
+
+    public static native double __gmpf_get_d_2exp(NativeLongByReference exp, MPFPointer op);
+
+    public static native Pointer __gmpf_get_str(ByteBuffer str, NativeLongByReference exp, int base, MPSizeT nDigits, MPFPointer op);
+
+    public static native void __gmpf_add(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static native void __gmpf_add_ui(MPFPointer rop, MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native void __gmpf_sub(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static native void __gmpf_sub_ui(MPFPointer rop, MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native void __gmpf_ui_sub(MPFPointer rop, NativeUnsignedLong op1, MPFPointer op2);
+
+    public static native void __gmpf_mul(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static native void __gmpf_mul_ui(MPFPointer rop, MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native void __gmpf_div(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static native void __gmpf_div_ui(MPFPointer rop, MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native void __gmpf_ui_div(MPFPointer rop, NativeUnsignedLong op1, MPFPointer op2);
+
+    public static native void __gmpf_sqrt(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_sqrt_ui(MPFPointer rop, NativeUnsignedLong op);
+
+    public static native void __gmpf_pow_ui(MPFPointer rop, MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native void __gmpf_neg(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_abs(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_mul_2exp(MPFPointer rop, MPFPointer op1, MPBitCntT op2);
+
+    public static native void __gmpf_div_2exp(MPFPointer rop, MPFPointer op1, MPBitCntT op2);
+
+    public static native void __gmpf_ceil(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_floor(MPFPointer rop, MPFPointer op);
+
+    public static native void __gmpf_trunc(MPFPointer rop, MPFPointer op);
+
+    public static native boolean __gmpf_integer_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_ulong_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_slong_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_uint_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_sint_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_ushort_p(MPFPointer op);
+
+    public static native boolean __gmpf_fits_sshort_p(MPFPointer op);
+
+    public static native void __gmpf_urandomb(MPFPointer rop, RandStatePointer state, MPBitCntT n);
+
+    public static native void __gmpf_random2(MPFPointer rop, MPSizeT max_size, MPExpT exp);
+
+
 }
