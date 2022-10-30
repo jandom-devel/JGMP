@@ -1358,7 +1358,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @return this {@code MPZ}.
      *
-     * @apiNote {@code d} should be treated as an unsigned long.
+     * @apiNote {@code exp} should be treated as an unsigned long.
      */
     public MPZ powUiAssign(MPZ base, long exp) {
         __gmpz_pow_ui(mpzPointer, base.mpzPointer, new NativeUnsignedLong(exp));
@@ -1464,7 +1464,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Returns an {@code MPZ} whose value is the truncated inegeter part of the
+     * Returns an {@code MPZ} whose value is the truncated integer part of the
      * square root of {@code this}.
      */
     public MPZ sqrt() {
