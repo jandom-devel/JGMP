@@ -16,13 +16,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.9.0</version>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.9.0</version>
+            <version>5.9.1</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -68,7 +68,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.4.0</version>
+                <version>3.4.1</version>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -80,8 +80,8 @@
                 <configuration>
                     <doclint>all,-missing</doclint>
                     <links>
-                        <link>https://javadoc.io/doc/org.javatuples/javatuples/latest/</link>
-                        <link>https://javadoc.io/doc/net.java.dev.jna/jna/latest/</link>
+                        <link>https://javadoc.io/doc/org.javatuples/javatuples/1.2/</link>
+                        <link>https://javadoc.io/doc/net.java.dev.jna/jna/5.12.1/</link>
                     </links>
                     <tags>
                         <tag>
@@ -118,7 +118,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>3.0.0-M5</version>
+                <version>3.0.0-M6</version>
             </plugin>
         </plugins>
     </build>
@@ -165,7 +165,7 @@
         <connection>scm:git:https://github.com/jandom-devel/JGMP.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jandom-devel/JGMP.git</developerConnection>
         <url>https://github.com/jandom-devel/JGMP</url>
-        <tag>jgmp-0.2</tag>
+        <tag>jgmp-0.3</tag>
     </scm>
     <distributionManagement>
         <downloadUrl>https://raw.githubusercontent.com/jandom-devel/JGMP/master/pom.xml</downloadUrl>
