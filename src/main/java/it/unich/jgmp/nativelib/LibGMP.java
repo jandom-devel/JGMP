@@ -17,6 +17,7 @@
 package it.unich.jgmp.nativelib;
 
 import java.nio.ByteBuffer;
+import java.util.Collections;
 
 import com.sun.jna.Library;
 import com.sun.jna.Native;
@@ -24,6 +25,7 @@ import com.sun.jna.NativeLibrary;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
+import com.sun.jna.ptr.PointerByReference;
 
 /**
  * This class contains the static native methods corresponding to GMP functions.
@@ -117,17 +119,19 @@ public class LibGMP {
     public static MPFPointer __gmpf_zero;
 
     static {
-        var library = NativeLibrary.getInstance(LIBNAME);
+        var options = Collections.singletonMap(Library.OPTION_TYPE_MAPPER, new GMPTypeMapper());
+        // adding options to the next line set a type mapper also for the directly mapped function
+        var library = NativeLibrary.getInstance(LIBNAME /*, options*/);
         __gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
         Native.register(library);
-        gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class);
+        gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class, options);
+        System.out.println(Native.getLibraryOptions(LibGmpExtra.class));
         __gmpz_zero = new MPZPointer();
         __gmpz_init(__gmpz_zero);
         __gmpq_zero = new MPQPointer();
         __gmpq_init(__gmpq_zero);
         __gmpf_zero = new MPFPointer();
         __gmpf_init(__gmpf_zero);
-
     }
 
     /**
@@ -136,6 +140,16 @@ public class LibGMP {
      */
     private static interface LibGmpExtra extends Library {
         int __gmp_printf(String fmt, Object... args);
+
+        int __gmp_sprintf(ByteBuffer buf, String fmt, Object... args);
+
+        int __gmp_snprintf(ByteBuffer buf, SizeT size, String fmt, Object... args);
+
+        int __gmp_asprintf(PointerByReference pp, String fmt, Object... args);
+
+        int __gmp_scanf(String fmt, Object... args);
+
+        int __gmp_sscanf(String s, String fmt, Object... args);
 
         void __gmpz_inits(MPZPointer... xs);
 
@@ -183,7 +197,7 @@ public class LibGMP {
 
     public static native void __gmpz_set_q(MPZPointer rop, MPQPointer op);
 
-    public static native void __gmpz_set_f(MPZPointer rop, Pointer op);
+    public static native void __gmpz_set_f(MPZPointer rop, MPFPointer op);
 
     public static native int __gmpz_set_str(MPZPointer rop, String str, int base);
 
@@ -473,37 +487,6 @@ public class LibGMP {
 
     public static native SizeT __gmpz_sizeinbase(MPZPointer op, int base);
 
-    // Random Number Functions
-
-    public static native void __gmp_randinit_default(RandStatePointer state);
-
-    public static native void __gmp_randinit_mt(RandStatePointer state);
-
-    public static native void __gmp_randinit_lc_2exp(RandStatePointer state, MPZPointer a, NativeLong c,
-            NativeLong m2exp);
-
-    public static native int __gmp_randinit_lc_2exp_size(RandStatePointer state, NativeLong m2exp);
-
-    public static native void __gmp_randinit_set(RandStatePointer rop, RandStatePointer op);
-
-    public static native void __gmp_randinit(RandStatePointer state, int alg, NativeLong l);
-
-    public static native void __gmp_randclear(RandStatePointer state);
-
-    public static native void __gmp_randseed(RandStatePointer state, MPZPointer seed);
-
-    public static native void __gmp_randseed_ui(RandStatePointer state, NativeUnsignedLong seed);
-
-    public static native NativeLong __gmp_urandomb_ui(RandStatePointer state, NativeUnsignedLong n);
-
-    public static native NativeLong __gmp_urandomm_ui(RandStatePointer state, NativeUnsignedLong n);
-
-    // Formatted Output
-
-    public static int __gmp_printf(String fmt, Object... args) {
-        return gmpextra.__gmp_printf(fmt, args);
-    }
-
     // Rational Number Functions
 
     public static native void __gmpq_canonicalize(MPQPointer x);
@@ -536,7 +519,7 @@ public class LibGMP {
 
     public static native void __gmpq_set_d(MPQPointer rop, double op);
 
-    public static native void __gmpq_set_f(MPQPointer rop, Pointer op);
+    public static native void __gmpq_set_f(MPQPointer rop, MPFPointer op);
 
     public static native Pointer __gmpq_get_str(ByteBuffer str, int base, MPQPointer op);
 
@@ -658,7 +641,8 @@ public class LibGMP {
 
     public static native double __gmpf_get_d_2exp(NativeLongByReference exp, MPFPointer op);
 
-    public static native Pointer __gmpf_get_str(ByteBuffer str, NativeLongByReference exp, int base, MPSizeT nDigits, MPFPointer op);
+    public static native Pointer __gmpf_get_str(ByteBuffer str, NativeLongByReference exp, int base, MPSizeT nDigits,
+            MPFPointer op);
 
     public static native void __gmpf_add(MPFPointer rop, MPFPointer op1, MPFPointer op2);
 
@@ -718,5 +702,56 @@ public class LibGMP {
 
     public static native void __gmpf_random2(MPFPointer rop, MPSizeT max_size, MPExpT exp);
 
+    // Random Number Functions
 
+    public static native void __gmp_randinit_default(RandStatePointer state);
+
+    public static native void __gmp_randinit_mt(RandStatePointer state);
+
+    public static native void __gmp_randinit_lc_2exp(RandStatePointer state, MPZPointer a, NativeLong c,
+            NativeLong m2exp);
+
+    public static native int __gmp_randinit_lc_2exp_size(RandStatePointer state, NativeLong m2exp);
+
+    public static native void __gmp_randinit_set(RandStatePointer rop, RandStatePointer op);
+
+    public static native void __gmp_randinit(RandStatePointer state, int alg, NativeLong l);
+
+    public static native void __gmp_randclear(RandStatePointer state);
+
+    public static native void __gmp_randseed(RandStatePointer state, MPZPointer seed);
+
+    public static native void __gmp_randseed_ui(RandStatePointer state, NativeUnsignedLong seed);
+
+    public static native NativeLong __gmp_urandomb_ui(RandStatePointer state, NativeUnsignedLong n);
+
+    public static native NativeLong __gmp_urandomm_ui(RandStatePointer state, NativeUnsignedLong n);
+
+    // Formatted Output
+
+    public static int __gmp_printf(String fmt, Object... args) {
+        return gmpextra.__gmp_printf(fmt, args);
+    }
+
+    public static int __gmp_sprintf(ByteBuffer buf, String fmt, Object... args) {
+        return gmpextra.__gmp_sprintf(buf, fmt, args);
+    }
+
+    public static int __gmp_snprintf(ByteBuffer buf, SizeT size, String fmt, Object... args) {
+        return gmpextra.__gmp_snprintf(buf, size, fmt, args);
+    }
+
+    public static int __gmp_asprintf(PointerByReference pp, String fmt, Object... args) {
+        return gmpextra.__gmp_asprintf(pp, fmt, args);
+    }
+
+    // Formatted Input
+
+    public static int __gmp_scanf(String fmt, Object... args) {
+        return gmpextra.__gmp_scanf(fmt, args);
+    }
+
+    public static int __gmp_sscanf(String s, String fmt, Object... args) {
+        return gmpextra.__gmp_sscanf(s, fmt, args);
+    }
 }
