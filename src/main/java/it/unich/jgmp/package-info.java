@@ -2,8 +2,8 @@
  * This package contains all the high-level classes of JGMP.
  *
  * <p>
- * Here follows some guidelines we have followed in the developing the API of
- * JGMP. This rules may be overriden in particular cases.
+ * Here are some guidelines we have followed in the developing the API of JGMP.
+ * This rules may be overriden in particular cases.
  * </p>
  *
  * <h2>Naming conventions</h2>
@@ -39,12 +39,14 @@
  * types. This may cause truncation when the native {@code long} is only 32 bit.
  * If an {@code int} is used to represent a boolean, then the {@code boolean}
  * type is used in JGMP.
- * <li>{@code unsigned long}, {@code size_t}, {@code mp_bitcnt} and
- * {@code mp_size_t}) Mapped to {@code long}. This may cause truncation when the
- * native size of these types is only 32 bit. Moreover, with the exception of
- * {@code mp_size_t}, they are natively unsigned. Handle with care.
+ * <li>{@code unsigned long}, {@code size_t}, {@code mp_bitcnt},
+ * {@code mp_size_t} and {@code mp_exp_t}) Mapped to {@code long}. This may
+ * cause truncation when the native size of these types is only 32 bit. Noote
+ * that{@code unsigned long}, {@code size_t} and {@code mp_bitcnt} are natively
+ * unsigned. Handle with care.
  * <li>{@code mpz_t}) Mapped to {@code MPZ}.
  * <li>{@code mpq_t}) Mapped to {@code MPQ}.
+ * <li>{@code mpf_t}) Mapped to {@code MPF}.
  * <li>{@code gmp_randstate_t}) Mapped to {@code RandState}.
  * <li>{@code const char*}) Mapped to {@code String}.
  * <li>{@code char*}) All functions requiring a non-const {@code char*} may be
