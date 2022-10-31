@@ -37,35 +37,36 @@ import it.unich.jgmp.nativelib.MPFPointer;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
- * The class encapsulating the {@code mpz_t} data type, i.e., multi-precision
- * integer numbers.
+ * The class encapsulating the {@code mpf_t} data type, i.e., multi-precision
+ * floating point numbers. See the
+ * <a href="https://gmplib.org/manual/Floating_002dpoint-Functions" target=
+ * "_blank">Floating-point Functions</a> manual page of the GMP manual.
  *
  * <p>
- * An element of {@code MPF} contains a pointer to a native {@code mpz_t}
+ * An element of {@code MPF} contains a pointer to a native {@code mpf_t}
  * variable and registers itself with {@link GMP#cleaner} for freeing all
  * allocated memory during garbage collection.
  * <p>
  * In determining the names and prototypes of the methods of the {@code MPF}
  * class, we adopted the following rules:
  * <ul>
- * <li>functions {@code mpz_inits}, {@code mpz_clear}, {@code mpz_clears} and
+ * <li>functions {@code mpf_inits}, {@code mpf_clear}, {@code mpf_clears} and
  * {@code mpq_set_prec_raw} are only used internally and are not exposed by the
  * {@code MPF} class;
- * <li>functions in the categories <em>Integer Import and Export</em> and
- * <em>Special Functions</em> are not exposed by the {@code MPF} class;
- * <li>if {@code baseName} begins with {@code realloc2}, {@code set} or
- * {@code swap}, we create a method called {@code baseName} which calls the
- * original function, implicitly using {@code this} as the first {@code mpz_t}
- * parameter;
+ * <li>functions in the categories <em>I/O of Floats</em> are not exposed by the
+ * {@code MPF} class;
+ * <li>if {@code baseName} begins with {@code set} or {@code swap}, we create a
+ * method called {@code baseName} which calls the original function, implicitly
+ * using {@code this} as the first {@code mpf_t} parameter;
  * <li>if {@code baseName} begins with {@code init}, we create a side-effect
  * free static method (see later);
  * <li>for all the other functions:
  * <ul>
- * <li>if the function has at least a non constant {@code mpz_t} parameter, then
+ * <li>if the function has at least a non constant {@code mpf_t} parameter, then
  * we create a method {@code baseNameAssign} which calls the original function,
- * implicitly using {@code this} as the first non-constant {@code mpz_t}
+ * implicitly using {@code this} as the first non-constant {@code mpf_t}
  * parameter;
- * <li>we create e side-effect free method called {@code baseName}, with the
+ * <li>we create a side-effect free method called {@code baseName}, with the
  * exception of a few cases where such as a method would not be particularly
  * useful.
  * </ul>
@@ -79,15 +80,13 @@ import it.unich.jgmp.nativelib.NativeUnsignedLong;
  * distinguish between input and output parameters for the GMP function. Some
  * parameters may have both an input and an output nature. The side-effect free
  * method takes all input parameters in its prototype, with the exception of the
- * first input {@code mpz_t} parameter which is mapped to {@code this}. If there
- * are no input {@code mpz_t} parameters, the method will be static. The method
+ * first input {@code mpf_t} parameter which is mapped to {@code this}. If there
+ * are no input {@code mpf_t} parameters, the method will be static. The method
  * creates new objects for the output parameters, eventually cloning the ones
  * also used as an input. After calling the GMP functions, the return value and
  * all the output parameters are returned by the method, eventually packed in a
  * {@link org.javatuples.Tuple}, from left to right according to the function
- * prototype. Sometimes, when the first {@code mpz_t} input parameter comes
- * after other input parameters, this procedure may lead to a prototype clash.
- * In this case, the name of the method is changed into {@code baseNameReverse}.
+ * prototype.
  */
 public class MPF extends Number implements Comparable<MPF> {
 
@@ -97,27 +96,9 @@ public class MPF extends Number implements Comparable<MPF> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The pointer to the native {@code mpz_t} object.
+     * The pointer to the native {@code mpf_t} object.
      */
     private transient MPFPointer mpfPointer;
-
-    /**
-     * Result enumeration for the {@link isProbabPrime isProbabPrime} method.
-     */
-    public static enum PrimalityStatus {
-        /**
-         * The tested number is definitely non-prime.
-         */
-        NON_PRIME,
-        /**
-         * The tested number is probably prime.
-         */
-        PROBABLY_PRIME,
-        /**
-         * The tested number is definitely prime.
-         */
-        PRIME
-    }
 
     /**
      * Cleaning action for the {@code MPF} class.
@@ -125,8 +106,8 @@ public class MPF extends Number implements Comparable<MPF> {
     private static class MPFCleaner implements Runnable {
         private MPFPointer mpfPointer;
 
-        MPFCleaner(MPFPointer mpz) {
-            this.mpfPointer = mpz;
+        MPFCleaner(MPFPointer mpfPointer) {
+            this.mpfPointer = mpfPointer;
         }
 
         @Override
@@ -205,7 +186,7 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets the precision of this {@code MPF} to be at least {@code prec} bits. The
      * value will be truncated to the new precision. This function requires a
-     * reallocation, and so should not be used in a tight loop.
+     * reallocation, and should not be used in a tight loop.
      *
      * @return this {@code MPF}
      *
@@ -1063,10 +1044,22 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * default precision.
+     */
+    public MPF(MPZ op) {
+        mpfPointer = new MPFPointer();
+        __gmpf_init(mpfPointer);
+        __gmpf_set_z(mpfPointer, op.getPointer());
+        GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
+    }
+
+    /**
      * Builds an {@code MPF} whose value is the number represented by the string
-     * {@code str} in the specified {@code base}. See the GMP function
-     * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
-     * target="_blank">{@code mpz_init_set_str}</a>.
+     * {@code str} in the specified {@code base}, possibly truncated to the default
+     * precision. See the GMP function
+     * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
+     * target="_blank">{@code mpf_init_set_str}</a>.
      *
      * @throws IllegalArgumentException if either {@code base} is not valid or
      *                                  {@code str} is not a valid string in the
@@ -1086,9 +1079,10 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Builds an {@code MPF} whose value is the number represented by the string
-     * {@code str} in decimal base. See the GMP function
-     * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
-     * target="_blank">{@code mpz_init_set_str}</a>.
+     * {@code str} in decimal base, possibly truncated to the default precision. See
+     * the GMP function
+     * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
+     * target="_blank">{@code mpf_init_set_str}</a>.
      *
      * @throws IllegalArgumentException if {@code str} is not a valid number
      *                                  representation in decimal base.
@@ -1133,10 +1127,18 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
+     */
+    public MPF setValue(MPZ op) {
+        return set(op);
+    }
+
+    /**
      * Set this {@code MPF} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
-     * <a href="https://gmplib.org/manual/Assigning-Integers" target="
-     * _blank">{@code mpz_set_str}</a>.
+     * <a href="https://gmplib.org/manual/Assigning-Floats" target="
+     * _blank">{@code mpf_set_str}</a>.
      *
      * @throws IllegalArgumentException if either {@code base} is not valid or
      *                                  {@code str} is not a valid number
@@ -1245,8 +1247,8 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Converts this {@code MPF} to its string representation in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
-     * <a href="https://gmplib.org/manual/Converting-Integers" target=
-     * "_blank">{@code mpz_get_str}</a>.
+     * <a href="https://gmplib.org/manual/Converting-Floats" target=
+     * "_blank">{@code mpf_get_str}</a>.
      */
     public String toString(int base, long nDigits) {
         var t = getStr(base, nDigits);
@@ -1254,7 +1256,8 @@ public class MPF extends Number implements Comparable<MPF> {
         var position = t.getValue1().intValue();
         var isNegative = mantissa.charAt(0) == '-';
         if (position >= 0) {
-            if (isNegative) position += 1;
+            if (isNegative)
+                position += 1;
             return mantissa.substring(0, position) + "." + mantissa.substring(position);
         } else if (isNegative)
             return "-0." + "0".repeat(-position) + mantissa.substring(1);
@@ -1265,8 +1268,8 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Converts this {@code MPF} to its string representation in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
-     * <a href="https://gmplib.org/manual/Converting-Integers" target=
-     * "_blank">{@code mpz_get_str}</a>.
+     * <a href="https://gmplib.org/manual/Converting-Floats" target=
+     * "_blank">{@code mpf_get_str}</a>.
      */
     public String toString(int base) {
         return toString(base, 0);

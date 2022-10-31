@@ -72,8 +72,8 @@ public class RandState {
     private static class RandomStateCleaner implements Runnable {
         private RandStatePointer randstatePointer;
 
-        RandomStateCleaner(RandStatePointer randstate) {
-            this.randstatePointer = randstate;
+        RandomStateCleaner(RandStatePointer randstatePointer) {
+            this.randstatePointer = randstatePointer;
         }
 
         @Override

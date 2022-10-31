@@ -87,7 +87,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The pointer to the native {@code mpz_t} object.
+     * The pointer to the native {@code mpq_t} object.
      */
     private transient MPQPointer mpqPointer;
 
@@ -97,8 +97,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
     private static class MPQCleaner implements Runnable {
         private MPQPointer mpqPointer;
 
-        MPQCleaner(MPQPointer mpz) {
-            this.mpqPointer = mpz;
+        MPQCleaner(MPQPointer mpqPointer) {
+            this.mpqPointer = mpqPointer;
         }
 
         @Override
@@ -234,11 +234,16 @@ public class MPQ extends Number implements Comparable<MPQ> {
         return this;
     }
 
-    /*
-     * public MPZ set(MPF op) {
-     * __gmpz_set_f(mpzPointer, op.mpfPointer);
-     * return this;
+    /**
+     * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
+     * exact.
+     *
+     * @return this {@code MPQ}.
      */
+    public MPQ set(MPF op) {
+        __gmpq_set_f(mpqPointer, op.getPointer());
+        return this;
+    }
 
     /**
      * Returns the String representation of this {@code MPQ} in the specified
@@ -566,8 +571,20 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Builds an {@code MPQ} whose value is {@code op}. There is no rounding, this
      * conversion is exact.
+     *
+     * @throws IllegalArgumentException if {@code op} is not a finite number. In
+     *                                  this case, {@code this} is not altered.
      */
     public MPQ(double op) {
+        this();
+        set(op);
+    }
+
+    /**
+     * Builds an {@code MPQ} whose value is {@code op}. There is no rounding, this
+     * conversion is exact.
+     */
+    public MPQ(MPF op) {
         this();
         set(op);
     }
@@ -623,6 +640,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
      *                                  this case, {@code this} is not altered.
      */
     public MPQ setValue(double op) {
+        return set(op);
+    }
+
+    /**
+     * Sets this {@code MPQ} to op {@code op}. There is no rounding, this conversion
+     * is exact.
+     */
+    public MPQ setValue(MPF op) {
         return set(op);
     }
 
