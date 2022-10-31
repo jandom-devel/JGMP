@@ -641,7 +641,7 @@ public class LibGMP {
 
     public static native double __gmpf_get_d_2exp(NativeLongByReference exp, MPFPointer op);
 
-    public static native Pointer __gmpf_get_str(ByteBuffer str, NativeLongByReference exp, int base, MPSizeT nDigits,
+    public static native Pointer __gmpf_get_str(ByteBuffer str, MPExpTByReference exp, int base, MPSizeT nDigits,
             MPFPointer op);
 
     public static native void __gmpf_add(MPFPointer rop, MPFPointer op1, MPFPointer op2);

@@ -32,6 +32,7 @@ import com.sun.jna.ptr.NativeLongByReference;
 
 import it.unich.jgmp.nativelib.MPBitCntT;
 import it.unich.jgmp.nativelib.MPExpT;
+import it.unich.jgmp.nativelib.MPExpTByReference;
 import it.unich.jgmp.nativelib.MPSizeT;
 import it.unich.jgmp.nativelib.MPFPointer;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
@@ -405,7 +406,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * "_blank">{@code mpf_get_str}</a>.
      */
     public Pair<String, Long> getStr(int base, long nDigits) {
-        var expR = new NativeLongByReference();
+        var expR = new MPExpTByReference();
         Pointer ps = __gmpf_get_str(null, expR, base, new MPSizeT(nDigits), mpfPointer);
         if (ps == null)
             return null;
