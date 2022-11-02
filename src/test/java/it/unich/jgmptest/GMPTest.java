@@ -24,7 +24,7 @@ public class GMPTest {
 
     @Test
     void test_sscanf() {
-        String s = "12 3/2 2.5\n";
+        String s = "12 3/2 2.5";
         var z = new MPZ();
         var q = new MPQ();
         var f = new MPF();
