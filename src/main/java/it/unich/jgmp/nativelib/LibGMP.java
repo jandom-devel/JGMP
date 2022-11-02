@@ -52,7 +52,8 @@ import com.sun.jna.ptr.PointerByReference;
  * </p>
  *
  * <table border="1" style="text-align:center; border-collapse: collapse;" >
- * <caption style="display: none;">Conversion table from native to Java types</caption>
+ * <caption style="display: none;">Conversion table from native to Java
+ * types</caption>
  * <thead>
  * <tr>
  * <th scope="col">native type</th>
@@ -108,6 +109,10 @@ import com.sun.jna.ptr.PointerByReference;
  * </table>
  */
 public class LibGMP {
+
+    private LibGMP() {
+    }
+
     /**
      * The undecorated name of the GMP library.
      */
