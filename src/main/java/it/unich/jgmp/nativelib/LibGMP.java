@@ -35,35 +35,14 @@ import com.sun.jna.ptr.PointerByReference;
  * <p>
  * Direct mapping is used for almost all the functions, with the exception of a
  * few ones with a variable number of arguments which require interface mapping.
- * The use of direct mapping forces us to adopt the real names of the functions
- * in the C library object files, which are different from the ones publicly
- * documented: the C preprocessor is used to convert from the real names to the
- * public ones. The difference between the twos is just in the prefix: for
- * example, all the GMP functions documented as {@code mpz_xxx} should be
- * written here as {@code mpz_xxx}. The following is the table of conversion
- * from GMP name prefixes to JGMP name prefixes.
- * </p>
- * <table border="1" style="text-align:center; border-collapse: collapse;">
- * <caption style="display: none;">Conversion table from GMP to JGMP
- * prefixes</caption>
- * <tr>
- * <th style="padding: 0ex 1ex 0ex 1ex;">GMP name prefix</th>
- * <th style="padding: 0ex 1ex 0ex 1ex;">JGMP name prefix</th>
- * </tr>
- * <tr>
- * <td>{@code mpz_}</td>
- * <td>{@code mpz_}</td>
- * </tr>
- * <tr>
- * <td>{@code gmp_}</td>
- * <td>{@code gmp_}</td>
- * </tr>
- * </table>
  * <p>
  * Some documented GMP functions are actually macros: they have been
- * reimplemented here, keeping the JGMP naming convention. <em>Integer Special
- * Functions</em> and <em>Low-level Function</em>, as defined in the GMP Integer
- * Functions documentation, have been omitted entirely.
+ * reimplemented here.
+ * <a href="https://gmplib.org/manual/Low_002dlevel-Functions" target=
+ * "_blank">Low-level Function</a>, as defined in the GMP
+ * documentation, as well as those functions which depend on types provided by
+ * the C standard
+ * library (such as the {@code FILE} type), have been omitted entirely.
  * </p>
  * <p>
  * We strived to be type safe, by defining different subclasses of
@@ -99,36 +78,34 @@ public class LibGMP {
     static final int RANDSTATE_SIZE = MPZ_SIZE + 4 + Native.POINTER_SIZE;
 
     /**
-     * Version of the GMP library.
+     * The native GMP version number, in the form “i.j.k”.
      */
     public static final String gmp_version;
 
     /**
      * The integer 0 (assuming no one changes it)
      */
-    public static MPZPointer mpz_zero;
+    private static MPZPointer mpz_zero;
 
     /**
      * The rational 0 (assuming no one changes it)
      */
-    public static MPQPointer mpq_zero;
+    private static MPQPointer mpq_zero;
 
     /**
      * The floating point 0 (assuming no one changes it)
      */
-    public static MPFPointer mpf_zero;
+    private static MPFPointer mpf_zero;
 
     static {
         var nativeOptions = Map.of(
-            Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance()
-        );
+                Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance());
         var library = NativeLibrary.getInstance(LIBNAME, nativeOptions);
         Native.register(library);
 
         var nonNativeOptions = Map.of(
-            Library.OPTION_TYPE_MAPPER, GMPTypeMapper.getInstance(),
-            Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance()
-        );
+                Library.OPTION_TYPE_MAPPER, GMPTypeMapper.getInstance(),
+                Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance());
         gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class, nonNativeOptions);
 
         gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
