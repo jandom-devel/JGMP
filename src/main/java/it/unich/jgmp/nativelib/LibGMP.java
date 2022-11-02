@@ -66,11 +66,11 @@ import com.sun.jna.ptr.PointerByReference;
  * <td>{@code MPBitcntT}</td>
  * </tr>
  * <tr>
- * <td>{@code mp_expt_t}</td>
+ * <td>{@code mp_exp_t}</td>
  * <td>{@code MPExpT}</td>
  * </tr>
  * <tr>
- * <td>{@code mp_expt_t*}</td>
+ * <td>{@code mp_exp_t*}</td>
  * <td>{@code MPExpTByReference}</td>
  * </tr>
  * <tr>
