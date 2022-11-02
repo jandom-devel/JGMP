@@ -94,7 +94,7 @@ import com.sun.jna.ptr.PointerByReference;
  * <td>{@code NativeUnsignedLong}</td>
  * </tr>
  * <tr>
- * <td>{@code gmp_randstate_struct}</td>
+ * <td>{@code gmp_randstate_t}</td>
  * <td>{@code RandStatePointer}</td>
  * </tr>
  * <tr>
