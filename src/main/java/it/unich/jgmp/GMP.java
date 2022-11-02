@@ -37,7 +37,8 @@ public class GMP {
     /**
      * A private constructor since this class should never be instantiated.
      */
-    private GMP() {  }
+    private GMP() {
+    }
 
     /**
      * Cleaner used by the JGMP library.
@@ -49,6 +50,34 @@ public class GMP {
      */
     public static String getNativeVersion() {
         return LibGMP.gmp_version;
+    }
+
+    /**
+     * Returns the major version of the native GMP library.
+     */
+    public static int getMajorVersion() {
+        return LibGMP.__GNU_MP_VERSION;
+    }
+
+    /**
+     * Returns the minor version of the native GMP library.
+     */
+    public static int getMinorVersion() {
+        return LibGMP.__GNU_MP_VERSION_MINOR;
+    }
+
+    /**
+     * Returns the patch level of the native GMP library.
+     */
+    public static int getPatchLevel() {
+        return LibGMP.__GNU_MP_VERSION_PATCHLEVEL;
+    }
+
+    /**
+     * Returns the number of bits per limb.
+     */
+    public static int getBitsPerLimb() {
+        return LibGMP.mp_bits_per_limb;
     }
 
     /**
@@ -66,7 +95,8 @@ public class GMP {
      * to use the {@link sprintf(String, Object...)} method.
      * <p>
      * See also page
-     * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target="_blank">Formatted Output
+     * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
+     * "_blank">Formatted Output
      * Strings</a> from the GMP manual.
      *
      * @return the number of characters written, -1 if an error occured.
@@ -77,13 +107,15 @@ public class GMP {
 
     /**
      * Returns a string according to the format specification in {@code fmt} and the
-     * additional arguments in {@code args}. This is similar to the C {@code asprintf} function
+     * additional arguments in {@code args}. This is similar to the C
+     * {@code asprintf} function
      * and the Java {@link String#format(String, Object...)} method. If the format
      * string is invalid, or the arguments don’t match what the format specifies,
      * then the behaviour of any of these functions will be unpredictable.
      * <p>
      * See also page
-     * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target="_blank">Formatted Output
+     * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
+     * "_blank">Formatted Output
      * Strings</a> from the GMP manual..org/manual/Formatted-Output-Strings
      */
     public static String sprintf(String format, Object... args) {
@@ -107,9 +139,11 @@ public class GMP {
      * to use the {@link sscanf} method.
      * <p>
      * See also pages
-     * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target="_blank">Formatted Input
+     * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
+     * "_blank">Formatted Input
      * Strings</a> and
-     * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target="_blank">Formatted Input
+     * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
+     * "_blank">Formatted Input
      * Functions</a> from the GMP manual.
      *
      * @return the number of fields successfully parsed and stored.
@@ -127,9 +161,11 @@ public class GMP {
      * results produced.
      * <p>
      * See also pages
-     * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target="_blank">Formatted Input
+     * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
+     * "_blank">Formatted Input
      * Strings</a> and
-     * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target="_blank">Formatted Input
+     * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
+     * "_blank">Formatted Input
      * Functions</a> from the GMP manual.
      *
      * @return the number of fields successfully parsed and stored.

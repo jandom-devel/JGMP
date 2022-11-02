@@ -119,6 +119,26 @@ public class LibGMP {
     private static final String LIBNAME = "gmp";
 
     /**
+     * The number of bits per limb.
+     */
+    public static final int mp_bits_per_limb;
+
+    /**
+     * The major GMP version. It is the "i" component in {@link gmp_version}.
+     */
+    public static final int __GNU_MP_VERSION;
+
+    /**
+     * The minor GMP version. It is the "j" component in {@link gmp_version}.
+     */
+    public static final int __GNU_MP_VERSION_MINOR;
+
+    /**
+     * The patch level GMP version. It is the "k" component in {@link gmp_version}.
+     */
+    public static final int __GNU_MP_VERSION_PATCHLEVEL;
+
+    /**
      * The native GMP version number, in the form “i.j.k”.
      */
     public static final String gmp_version;
@@ -150,6 +170,16 @@ public class LibGMP {
         gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class, nonNativeOptions);
 
         gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
+        mp_bits_per_limb = library.getGlobalVariableAddress("__gmp_bits_per_limb").getInt(0);
+        var dotPosition = gmp_version.indexOf(".");
+        __GNU_MP_VERSION = Integer.parseInt(gmp_version.substring(0, dotPosition));
+        var secondDotPosition = gmp_version.indexOf(".", dotPosition + 1);
+        __GNU_MP_VERSION_MINOR = secondDotPosition > 0
+                ? Integer.parseInt(gmp_version.substring(dotPosition + 1, secondDotPosition))
+                : Integer.parseInt(gmp_version.substring(dotPosition + 1));
+        __GNU_MP_VERSION_PATCHLEVEL = secondDotPosition > 0
+                ? Integer.parseInt(gmp_version.substring(secondDotPosition + 1))
+                : 0;
 
         mpz_zero = new MPZPointer();
         mpz_init(mpz_zero);
