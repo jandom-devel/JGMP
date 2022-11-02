@@ -39,28 +39,25 @@ import com.sun.jna.ptr.PointerByReference;
  * Some documented GMP functions are actually macros: they have been
  * reimplemented here.
  * <a href="https://gmplib.org/manual/Low_002dlevel-Functions" target=
- * "_blank">Low-level Function</a>, as defined in the GMP
- * documentation, as well as those functions which depend on types provided by
- * the C standard
- * library (such as the {@code FILE} type), have been omitted entirely.
+ * "_blank">Low-level Function</a>, as defined in the GMP documentation, as well
+ * as those functions which depend on types provided by the C standard library
+ * (such as the {@code FILE} type), have been omitted entirely.
  * </p>
  * <p>
  * We strived to be type safe, by defining different subclasses of
  * {@code com.sun.jna.PointerType} and {@code com.sun.jna.IntegerType} for
- * different native types. Here is the conversion table between native and
- * Java types. All types not shown below follows standard JNA conventions.
+ * different native types. Here is the conversion table between native and Java
+ * types. All types not shown below follows standard JNA conventions.
  * </p>
  *
  * <table border="1" style="text-align:center; border-collapse: collapse;" >
  * <caption style="display: none;">Conversion table from native to Java
- * types</caption>
- * <thead>
+ * types</caption> <thead>
  * <tr>
  * <th scope="col">native type</th>
  * <th scope="col">Java type</th>
  * </tr>
- * </thead>
- * <tbody>
+ * </thead> <tbody>
  * <tr>
  * <td>{@code mp_bitcnt_t}</td>
  * <td>{@code MPBitcntT}</td>
@@ -144,6 +141,28 @@ public class LibGMP {
     public static final String gmp_version;
 
     /**
+     * Pointer to the {@code gmp_errno} variable.
+     */
+    private static final Pointer gmp_errno_pointer;
+
+    /**
+     * Returns the value of the global error variable, used by obsolete random
+     * number functions. Every bit of this variable has a different meaning.
+     */
+    public static int gmp_errno() {
+        return gmp_errno_pointer.getInt(0);
+    }
+
+    public static final int GMP_ERROR_NONE = 0;
+    public static final int GMP_ERROR_UNSUPPORTED_ARGUMENT = 1;
+    public static final int GMP_ERROR_DIVISION_BY_ZERO = 2;
+    public static final int GMP_ERROR_SQRT_OF_NEGATIVE = 4;
+    public static final int GMP_ERROR_INVALID_ARGUMENT = 8;
+
+    public static final int GMP_RAND_ALG_DEFAULT = 0;
+    public static final int GMP_RAND_ALG_LC = 0;
+
+    /**
      * The integer 0 (assuming no one changes it)
      */
     private static MPZPointer mpz_zero;
@@ -159,18 +178,17 @@ public class LibGMP {
     private static MPFPointer mpf_zero;
 
     static {
-        var nativeOptions = Map.of(
-                Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance());
+        var nativeOptions = Map.of(Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance());
         var library = NativeLibrary.getInstance(LIBNAME, nativeOptions);
         Native.register(library);
 
-        var nonNativeOptions = Map.of(
-                Library.OPTION_TYPE_MAPPER, GMPTypeMapper.getInstance(),
+        var nonNativeOptions = Map.of(Library.OPTION_TYPE_MAPPER, GMPTypeMapper.getInstance(),
                 Library.OPTION_FUNCTION_MAPPER, GMPFunctionMapper.getInstance());
         gmpextra = (LibGmpExtra) Native.load(LibGmpExtra.class, nonNativeOptions);
 
         gmp_version = library.getGlobalVariableAddress("__gmp_version").getPointer(0).getString(0);
         mp_bits_per_limb = library.getGlobalVariableAddress("__gmp_bits_per_limb").getInt(0);
+        gmp_errno_pointer = library.getGlobalVariableAddress("__gmp_errno");
         var dotPosition = gmp_version.indexOf(".");
         __GNU_MP_VERSION = Integer.parseInt(gmp_version.substring(0, dotPosition));
         var secondDotPosition = gmp_version.indexOf(".", dotPosition + 1);
@@ -196,6 +214,8 @@ public class LibGMP {
     private static interface LibGmpExtra extends Library {
         int gmp_printf(String fmt, Object... args);
 
+        int gmp_fprintf(Pointer fp, String fmt, Object... args);
+
         int gmp_sprintf(ByteBuffer buf, String fmt, Object... args);
 
         int gmp_snprintf(ByteBuffer buf, SizeT size, String fmt, Object... args);
@@ -203,6 +223,8 @@ public class LibGMP {
         int gmp_asprintf(PointerByReference pp, String fmt, Object... args);
 
         int gmp_scanf(String fmt, Object... args);
+
+        int gmp_fscanf(Pointer fp, String fmt, Object... args);
 
         int gmp_sscanf(String s, String fmt, Object... args);
 
@@ -540,6 +562,14 @@ public class LibGMP {
 
     public static native boolean mpz_fits_sshort_p(MPZPointer op);
 
+    public static boolean mpz_odd_p(MPZPointer op) {
+        return !mpz_divisible_2exp_p(op, new MPBitcntT(1));
+    }
+
+    public static boolean mpz_even_p(MPZPointer op) {
+        return mpz_divisible_2exp_p(op, new MPBitcntT(1));
+    }
+
     public static native SizeT mpz_sizeinbase(MPZPointer op, int base);
 
     // Rational Number Functions
@@ -610,6 +640,14 @@ public class LibGMP {
 
     public static native boolean mpq_equal(MPQPointer op1, MPQPointer op2);
 
+    public static MPZPointer mpq_numref(MPQPointer op) {
+        return new MPZPointer(op.getPointer().share(0, MPZPointer.MPZ_SIZE));
+    }
+
+    public static MPZPointer mpq_denref(MPQPointer op) {
+        return new MPZPointer(op.getPointer().share(MPZPointer.MPZ_SIZE, MPZPointer.MPZ_SIZE));
+    }
+
     public static native void mpq_get_num(MPZPointer numerator, MPQPointer rational);
 
     public static native void mpq_get_den(MPZPointer denominator, MPQPointer rational);
@@ -617,6 +655,10 @@ public class LibGMP {
     public static native void mpq_set_num(MPQPointer rational, MPZPointer numerator);
 
     public static native void mpq_set_den(MPQPointer rational, MPZPointer denominator);
+
+    public static native SizeT mpq_out_str(Pointer stream, int base, MPQPointer op);
+
+    public static native SizeT mpq_inp_str(MPQPointer rop, Pointer stream, int base);
 
     // Floating-point functions
 
@@ -644,24 +686,6 @@ public class LibGMP {
 
     public static native void mpf_set_prec_raw(MPFPointer rop, MPBitcntT prec);
 
-    public static native int mpf_cmp(MPFPointer op1, MPFPointer op2);
-
-    public static native int mpf_cmp_z(MPFPointer op1, MPZPointer op2);
-
-    public static native int mpf_cmp_d(MPFPointer op1, double op2);
-
-    public static native int mpf_cmp_ui(MPFPointer op1, NativeUnsignedLong op2);
-
-    public static native int mpf_cmp_si(MPFPointer op1, NativeLong op2);
-
-    public static native boolean mpf_eq(MPFPointer op1, MPFPointer op2, MPBitcntT op3);
-
-    public static native int mpf_reldiff(MPFPointer rop, MPFPointer op1, MPFPointer op2);
-
-    public static int mpf_sgn(MPFPointer op) {
-        return mpf_cmp(op, mpf_zero);
-    }
-
     public static native void mpf_set(MPFPointer rop, MPFPointer op);
 
     public static native void mpf_set_ui(MPFPointer rop, NativeUnsignedLong op);
@@ -688,13 +712,13 @@ public class LibGMP {
 
     public static native int mpf_init_set_str(MPFPointer rop, String str, int base);
 
-    public static native NativeUnsignedLong mpf_get_ui(MPFPointer op);
-
-    public static native NativeLong mpf_get_si(MPFPointer op);
-
     public static native double mpf_get_d(MPFPointer op);
 
     public static native double mpf_get_d_2exp(NativeLongByReference exp, MPFPointer op);
+
+    public static native NativeLong mpf_get_si(MPFPointer op);
+
+    public static native NativeUnsignedLong mpf_get_ui(MPFPointer op);
 
     public static native Pointer mpf_get_str(ByteBuffer str, MPExpTByReference exp, int base, MPSizeT nDigits,
             MPFPointer op);
@@ -732,6 +756,29 @@ public class LibGMP {
     public static native void mpf_mul_2exp(MPFPointer rop, MPFPointer op1, MPBitcntT op2);
 
     public static native void mpf_div_2exp(MPFPointer rop, MPFPointer op1, MPBitcntT op2);
+
+    public static native int mpf_cmp(MPFPointer op1, MPFPointer op2);
+
+    public static native int mpf_cmp_z(MPFPointer op1, MPZPointer op2);
+
+    public static native int mpf_cmp_d(MPFPointer op1, double op2);
+
+    public static native int mpf_cmp_ui(MPFPointer op1, NativeUnsignedLong op2);
+
+    public static native int mpf_cmp_si(MPFPointer op1, NativeLong op2);
+
+    @Deprecated
+    public static native boolean mpf_eq(MPFPointer op1, MPFPointer op2, MPBitcntT op3);
+
+    public static native int mpf_reldiff(MPFPointer rop, MPFPointer op1, MPFPointer op2);
+
+    public static int mpf_sgn(MPFPointer op) {
+        return mpf_cmp(op, mpf_zero);
+    }
+
+    public static native SizeT mpf_out_str(Pointer stream, int base, SizeT nDigits, MPFPointer op);
+
+    public static native SizeT mpf_inp_str(MPQPointer rop, Pointer stream, int base);
 
     public static native void mpf_ceil(MPFPointer rop, MPFPointer op);
 
@@ -788,17 +835,32 @@ public class LibGMP {
         return gmpextra.gmp_printf(fmt, args);
     }
 
+    public static native int gmp_vprintf(String fmt, Pointer ap);
+
+    public static int gmp_fprintf(Pointer fp, String fmt, Object... args) {
+        return gmpextra.gmp_fprintf(fp, fmt, args);
+    }
+
+    public static native int gmp_vfprintf(Pointer fp, String fmt, Pointer ap);
+
     public static int gmp_sprintf(ByteBuffer buf, String fmt, Object... args) {
         return gmpextra.gmp_sprintf(buf, fmt, args);
     }
+
+    public static native int gmp_vsprintf(ByteBuffer buf, String fmt, Pointer ap);
 
     public static int gmp_snprintf(ByteBuffer buf, SizeT size, String fmt, Object... args) {
         return gmpextra.gmp_snprintf(buf, size, fmt, args);
     }
 
+    public static native int gmp_vsnprintf(ByteBuffer buf, SizeT size, String fmt, Pointer ap);
+
     public static int gmp_asprintf(PointerByReference pp, String fmt, Object... args) {
         return gmpextra.gmp_asprintf(pp, fmt, args);
     }
+
+    public static native int gmp_vasprintf(PointerByReference pp, String fmt, Pointer ap);
+
 
     // Formatted Input
 
@@ -806,7 +868,17 @@ public class LibGMP {
         return gmpextra.gmp_scanf(fmt, args);
     }
 
+    public static native int gmp_vscanf(String fmt, Pointer ap);
+
+    public static int gmp_fscanf(Pointer fp, String fmt, Object... args) {
+        return gmpextra.gmp_fscanf(fp, fmt, args);
+    }
+
+    public static native int gmp_vfscanf(Pointer fp, String fmt, Pointer ap);
+
     public static int gmp_sscanf(String s, String fmt, Object... args) {
         return gmpextra.gmp_sscanf(s, fmt, args);
     }
+
+    public static native int gmp_vsscanf(String s, String fmt, Pointer ap);
 }

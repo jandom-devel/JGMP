@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
+import it.unich.jgmp.nativelib.LibGMP;
 import it.unich.jgmp.RandState;
 
 public class MPZTest {
@@ -72,7 +73,6 @@ public class MPZTest {
         assertEquals(new MPZ(15), new MPZ(15.4));
         assertEquals(new MPZ(5), new MPZ(new MPQ(21, 4)));
     }
-
 
     @Test
     void test_conversion() {
@@ -230,7 +230,7 @@ public class MPZTest {
     }
 
     @Test
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     void test_random() {
         var s = new RandState();
         var a = MPZ.urandomb(s, 2);
@@ -282,7 +282,15 @@ public class MPZTest {
         var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
         var n2 = ois.readObject();
         assertEquals(n, n2);
+    }
 
+    @Test
+    void test_native() {
+        var q = new MPQ(2, 3);
+        var num = LibGMP.mpq_numref(q.getPointer());
+        var den = LibGMP.mpq_denref(q.getPointer());
+        assertTrue(LibGMP.mpz_cmp(num, new MPZ(2).getPointer()) == 0);
+        assertTrue(LibGMP.mpz_cmp(den, new MPZ(3).getPointer()) == 0);
     }
 
 }

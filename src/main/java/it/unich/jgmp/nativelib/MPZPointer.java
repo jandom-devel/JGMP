@@ -16,9 +16,9 @@
 */
 package it.unich.jgmp.nativelib;
 
-
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
@@ -38,4 +38,12 @@ public class MPZPointer extends PointerType {
     public MPZPointer() {
         setPointer(new Memory(MPZ_SIZE));
     }
+
+    /**
+     * Creates a ne {@code MPZPointer} corresponding to the pointer {@code p}.
+     */
+    public MPZPointer(Pointer p) {
+        super(p);
+    }
+
 }

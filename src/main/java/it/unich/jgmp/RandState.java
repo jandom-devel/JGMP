@@ -35,7 +35,9 @@ import it.unich.jgmp.nativelib.RandstatePointer;
 
 /**
  * The class encapsulating the {@code gmp_randstate_t} data type, which holds
- * the current state of a random number generator.
+ * the current state of a random number generator. It’s not safe for two threads
+ * to generate a random number from the same {@code RandState} simultaneously,
+ * since this involves an update of that variable.
  *
  * <p>
  * An element of {@code RandState} contains a pointer to a native

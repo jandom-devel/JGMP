@@ -2345,7 +2345,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * randomness. Negative random numbers are generated when {@code max_size} is
      * negative.
      *
-     * @deprecated use {@link urandombAssign} or {@link urandommAssign} instead.
+     * @deprecated use {@link urandombAssign} or {@link urandommAssign} instead,
+     *             since this method uses a global random state and it is not
+     *             reentrant.
      * @return this {@code MPZ}.
      */
     @Deprecated
@@ -2360,7 +2362,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * particular requirements of randomness. Negative random numbers are generated
      * when {@code max_size} is negative.
      *
-     * @deprecated use {@link urandomb} or {@link urandomm} instead.
+     * @deprecated use {@link urandomb} or {@link urandomm} instead, since this
+     *             method uses a global random state and it is not reentrant.
      */
     @Deprecated
     public static MPZ random(long max_size) {
@@ -2374,7 +2377,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * proven to be more likely to trigger corner-case bugs. Negative random numbers
      * are generated when {@code max_size} is negative.
      *
-     * @deprecated use {@link rrandombAssign} instead.
+     * @deprecated use {@link rrandombAssign} instead, since this method uses a
+     *             global random state and it is not reentrant.
      * @return this {@code MPZ}.
      */
     @Deprecated
@@ -2390,7 +2394,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * of random numbers have proven to be more likely to trigger corner-case bugs.
      * Negative random numbers are generated when {@code max_size} is negative.
      *
-     * @deprecated use {@link rrandomb} instead.
+     * @deprecated use {@link rrandomb} instead, since this method uses a global
+     *             random state and it is not reentrant.
      */
     @Deprecated
     public static MPZ random2(long max_size) {
