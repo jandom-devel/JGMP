@@ -16,10 +16,10 @@
 */
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_asprintf;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_printf;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_scanf;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_sscanf;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_asprintf;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_printf;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_scanf;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_sscanf;
 
 import java.lang.ref.Cleaner;
 
@@ -48,7 +48,7 @@ public class GMP {
      * Returns the version of the native GMP library.
      */
     public static String getNativeVersion() {
-        return LibGMP.__gmp_version;
+        return LibGMP.gmp_version;
     }
 
     /**
@@ -72,7 +72,7 @@ public class GMP {
      * @return the number of characters written, -1 if an error occured.
      */
     public static int printf(String format, Object... args) {
-        return __gmp_printf(format, args);
+        return gmp_printf(format, args);
     }
 
     /**
@@ -88,7 +88,7 @@ public class GMP {
      */
     public static String sprintf(String format, Object... args) {
         var pp = new PointerByReference();
-        __gmp_asprintf(pp, format, args);
+        gmp_asprintf(pp, format, args);
         var p = pp.getValue();
         var s = p.getString(0);
         Native.free(Pointer.nativeValue(p));
@@ -115,7 +115,7 @@ public class GMP {
      * @return the number of fields successfully parsed and stored.
      */
     public static int scanf(String format, Object... args) {
-        return __gmp_scanf(format, args);
+        return gmp_scanf(format, args);
     }
 
     /**
@@ -135,7 +135,7 @@ public class GMP {
      * @return the number of fields successfully parsed and stored.
      */
     public static int sscanf(String s, String fmt, Object... args) {
-        return __gmp_sscanf(s, fmt, args);
+        return gmp_sscanf(s, fmt, args);
     }
 
 }

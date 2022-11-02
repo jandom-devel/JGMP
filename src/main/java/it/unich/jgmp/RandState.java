@@ -17,16 +17,16 @@
 
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randclear;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randinit_default;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randinit_lc_2exp;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randinit_lc_2exp_size;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randinit_mt;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randinit_set;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randseed;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_randseed_ui;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_urandomb_ui;
-import static it.unich.jgmp.nativelib.LibGMP.__gmp_urandomm_ui;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randclear;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_default;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_lc_2exp;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_lc_2exp_size;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_mt;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_set;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randseed;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_randseed_ui;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_urandomb_ui;
+import static it.unich.jgmp.nativelib.LibGMP.gmp_urandomm_ui;
 
 import com.sun.jna.NativeLong;
 
@@ -78,7 +78,7 @@ public class RandState {
 
         @Override
         public void run() {
-            __gmp_randclear(randstatePointer);
+            gmp_randclear(randstatePointer);
         }
     }
 
@@ -103,7 +103,7 @@ public class RandState {
      */
     public RandState() {
         randstatePointer = new RandStatePointer();
-        __gmp_randinit_default(randstatePointer);
+        gmp_randinit_default(randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
 
@@ -112,7 +112,7 @@ public class RandState {
      */
     public RandState(RandState state) {
         randstatePointer = new RandStatePointer();
-        __gmp_randinit_set(randstatePointer, state.randstatePointer);
+        gmp_randinit_set(randstatePointer, state.randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
 
@@ -129,7 +129,7 @@ public class RandState {
      */
     public static RandState randinitMt() {
         var m = new RandStatePointer();
-        __gmp_randinit_mt(m);
+        gmp_randinit_mt(m);
         return new RandState(m);
     }
 
@@ -143,7 +143,7 @@ public class RandState {
      */
     public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
         var m = new RandStatePointer();
-        __gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
+        gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
         return new RandState(m);
     }
 
@@ -156,7 +156,7 @@ public class RandState {
      */
     public static RandState randinitLc2ExpSize(long size) {
         var m = new RandStatePointer();
-        var res = __gmp_randinit_lc_2exp_size(m, new NativeLong(size));
+        var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
             throw new IllegalArgumentException("Parameter size is too big");
         }
@@ -174,7 +174,7 @@ public class RandState {
      * Sets an initial seed value into state.
      */
     public RandState randseed(MPZ seed) {
-        __gmp_randseed(randstatePointer, seed.getPointer());
+        gmp_randseed(randstatePointer, seed.getPointer());
         return this;
     }
 
@@ -184,7 +184,7 @@ public class RandState {
      * @apiNote {@code seed} should be treated as an unsigned long.
      */
     public RandState randseedUi(long seed) {
-        __gmp_randseed_ui(randstatePointer, new NativeUnsignedLong(seed));
+        gmp_randseed_ui(randstatePointer, new NativeUnsignedLong(seed));
         return this;
     }
 
@@ -196,7 +196,7 @@ public class RandState {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public long urandombUi(long n) {
-        return __gmp_urandomb_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
+        return gmp_urandomb_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
     }
 
     /**
@@ -206,6 +206,6 @@ public class RandState {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public long urandommUi(long n) {
-        return __gmp_urandomm_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
+        return gmp_urandomm_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
     }
 }

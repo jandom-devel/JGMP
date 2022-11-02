@@ -33,6 +33,11 @@ import it.unich.jgmp.MPZ;
  */
 class GMPTypeMapper implements TypeMapper {
 
+    private static GMPTypeMapper instance = new GMPTypeMapper();
+
+    private GMPTypeMapper() {
+    }
+
     /**
      * A converter from {@link MPZ} to the native pointer type. It is used by the
      * {@code printf} / {@code scanf} functions to correctly handle GMP types.
@@ -101,4 +106,9 @@ class GMPTypeMapper implements TypeMapper {
         }
         return null;
     }
+
+    public static GMPTypeMapper getInstance() {
+        return instance;
+    }
+
 }
