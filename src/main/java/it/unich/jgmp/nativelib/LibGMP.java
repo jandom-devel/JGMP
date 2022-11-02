@@ -63,7 +63,7 @@ import com.sun.jna.ptr.PointerByReference;
  * <tbody>
  * <tr>
  * <td>{@code mp_bitcnt_t}</td>
- * <td>{@code MPBitCntT}</td>
+ * <td>{@code MPBitcntT}</td>
  * </tr>
  * <tr>
  * <td>{@code mp_expt_t}</td>
@@ -95,7 +95,7 @@ import com.sun.jna.ptr.PointerByReference;
  * </tr>
  * <tr>
  * <td>{@code gmp_randstate_t}</td>
- * <td>{@code RandStatePointer}</td>
+ * <td>{@code RandstatePointer}</td>
  * </tr>
  * <tr>
  * <td>{@code size_t}</td>
@@ -232,7 +232,7 @@ public class LibGMP {
         gmpextra.mpz_inits(xs);
     }
 
-    public static native void mpz_init2(MPZPointer x, MPBitCntT n);
+    public static native void mpz_init2(MPZPointer x, MPBitcntT n);
 
     public static native void mpz_clear(MPZPointer x);
 
@@ -240,7 +240,7 @@ public class LibGMP {
         gmpextra.mpz_clears(xs);
     }
 
-    public static native void mpz_realloc2(MPZPointer x, MPBitCntT n);
+    public static native void mpz_realloc2(MPZPointer x, MPBitcntT n);
 
     public static native void mpz_set(MPZPointer rop, MPZPointer op);
 
@@ -302,7 +302,7 @@ public class LibGMP {
 
     public static native void mpz_submul_ui(MPZPointer rop, MPZPointer op1, NativeUnsignedLong op2);
 
-    public static native void mpz_mul_2exp(MPZPointer rop, MPZPointer op1, MPBitCntT op2);
+    public static native void mpz_mul_2exp(MPZPointer rop, MPZPointer op1, MPBitcntT op2);
 
     public static native void mpz_neg(MPZPointer rop, MPZPointer op);
 
@@ -323,9 +323,9 @@ public class LibGMP {
 
     public static native NativeUnsignedLong mpz_cdiv_ui(MPZPointer n, NativeUnsignedLong d);
 
-    public static native void mpz_cdiv_q_2exp(MPZPointer q, MPZPointer n, MPBitCntT b);
+    public static native void mpz_cdiv_q_2exp(MPZPointer q, MPZPointer n, MPBitcntT b);
 
-    public static native void mpz_cdiv_r_2exp(MPZPointer r, MPZPointer n, MPBitCntT b);
+    public static native void mpz_cdiv_r_2exp(MPZPointer r, MPZPointer n, MPBitcntT b);
 
     public static native void mpz_fdiv_q(MPZPointer q, MPZPointer n, MPZPointer d);
 
@@ -379,13 +379,13 @@ public class LibGMP {
 
     public static native boolean mpz_divisible_ui_p(MPZPointer n, NativeUnsignedLong d);
 
-    public static native boolean mpz_divisible_2exp_p(MPZPointer n, MPBitCntT b);
+    public static native boolean mpz_divisible_2exp_p(MPZPointer n, MPBitcntT b);
 
     public static native boolean mpz_congruent_p(MPZPointer n, MPZPointer c, MPZPointer d);
 
     public static native boolean mpz_congruent_ui_p(MPZPointer n, NativeUnsignedLong c, NativeUnsignedLong d);
 
-    public static native boolean mpz_congruent_2exp_p(MPZPointer n, MPZPointer c, MPBitCntT b);
+    public static native boolean mpz_congruent_2exp_p(MPZPointer n, MPZPointer c, MPBitcntT b);
 
     public static native void mpz_powm(MPZPointer rop, MPZPointer base, MPZPointer exp, MPZPointer mod);
 
@@ -437,7 +437,7 @@ public class LibGMP {
 
     public static native int mpz_ui_kronecker(NativeUnsignedLong a, MPZPointer b);
 
-    public static native MPBitCntT mpz_remove(MPZPointer rop, MPZPointer op, MPZPointer f);
+    public static native MPBitcntT mpz_remove(MPZPointer rop, MPZPointer op, MPZPointer f);
 
     public static native void mpz_fac_ui(MPZPointer rop, NativeUnsignedLong n);
 
@@ -488,21 +488,21 @@ public class LibGMP {
 
     public static native void mpz_com(MPZPointer rop, MPZPointer op);
 
-    public static native MPBitCntT mpz_popcount(MPZPointer op);
+    public static native MPBitcntT mpz_popcount(MPZPointer op);
 
-    public static native MPBitCntT mpz_hamdist(MPZPointer op1, MPZPointer op2);
+    public static native MPBitcntT mpz_hamdist(MPZPointer op1, MPZPointer op2);
 
-    public static native MPBitCntT mpz_scan0(MPZPointer op, MPBitCntT starting_bit);
+    public static native MPBitcntT mpz_scan0(MPZPointer op, MPBitcntT starting_bit);
 
-    public static native MPBitCntT mpz_scan1(MPZPointer op, MPBitCntT starting_bit);
+    public static native MPBitcntT mpz_scan1(MPZPointer op, MPBitcntT starting_bit);
 
-    public static native MPBitCntT mpz_setbit(MPZPointer rop, MPBitCntT index);
+    public static native MPBitcntT mpz_setbit(MPZPointer rop, MPBitcntT index);
 
-    public static native MPBitCntT mpz_clrbit(MPZPointer rop, MPBitCntT index);
+    public static native MPBitcntT mpz_clrbit(MPZPointer rop, MPBitcntT index);
 
-    public static native MPBitCntT mpz_combit(MPZPointer rop, MPBitCntT index);
+    public static native MPBitcntT mpz_combit(MPZPointer rop, MPBitcntT index);
 
-    public static native int mpz_tstbit(MPZPointer rop, MPBitCntT index);
+    public static native int mpz_tstbit(MPZPointer rop, MPBitcntT index);
 
     public static native SizeT mpz_out_str(Pointer stream, int base, MPZPointer op);
 
@@ -512,11 +512,11 @@ public class LibGMP {
 
     public static native SizeT mpz_inp_raw(MPZPointer rop, Pointer stream);
 
-    public static native void mpz_urandomb(MPZPointer rop, RandStatePointer state, MPBitCntT n);
+    public static native void mpz_urandomb(MPZPointer rop, RandstatePointer state, MPBitcntT n);
 
-    public static native void mpz_urandomm(MPZPointer rop, RandStatePointer state, MPZPointer n);
+    public static native void mpz_urandomm(MPZPointer rop, RandstatePointer state, MPZPointer n);
 
-    public static native void mpz_rrandomb(MPZPointer rop, RandStatePointer state, MPBitCntT n);
+    public static native void mpz_rrandomb(MPZPointer rop, RandstatePointer state, MPBitcntT n);
 
     public static native void mpz_random(MPZPointer rop, MPSizeT max_size);
 
@@ -584,11 +584,11 @@ public class LibGMP {
 
     public static native void mpq_mul(MPQPointer rop, MPQPointer multiplier, MPQPointer multiplicand);
 
-    public static native void mpq_mul_2exp(MPQPointer rop, MPQPointer op1, MPBitCntT op2);
+    public static native void mpq_mul_2exp(MPQPointer rop, MPQPointer op1, MPBitcntT op2);
 
     public static native void mpq_div(MPQPointer rop, MPQPointer dividend, MPQPointer divisor);
 
-    public static native void mpq_div_2exp(MPQPointer rop, MPQPointer op1, MPBitCntT op2);
+    public static native void mpq_div_2exp(MPQPointer rop, MPQPointer op1, MPBitcntT op2);
 
     public static native void mpq_neg(MPQPointer rop, MPQPointer operand);
 
@@ -620,13 +620,13 @@ public class LibGMP {
 
     // Floating-point functions
 
-    public static native void mpf_set_default_prec(MPBitCntT prec);
+    public static native void mpf_set_default_prec(MPBitcntT prec);
 
-    public static native MPBitCntT mpf_get_default_prec();
+    public static native MPBitcntT mpf_get_default_prec();
 
     public static native void mpf_init(MPFPointer x);
 
-    public static native void mpf_init2(MPFPointer x, MPBitCntT n);
+    public static native void mpf_init2(MPFPointer x, MPBitcntT n);
 
     public static void mpf_inits(MPFPointer... xs) {
         gmpextra.mpf_inits(xs);
@@ -638,11 +638,11 @@ public class LibGMP {
         gmpextra.mpf_clears(xs);
     }
 
-    public static native MPBitCntT mpf_get_prec(MPFPointer op);
+    public static native MPBitcntT mpf_get_prec(MPFPointer op);
 
-    public static native void mpf_set_prec(MPFPointer rop, MPBitCntT prec);
+    public static native void mpf_set_prec(MPFPointer rop, MPBitcntT prec);
 
-    public static native void mpf_set_prec_raw(MPFPointer rop, MPBitCntT prec);
+    public static native void mpf_set_prec_raw(MPFPointer rop, MPBitcntT prec);
 
     public static native int mpf_cmp(MPFPointer op1, MPFPointer op2);
 
@@ -654,7 +654,7 @@ public class LibGMP {
 
     public static native int mpf_cmp_si(MPFPointer op1, NativeLong op2);
 
-    public static native boolean mpf_eq(MPFPointer op1, MPFPointer op2, MPBitCntT op3);
+    public static native boolean mpf_eq(MPFPointer op1, MPFPointer op2, MPBitcntT op3);
 
     public static native int mpf_reldiff(MPFPointer rop, MPFPointer op1, MPFPointer op2);
 
@@ -729,9 +729,9 @@ public class LibGMP {
 
     public static native void mpf_abs(MPFPointer rop, MPFPointer op);
 
-    public static native void mpf_mul_2exp(MPFPointer rop, MPFPointer op1, MPBitCntT op2);
+    public static native void mpf_mul_2exp(MPFPointer rop, MPFPointer op1, MPBitcntT op2);
 
-    public static native void mpf_div_2exp(MPFPointer rop, MPFPointer op1, MPBitCntT op2);
+    public static native void mpf_div_2exp(MPFPointer rop, MPFPointer op1, MPBitcntT op2);
 
     public static native void mpf_ceil(MPFPointer rop, MPFPointer op);
 
@@ -753,34 +753,34 @@ public class LibGMP {
 
     public static native boolean mpf_fits_sshort_p(MPFPointer op);
 
-    public static native void mpf_urandomb(MPFPointer rop, RandStatePointer state, MPBitCntT n);
+    public static native void mpf_urandomb(MPFPointer rop, RandstatePointer state, MPBitcntT n);
 
     public static native void mpf_random2(MPFPointer rop, MPSizeT max_size, MPExpT exp);
 
     // Random Number Functions
 
-    public static native void gmp_randinit_default(RandStatePointer state);
+    public static native void gmp_randinit_default(RandstatePointer state);
 
-    public static native void gmp_randinit_mt(RandStatePointer state);
+    public static native void gmp_randinit_mt(RandstatePointer state);
 
-    public static native void gmp_randinit_lc_2exp(RandStatePointer state, MPZPointer a, NativeLong c,
+    public static native void gmp_randinit_lc_2exp(RandstatePointer state, MPZPointer a, NativeLong c,
             NativeLong m2exp);
 
-    public static native int gmp_randinit_lc_2exp_size(RandStatePointer state, NativeLong m2exp);
+    public static native int gmp_randinit_lc_2exp_size(RandstatePointer state, NativeLong m2exp);
 
-    public static native void gmp_randinit_set(RandStatePointer rop, RandStatePointer op);
+    public static native void gmp_randinit_set(RandstatePointer rop, RandstatePointer op);
 
-    public static native void gmp_randinit(RandStatePointer state, int alg, NativeLong l);
+    public static native void gmp_randinit(RandstatePointer state, int alg, NativeLong l);
 
-    public static native void gmp_randclear(RandStatePointer state);
+    public static native void gmp_randclear(RandstatePointer state);
 
-    public static native void gmp_randseed(RandStatePointer state, MPZPointer seed);
+    public static native void gmp_randseed(RandstatePointer state, MPZPointer seed);
 
-    public static native void gmp_randseed_ui(RandStatePointer state, NativeUnsignedLong seed);
+    public static native void gmp_randseed_ui(RandstatePointer state, NativeUnsignedLong seed);
 
-    public static native NativeLong gmp_urandomb_ui(RandStatePointer state, NativeUnsignedLong n);
+    public static native NativeLong gmp_urandomb_ui(RandstatePointer state, NativeUnsignedLong n);
 
-    public static native NativeLong gmp_urandomm_ui(RandStatePointer state, NativeUnsignedLong n);
+    public static native NativeLong gmp_urandomm_ui(RandstatePointer state, NativeUnsignedLong n);
 
     // Formatted Output
 

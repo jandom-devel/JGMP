@@ -27,7 +27,7 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
-import it.unich.jgmp.nativelib.MPBitCntT;
+import it.unich.jgmp.nativelib.MPBitcntT;
 import it.unich.jgmp.nativelib.MPQPointer;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
@@ -338,7 +338,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ mul2ExpAssign(MPQ op, long b) {
-        mpq_mul_2exp(mpqPointer, op.mpqPointer, new MPBitCntT(b));
+        mpq_mul_2exp(mpqPointer, op.mpqPointer, new MPBitcntT(b));
         return this;
     }
 
@@ -359,7 +359,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ div2ExpAssign(MPQ op, long b) {
-        mpq_div_2exp(mpqPointer, op.mpqPointer, new MPBitCntT(b));
+        mpq_div_2exp(mpqPointer, op.mpqPointer, new MPBitcntT(b));
         return this;
     }
 

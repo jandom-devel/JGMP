@@ -30,7 +30,7 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
-import it.unich.jgmp.nativelib.MPBitCntT;
+import it.unich.jgmp.nativelib.MPBitcntT;
 import it.unich.jgmp.nativelib.MPExpT;
 import it.unich.jgmp.nativelib.MPExpTByReference;
 import it.unich.jgmp.nativelib.MPSizeT;
@@ -142,7 +142,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     static public void setDefaultPrec(long prec) {
-        mpf_set_default_prec(new MPBitCntT(prec));
+        mpf_set_default_prec(new MPBitcntT(prec));
     }
 
     /**
@@ -171,7 +171,7 @@ public class MPF extends Number implements Comparable<MPF> {
      */
     static public MPF init2(long prec) {
         var mpfPointer = new MPFPointer();
-        mpf_init2(mpfPointer, new MPBitCntT(prec));
+        mpf_init2(mpfPointer, new MPBitcntT(prec));
         return new MPF(mpfPointer);
     }
 
@@ -194,7 +194,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code prec} should be treated as an unsigned long
      */
     public MPF setPrec(long prec) {
-        mpf_set_prec(mpfPointer, new MPBitCntT(prec));
+        mpf_set_prec(mpfPointer, new MPBitcntT(prec));
         return this;
     }
 
@@ -714,7 +714,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPF mul2ExpAssign(MPF op, long b) {
-        mpf_mul_2exp(mpfPointer, op.mpfPointer, new MPBitCntT(b));
+        mpf_mul_2exp(mpfPointer, op.mpfPointer, new MPBitcntT(b));
         return this;
     }
 
@@ -735,7 +735,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPF div2ExpAssign(MPF op, long b) {
-        mpf_div_2exp(mpfPointer, op.mpfPointer, new MPBitCntT(b));
+        mpf_div_2exp(mpfPointer, op.mpfPointer, new MPBitcntT(b));
         return this;
     }
 
@@ -945,7 +945,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPF urandombAssign(RandState s, long nbits) {
-        mpf_urandomb(mpfPointer, s.getPointer(), new MPBitCntT(nbits));
+        mpf_urandomb(mpfPointer, s.getPointer(), new MPBitcntT(nbits));
         return this;
     }
 
