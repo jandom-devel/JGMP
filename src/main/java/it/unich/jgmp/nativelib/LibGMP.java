@@ -51,31 +51,10 @@ import com.sun.jna.ptr.PointerByReference;
  * </p>
  */
 public class LibGMP {
-
     /**
      * The undecorated name of the GMP library.
      */
-    static final String LIBNAME = "gmp";
-
-    /**
-     * The size of the {@code mpz_t} native type.
-     */
-    static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
-
-    /**
-     * The size of the {@code mpq_t} native type.
-     */
-    static final int MPQ_SIZE = 2 * MPZ_SIZE;
-
-    /**
-     * The size of the {@code mpf_t} native type.
-     */
-    static final int MPF_SIZE = 4 + 4 + MPExpT.SIZE + Native.POINTER_SIZE;
-
-    /**
-     * The size of the {@code gmp_randstate_struct} structure.
-     */
-    static final int RANDSTATE_SIZE = MPZ_SIZE + 4 + Native.POINTER_SIZE;
+    private static final String LIBNAME = "gmp";
 
     /**
      * The native GMP version number, in the form “i.j.k”.

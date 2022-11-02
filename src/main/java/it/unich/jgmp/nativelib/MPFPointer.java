@@ -17,6 +17,7 @@
 package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.PointerType;
 
 /**
@@ -25,10 +26,15 @@ import com.sun.jna.PointerType;
 public class MPFPointer extends PointerType {
 
     /**
+     * The size of the {@code mpf_t} native type.
+     */
+    static final int MPF_SIZE = 4 + 4 + MPExpT.SIZE + Native.POINTER_SIZE;
+
+    /**
      * Allocates the memory needed for an {@code mpf_t} native type and returns the
      * pointer to it.
      */
     public MPFPointer() {
-        setPointer(new Memory(LibGMP.MPF_SIZE));
+        setPointer(new Memory(MPF_SIZE));
     }
 }

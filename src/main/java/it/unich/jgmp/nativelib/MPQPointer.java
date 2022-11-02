@@ -25,10 +25,15 @@ import com.sun.jna.PointerType;
 public class MPQPointer extends PointerType {
 
     /**
+     * The size of the {@code mpq_t} native type.
+     */
+    static final int MPQ_SIZE = 2 * MPZPointer.MPZ_SIZE;
+
+    /**
      * Allocates the memory needed for an {@code mpq_t} native type and returns the
      * pointer to it.
      */
     public MPQPointer() {
-        setPointer(new Memory(LibGMP.MPQ_SIZE));
+        setPointer(new Memory(MPQ_SIZE));
     }
 }

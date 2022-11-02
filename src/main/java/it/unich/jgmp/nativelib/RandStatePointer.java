@@ -17,6 +17,7 @@
 package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.PointerType;
 
 /**
@@ -26,10 +27,15 @@ import com.sun.jna.PointerType;
 public class RandStatePointer extends PointerType {
 
     /**
+     * The size of the {@code gmp_randstate_struct} structure.
+     */
+    static final int RANDSTATE_SIZE = 2 * MPZPointer.MPZ_SIZE + 4 + Native.POINTER_SIZE;
+
+    /**
      * Allocates the memory needed for an {@code gmp_randstate_struct} structure
      * and returns the pointer to it.
      */
     public RandStatePointer() {
-        setPointer(new Memory(LibGMP.RANDSTATE_SIZE));
+        setPointer(new Memory(RANDSTATE_SIZE));
     }
 }
