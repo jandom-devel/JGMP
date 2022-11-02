@@ -47,8 +47,65 @@ import com.sun.jna.ptr.PointerByReference;
  * <p>
  * We strived to be type safe, by defining different subclasses of
  * {@code com.sun.jna.PointerType} and {@code com.sun.jna.IntegerType} for
- * different native types.
+ * different native types. Here is the conversion table between native and
+ * Java types. All types not shown below follows standard JNA conventions.
  * </p>
+ *
+ * <table border="1" style="text-align:center; border-collapse: collapse;" >
+ * <caption style="display: none;">Conversion table from native to Java types</caption>
+ * <thead>
+ * <tr>
+ * <th scope="col">native type</th>
+ * <th scope="col">Java type</th>
+ * </tr>
+ * </thead>
+ * <tbody>
+ * <tr>
+ * <td>{@code mp_bitcnt_t}</td>
+ * <td>{@code MPBitCntT}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mp_expt_t}</td>
+ * <td>{@code MPExpT}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mp_expt_t*}</td>
+ * <td>{@code MPExpTByReference}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mpf_t}</td>
+ * <td>{@code MPFPointer}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mpq_t}</td>
+ * <td>{@code MPQPointer}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mp_size_t}</td>
+ * <td>{@code MPSizeT}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code mpz_t}</td>
+ * <td>{@code MPZPointer}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code unsigned long}</td>
+ * <td>{@code NativeUnsignedLong}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code gmp_randstate_struct}</td>
+ * <td>{@code RandStatePointer}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code size_t}</td>
+ * <td>{@code SizeT}</td>
+ * </tr>
+ * <tr>
+ * <td>{@code size_t*}</td>
+ * <td>{@code SizeTByReference}</td>
+ * </tr>
+ * </tbody>
+ * </table>
  */
 public class LibGMP {
     /**
