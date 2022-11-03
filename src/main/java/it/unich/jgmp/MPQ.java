@@ -16,7 +16,7 @@
 */
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.*;
+import static it.unich.jgmp.nativelib.LibGmp.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -27,8 +27,8 @@ import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 
-import it.unich.jgmp.nativelib.MPBitcntT;
-import it.unich.jgmp.nativelib.MPQPointer;
+import it.unich.jgmp.nativelib.MpBitcntT;
+import it.unich.jgmp.nativelib.MpqT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
@@ -89,15 +89,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * The pointer to the native {@code mpq_t} object.
      */
-    private transient MPQPointer mpqPointer;
+    private transient MpqT mpqPointer;
 
     /**
      * Cleaning action for the {@code MPQ} class.
      */
     private static class MPQCleaner implements Runnable {
-        private MPQPointer mpqPointer;
+        private MpqT mpqPointer;
 
-        MPQCleaner(MPQPointer mpqPointer) {
+        MPQCleaner(MpqT mpqPointer) {
             this.mpqPointer = mpqPointer;
         }
 
@@ -110,7 +110,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Returns the native pointer to the GMP object.
      */
-    public MPQPointer getPointer() {
+    public MpqT getPointer() {
         return mpqPointer;
     }
 
@@ -338,7 +338,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ mul2ExpAssign(MPQ op, long b) {
-        mpq_mul_2exp(mpqPointer, op.mpqPointer, new MPBitcntT(b));
+        mpq_mul_2exp(mpqPointer, op.mpqPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -359,7 +359,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ div2ExpAssign(MPQ op, long b) {
-        mpq_div_2exp(mpqPointer, op.mpqPointer, new MPBitcntT(b));
+        mpq_div_2exp(mpqPointer, op.mpqPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -528,7 +528,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Builds an {@code MPQ} whose value is zero.
      */
     public MPQ() {
-        mpqPointer = new MPQPointer();
+        mpqPointer = new MpqT();
         mpq_init(mpqPointer);
         GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
     }
@@ -776,7 +776,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        mpqPointer = new MPQPointer();
+        mpqPointer = new MpqT();
         mpq_init(mpqPointer);
         mpq_set_str(mpqPointer, (String) in.readObject(), 62);
         GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
@@ -784,7 +784,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
-        mpqPointer = new MPQPointer();
+        mpqPointer = new MpqT();
         mpq_init(mpqPointer);
         GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
     }

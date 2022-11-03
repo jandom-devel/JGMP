@@ -17,23 +17,24 @@
 package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Native;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to an {@code mpq_t} native type.
+ * Type representing a native pointer to an {@code mpf_t} native type.
  */
-public class MPQPointer extends PointerType {
+public class MpfT extends PointerType {
 
     /**
-     * The size of the {@code mpq_t} native type.
+     * The size of the {@code mpf_t} native type.
      */
-    static final int MPQ_SIZE = 2 * MPZPointer.MPZ_SIZE;
+    static final int MPF_SIZE = 4 + 4 + MpExpT.SIZE + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code mpq_t} native type and returns the
+     * Allocates the memory needed for an {@code mpf_t} native type and returns the
      * pointer to it.
      */
-    public MPQPointer() {
-        setPointer(new Memory(MPQ_SIZE));
+    public MpfT() {
+        setPointer(new Memory(MPF_SIZE));
     }
 }

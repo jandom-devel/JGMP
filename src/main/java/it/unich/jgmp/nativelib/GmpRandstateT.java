@@ -18,32 +18,24 @@ package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to an {@code mpz_t} native type.
+ * Type representing a native pointer to a {@code gmp_randstate_t}
+ * structure.
  */
-public class MPZPointer extends PointerType {
+public class GmpRandstateT extends PointerType {
 
     /**
-     * The size of the {@code mpz_t} native type.
+     * The size of the {@code gmp_randstate_t} structure.
      */
-    static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
+    static final int RANDSTATE_SIZE = 2 * MpzT.MPZ_SIZE + 4 + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code mpz_t} native type and returns the
-     * pointer to it.
+     * Allocates the memory needed for an {@code gmp_randstate_t} structure
+     * and returns the pointer to it.
      */
-    public MPZPointer() {
-        setPointer(new Memory(MPZ_SIZE));
+    public GmpRandstateT() {
+        setPointer(new Memory(RANDSTATE_SIZE));
     }
-
-    /**
-     * Creates a ne {@code MPZPointer} corresponding to the pointer {@code p}.
-     */
-    public MPZPointer(Pointer p) {
-        super(p);
-    }
-
 }

@@ -16,10 +16,10 @@
 */
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.gmp_asprintf;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_printf;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_scanf;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_sscanf;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_asprintf;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_printf;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_scanf;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_sscanf;
 
 import java.lang.ref.Cleaner;
 
@@ -27,7 +27,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
-import it.unich.jgmp.nativelib.LibGMP;
+import it.unich.jgmp.nativelib.LibGmp;
 
 /**
  * Class collecting global variables and static methods which do no fit in more
@@ -49,42 +49,42 @@ public class GMP {
      * Returns the version of the native GMP library.
      */
     public static String getNativeVersion() {
-        return LibGMP.gmp_version;
+        return LibGmp.gmp_version;
     }
 
     /**
      * Returns the major version of the native GMP library.
      */
     public static int getMajorVersion() {
-        return LibGMP.__GNU_MP_VERSION;
+        return LibGmp.__GNU_MP_VERSION;
     }
 
     /**
      * Returns the minor version of the native GMP library.
      */
     public static int getMinorVersion() {
-        return LibGMP.__GNU_MP_VERSION_MINOR;
+        return LibGmp.__GNU_MP_VERSION_MINOR;
     }
 
     /**
      * Returns the patch level of the native GMP library.
      */
     public static int getPatchLevel() {
-        return LibGMP.__GNU_MP_VERSION_PATCHLEVEL;
+        return LibGmp.__GNU_MP_VERSION_PATCHLEVEL;
     }
 
     /**
      * Returns the number of bits per limb.
      */
     public static int getBitsPerLimb() {
-        return LibGMP.mp_bits_per_limb;
+        return LibGmp.mp_bits_per_limb;
     }
 
     /**
      * Returns the system decimal separator, as used by the {@link sscanf} and {@link sprintf} methods.
      */
     public static String getDecimalSeparator() {
-        return LibGMP.decimalSeparator;
+        return LibGmp.decimalSeparator;
     }
 
     /**

@@ -22,29 +22,29 @@ import com.sun.jna.ptr.ByReference;
 /**
  * A reference to the native {@code mp_exp_t} data type.
  */
-public class MPExpTByReference extends ByReference {
+public class MpExpTByReference extends ByReference {
     /**
      * Creates a reference to a newly allocated {@code mp_exp_t} object.
      */
-    public MPExpTByReference() {
-        this(new MPExpT());
+    public MpExpTByReference() {
+        this(new MpExpT());
     }
 
     /**
      * Creates a reference to a newly allocated {@code mp_exp_t} object, which is
      * initialized with {@code value}.
      */
-    public MPExpTByReference(MPExpT value) {
-        super(MPExpT.SIZE);
+    public MpExpTByReference(MpExpT value) {
+        super(MpExpT.SIZE);
         setValue(value);
     }
 
     /**
      * Change the value of the {@code mp_exp_t} object pointed by this reference.
      */
-    public void setValue(MPExpT value) {
+    public void setValue(MpExpT value) {
         Pointer p = getPointer();
-        if (MPExpT.SIZE == 8) {
+        if (MpExpT.SIZE == 8) {
             p.setLong(0, value.longValue());
         } else {
             p.setInt(0, value.intValue());
@@ -54,8 +54,8 @@ public class MPExpTByReference extends ByReference {
     /**
      * Get the value of {@code mp_exp_t} object pointed by this reference.
      */
-    public MPExpT getValue() {
+    public MpExpT getValue() {
         Pointer p = getPointer();
-        return new MPExpT(MPExpT.SIZE == 8 ? p.getLong(0) : p.getInt(0));
+        return new MpExpT(MpExpT.SIZE == 8 ? p.getLong(0) : p.getInt(0));
     }
 }

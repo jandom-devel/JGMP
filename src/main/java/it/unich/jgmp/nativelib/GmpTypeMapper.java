@@ -31,11 +31,11 @@ import it.unich.jgmp.MPZ;
  * {@link MPF}. It is used by the {@code printf} / {@code scanf} functions to
  * correctly handle tese types.
  */
-class GMPTypeMapper implements TypeMapper {
+class GmpTypeMapper implements TypeMapper {
 
-    private static GMPTypeMapper instance = new GMPTypeMapper();
+    private static GmpTypeMapper instance = new GmpTypeMapper();
 
-    private GMPTypeMapper() {
+    private GmpTypeMapper() {
     }
 
     /**
@@ -107,7 +107,7 @@ class GMPTypeMapper implements TypeMapper {
         return null;
     }
 
-    public static GMPTypeMapper getInstance() {
+    public static GmpTypeMapper getInstance() {
         return instance;
     }
 

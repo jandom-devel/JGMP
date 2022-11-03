@@ -16,35 +16,34 @@
 */
 package it.unich.jgmp.nativelib;
 
-import com.sun.jna.IntegerType;
+import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
+import com.sun.jna.PointerType;
 
 /**
- * The native {@code mp_exp_t} data type, which may be a 32, 48 or 64 bit
- * signed integer. Here we assume that its size is the same of a native long.
- * This should work on almost every system, with the exception of some Cray's,
- * where the native size of {@code mp_size_t} is 48 bit.
+ * Type representing a native pointer to an {@code mpz_t} native type.
  */
-public class MPExpT extends IntegerType {
+public class MpzT extends PointerType {
 
     /**
-     * The size of the native {@code mp_exp_t} data type. We assume it to be equal
-     * to the size of a native long.
+     * The size of the {@code mpz_t} native type.
      */
-    static final int SIZE = Native.LONG_SIZE;
+    static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
 
     /**
-     * Creates an {@code mp_size_t} with value 0
+     * Allocates the memory needed for an {@code mpz_t} native type and returns the
+     * pointer to it.
      */
-    public MPExpT() {
-        this(0);
+    public MpzT() {
+        setPointer(new Memory(MPZ_SIZE));
     }
 
     /**
-     * Creates a {@code mp_exp_t} with the specified {@code value}. The value is
-     * truncated when {@code mp_exp_t} is not a 32 bit integer.
+     * Creates a ne {@code MPZPointer} corresponding to the pointer {@code p}.
      */
-    public MPExpT(long value) {
-        super(SIZE, value, false);
+    public MpzT(Pointer p) {
+        super(p);
     }
+
 }

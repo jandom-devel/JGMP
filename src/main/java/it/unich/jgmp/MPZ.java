@@ -16,7 +16,7 @@
 */
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.*;
+import static it.unich.jgmp.nativelib.LibGmp.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -33,9 +33,9 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
-import it.unich.jgmp.nativelib.MPBitcntT;
-import it.unich.jgmp.nativelib.MPSizeT;
-import it.unich.jgmp.nativelib.MPZPointer;
+import it.unich.jgmp.nativelib.MpBitcntT;
+import it.unich.jgmp.nativelib.MpSizeT;
+import it.unich.jgmp.nativelib.MpzT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 import it.unich.jgmp.nativelib.SizeT;
 import it.unich.jgmp.nativelib.SizeTByReference;
@@ -102,7 +102,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * The pointer to the native {@code mpz_t} object.
      */
-    private transient MPZPointer mpzPointer;
+    private transient MpzT mpzPointer;
 
     /**
      * Result enumeration for the {@link isProbabPrime isProbabPrime} method.
@@ -126,9 +126,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Cleaning action for the {@code MPZ} class.
      */
     private static class MPZCleaner implements Runnable {
-        private MPZPointer mpzPointer;
+        private MpzT mpzPointer;
 
-        MPZCleaner(MPZPointer mpzPointer) {
+        MPZCleaner(MpzT mpzPointer) {
             this.mpzPointer = mpzPointer;
         }
 
@@ -142,7 +142,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * A private constructor which build an {@code MPZ} starting from a pointer to
      * its native data object. The native object needs to be already initialized.
      */
-    private MPZ(MPZPointer pointer) {
+    private MPZ(MpzT pointer) {
         this.mpzPointer = pointer;
         GMP.cleaner.register(this, new MPZCleaner(pointer));
     }
@@ -150,7 +150,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns the native pointer to the GMP object.
      */
-    public MPZPointer getPointer() {
+    public MpzT getPointer() {
         return mpzPointer;
     }
 
@@ -175,8 +175,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code n} should be treated as an unsigned long
      */
     static public MPZ init2(long n) {
-        var mpzPointer = new MPZPointer();
-        mpz_init2(mpzPointer, new MPBitcntT(n));
+        var mpzPointer = new MpzT();
+        mpz_init2(mpzPointer, new MpBitcntT(n));
         return new MPZ(mpzPointer);
     }
 
@@ -192,7 +192,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ realloc2(long n) {
-        mpz_realloc2(mpzPointer, new MPBitcntT(n));
+        mpz_realloc2(mpzPointer, new MpBitcntT(n));
         return this;
     }
 
@@ -305,7 +305,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code op} should be treated as an unsigned long.
      */
     public static MPZ initSetUi(long op) {
-        var mpzPointer = new MPZPointer();
+        var mpzPointer = new MpzT();
         mpz_init_set_ui(mpzPointer, new NativeUnsignedLong(op));
         return new MPZ(mpzPointer);
     }
@@ -331,7 +331,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
 
     public static Pair<Integer, MPZ> initSet(String str, int base) {
-        var mpzPointer = new MPZPointer();
+        var mpzPointer = new MpzT();
         var result = mpz_init_set_str(mpzPointer, str, base);
         return new Pair<>(result, new MPZ(mpzPointer));
     }
@@ -636,7 +636,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ mul2ExpAssign(MPZ op, long b) {
-        mpz_mul_2exp(mpzPointer, op.mpzPointer, new MPBitcntT(b));
+        mpz_mul_2exp(mpzPointer, op.mpzPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -775,7 +775,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivq2ExpAssign(MPZ n, long b) {
-        mpz_cdiv_q_2exp(mpzPointer, n.mpzPointer, new MPBitcntT(b));
+        mpz_cdiv_q_2exp(mpzPointer, n.mpzPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -788,7 +788,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPZ cdivr2ExpAssign(MPZ n, long b) {
-        mpz_cdiv_r_2exp(mpzPointer, n.mpzPointer, new MPBitcntT(b));
+        mpz_cdiv_r_2exp(mpzPointer, n.mpzPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -1256,7 +1256,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public boolean isDivisible2Exp(long b) {
-        return mpz_divisible_2exp_p(mpzPointer, new MPBitcntT(b));
+        return mpz_divisible_2exp_p(mpzPointer, new MpBitcntT(b));
     }
 
     /**
@@ -1284,7 +1284,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public boolean isCongruent2Exp(MPZ c, long b) {
-        return mpz_congruent_2exp_p(mpzPointer, c.mpzPointer, new MPBitcntT(b));
+        return mpz_congruent_2exp_p(mpzPointer, c.mpzPointer, new MpBitcntT(b));
     }
 
     // Integer Exponentiation
@@ -2173,7 +2173,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public long scan0(long starting_bit) {
-        return mpz_scan0(mpzPointer, new MPBitcntT(starting_bit)).longValue();
+        return mpz_scan0(mpzPointer, new MpBitcntT(starting_bit)).longValue();
     }
 
     /**
@@ -2185,7 +2185,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public long scan1(long starting_bit) {
-        return mpz_scan1(mpzPointer, new MPBitcntT(starting_bit)).longValue();
+        return mpz_scan1(mpzPointer, new MpBitcntT(starting_bit)).longValue();
     }
 
     /**
@@ -2195,7 +2195,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public MPZ setbitAssign(long index) {
-        mpz_setbit(mpzPointer, new MPBitcntT(index));
+        mpz_setbit(mpzPointer, new MpBitcntT(index));
         return this;
     }
 
@@ -2217,7 +2217,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public MPZ clrbitAssign(long index) {
-        mpz_clrbit(mpzPointer, new MPBitcntT(index));
+        mpz_clrbit(mpzPointer, new MpBitcntT(index));
         return this;
     }
 
@@ -2239,7 +2239,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public MPZ combitAssign(long index) {
-        mpz_combit(mpzPointer, new MPBitcntT(index));
+        mpz_combit(mpzPointer, new MpBitcntT(index));
         return this;
     }
 
@@ -2261,7 +2261,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          as unsigned longs.
      */
     public int tstbit(long index) {
-        return mpz_tstbit(mpzPointer, new MPBitcntT(index));
+        return mpz_tstbit(mpzPointer, new MpBitcntT(index));
     }
 
     // Random Number Functions
@@ -2273,7 +2273,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ urandombAssign(RandState s, long n) {
-        mpz_urandomb(mpzPointer, s.getPointer(), new MPBitcntT(n));
+        mpz_urandomb(mpzPointer, s.getPointer(), new MpBitcntT(n));
         return this;
     }
 
@@ -2319,7 +2319,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ rrandombAssign(RandState s, long n) {
-        mpz_rrandomb(mpzPointer, s.getPointer(), new MPBitcntT(n));
+        mpz_rrandomb(mpzPointer, s.getPointer(), new MpBitcntT(n));
         return this;
     }
 
@@ -2352,7 +2352,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     @Deprecated
     public MPZ randomAssign(long max_size) {
-        mpz_random(mpzPointer, new MPSizeT(max_size));
+        mpz_random(mpzPointer, new MpSizeT(max_size));
         return this;
     }
 
@@ -2383,7 +2383,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     @Deprecated
     public MPZ random2Assign(long max_size) {
-        mpz_random2(mpzPointer, new MPSizeT(max_size));
+        mpz_random2(mpzPointer, new MpSizeT(max_size));
         return this;
     }
 
@@ -2533,7 +2533,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is zero.
      */
     public MPZ() {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init(mpzPointer);
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
@@ -2542,7 +2542,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is {@code op}.
      */
     public MPZ(MPZ op) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init_set(mpzPointer, op.mpzPointer);
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
@@ -2551,7 +2551,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is {@code op}.
      */
     public MPZ(long op) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init_set_si(mpzPointer, new NativeLong(op));
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
@@ -2560,7 +2560,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is the truncation of {@code op}.
      */
     public MPZ(double op) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init_set_d(mpzPointer, op);
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
@@ -2569,7 +2569,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is the truncation of {@code op}.
      */
     public MPZ(MPQ op) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init(mpzPointer);
         mpz_set_q(mpzPointer, op.getPointer());
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
@@ -2579,7 +2579,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Builds an {@code MPZ} whose value is the truncation of {@code op}.
      */
     public MPZ(MPF op) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init(mpzPointer);
         mpz_set_f(mpzPointer, op.getPointer());
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
@@ -2597,7 +2597,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      */
     public MPZ(String str, int base) {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         int result = mpz_init_set_str(mpzPointer, str, base);
         if (result == -1) {
             mpz_clear(mpzPointer);
@@ -2793,14 +2793,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init_set_str(mpzPointer, (String) in.readObject(), 62);
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
-        mpzPointer = new MPZPointer();
+        mpzPointer = new MpzT();
         mpz_init(mpzPointer);
         GMP.cleaner.register(this, new MPZCleaner(mpzPointer));
     }

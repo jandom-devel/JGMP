@@ -16,7 +16,7 @@
 */
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.*;
+import static it.unich.jgmp.nativelib.LibGmp.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,11 +30,11 @@ import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
-import it.unich.jgmp.nativelib.MPBitcntT;
-import it.unich.jgmp.nativelib.MPExpT;
-import it.unich.jgmp.nativelib.MPExpTByReference;
-import it.unich.jgmp.nativelib.MPSizeT;
-import it.unich.jgmp.nativelib.MPFPointer;
+import it.unich.jgmp.nativelib.MpBitcntT;
+import it.unich.jgmp.nativelib.MpExpT;
+import it.unich.jgmp.nativelib.MpExpTByReference;
+import it.unich.jgmp.nativelib.MpSizeT;
+import it.unich.jgmp.nativelib.MpfT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
@@ -99,15 +99,15 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * The pointer to the native {@code mpf_t} object.
      */
-    private transient MPFPointer mpfPointer;
+    private transient MpfT mpfPointer;
 
     /**
      * Cleaning action for the {@code MPF} class.
      */
     private static class MPFCleaner implements Runnable {
-        private MPFPointer mpfPointer;
+        private MpfT mpfPointer;
 
-        MPFCleaner(MPFPointer mpfPointer) {
+        MPFCleaner(MpfT mpfPointer) {
             this.mpfPointer = mpfPointer;
         }
 
@@ -121,7 +121,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * A private constructor which build an {@code MPF} starting from a pointer to
      * its native data object. The native object needs to be already initialized.
      */
-    private MPF(MPFPointer pointer) {
+    private MPF(MpfT pointer) {
         this.mpfPointer = pointer;
         GMP.cleaner.register(this, new MPFCleaner(pointer));
     }
@@ -129,7 +129,7 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Returns the native pointer to the GMP object.
      */
-    public MPFPointer getPointer() {
+    public MpfT getPointer() {
         return mpfPointer;
     }
 
@@ -142,7 +142,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     static public void setDefaultPrec(long prec) {
-        mpf_set_default_prec(new MPBitcntT(prec));
+        mpf_set_default_prec(new MpBitcntT(prec));
     }
 
     /**
@@ -170,8 +170,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code prec} should be treated as an unsigned long
      */
     static public MPF init2(long prec) {
-        var mpfPointer = new MPFPointer();
-        mpf_init2(mpfPointer, new MPBitcntT(prec));
+        var mpfPointer = new MpfT();
+        mpf_init2(mpfPointer, new MpBitcntT(prec));
         return new MPF(mpfPointer);
     }
 
@@ -194,7 +194,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code prec} should be treated as an unsigned long.
      */
     public MPF setPrec(long prec) {
-        mpf_set_prec(mpfPointer, new MPBitcntT(prec));
+        mpf_set_prec(mpfPointer, new MpBitcntT(prec));
         return this;
     }
 
@@ -318,7 +318,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code op} should be treated as an unsigned long.
      */
     public static MPF initSetUi(long op) {
-        var mpfPointer = new MPFPointer();
+        var mpfPointer = new MpfT();
         mpf_init_set_ui(mpfPointer, new NativeUnsignedLong(op));
         return new MPF(mpfPointer);
     }
@@ -350,7 +350,7 @@ public class MPF extends Number implements Comparable<MPF> {
      */
 
     public static Pair<Integer, MPF> initSet(String str, int base) {
-        var mpfPointer = new MPFPointer();
+        var mpfPointer = new MpfT();
         var result = mpf_init_set_str(mpfPointer, str, base);
         return new Pair<>(result, new MPF(mpfPointer));
     }
@@ -409,8 +409,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * "_blank">{@code mpf_get_str}</a>.
      */
     public Pair<String, Long> getStr(int base, long nDigits) {
-        var expR = new MPExpTByReference();
-        Pointer ps = mpf_get_str(null, expR, base, new MPSizeT(nDigits), mpfPointer);
+        var expR = new MpExpTByReference();
+        Pointer ps = mpf_get_str(null, expR, base, new MpSizeT(nDigits), mpfPointer);
         if (ps == null)
             return null;
         var s = ps.getString(0);
@@ -717,7 +717,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPF mul2ExpAssign(MPF op, long b) {
-        mpf_mul_2exp(mpfPointer, op.mpfPointer, new MPBitcntT(b));
+        mpf_mul_2exp(mpfPointer, op.mpfPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -738,7 +738,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPF div2ExpAssign(MPF op, long b) {
-        mpf_div_2exp(mpfPointer, op.mpfPointer, new MPBitcntT(b));
+        mpf_div_2exp(mpfPointer, op.mpfPointer, new MpBitcntT(b));
         return this;
     }
 
@@ -948,7 +948,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPF urandombAssign(RandState s, long nbits) {
-        mpf_urandomb(mpfPointer, s.getPointer(), new MPBitcntT(nbits));
+        mpf_urandomb(mpfPointer, s.getPointer(), new MpBitcntT(nbits));
         return this;
     }
 
@@ -974,7 +974,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * @return this {@code MPF}.
      */
     public MPF random2Assign(long maxSize, long exp) {
-        mpf_random2(mpfPointer, new MPSizeT(maxSize), new MPExpT(exp));
+        mpf_random2(mpfPointer, new MpSizeT(maxSize), new MpExpT(exp));
         return this;
     }
 
@@ -997,7 +997,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * Builds an {@code MPF} whose value is zero.
      */
     public MPF() {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init(mpfPointer);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }
@@ -1007,7 +1007,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * default precision.
      */
     public MPF(MPF op) {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init_set(mpfPointer, op.mpfPointer);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }
@@ -1017,7 +1017,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * default precision.
      */
     public MPF(long op) {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init_set_si(mpfPointer, new NativeLong(op));
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }
@@ -1031,7 +1031,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF(double op) {
         if (!Double.isFinite(op))
             throw new IllegalArgumentException("op should be a finite number");
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init_set_d(mpfPointer, op);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }
@@ -1041,7 +1041,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * default precision.
      */
     public MPF(MPQ op) {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init(mpfPointer);
         mpf_set_q(mpfPointer, op.getPointer());
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
@@ -1052,7 +1052,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * default precision.
      */
     public MPF(MPZ op) {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init(mpfPointer);
         mpf_set_z(mpfPointer, op.getPointer());
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
@@ -1071,7 +1071,7 @@ public class MPF extends Number implements Comparable<MPF> {
      *
      */
     public MPF(String str, int base) {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         String strCorrect = str;
         if (! GMP.getDecimalSeparator().equals("."))
             if (str.indexOf(GMP.getDecimalSeparator()) == -1)
@@ -1303,7 +1303,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         var s = (String) in.readObject();
         mpf_init_set_str(mpfPointer, s.replace(".", decimalSeparator), 62);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
@@ -1311,7 +1311,7 @@ public class MPF extends Number implements Comparable<MPF> {
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
-        mpfPointer = new MPFPointer();
+        mpfPointer = new MpfT();
         mpf_init(mpfPointer);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }

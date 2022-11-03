@@ -27,11 +27,11 @@ import com.sun.jna.NativeLibrary;
  * {@code gmp}) to the names used by C library (beginning with
  * {@code __gmp}).
  */
-class GMPFunctionMapper implements com.sun.jna.FunctionMapper {
+class GmpFunctionMapper implements com.sun.jna.FunctionMapper {
 
-    private static GMPFunctionMapper instance = new GMPFunctionMapper();
+    private static GmpFunctionMapper instance = new GmpFunctionMapper();
 
-    private GMPFunctionMapper() {
+    private GmpFunctionMapper() {
     }
 
     @Override
@@ -41,7 +41,7 @@ class GMPFunctionMapper implements com.sun.jna.FunctionMapper {
         return nativeName;
     }
 
-    public static GMPFunctionMapper getInstance() {
+    public static GmpFunctionMapper getInstance() {
         return instance;
     }
 

@@ -16,26 +16,33 @@
 */
 package it.unich.jgmp.nativelib;
 
-import com.sun.jna.Memory;
+import com.sun.jna.IntegerType;
 import com.sun.jna.Native;
-import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to a {@code gmp_randstate_t}
- * structure.
+ * The native {@code mp_bitcnt_t} data type, which may be a 32 or 64 bit
+ * unsigned integer.
  */
-public class RandstatePointer extends PointerType {
+public class MpBitcntT extends IntegerType {
 
     /**
-     * The size of the {@code gmp_randstate_t} structure.
+     * The size of the native {@code mp_bitcnt_t} data type. This is equal to the
+     * size of a native long.
      */
-    static final int RANDSTATE_SIZE = 2 * MPZPointer.MPZ_SIZE + 4 + Native.POINTER_SIZE;
+    static final int SIZE = Native.LONG_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code gmp_randstate_t} structure
-     * and returns the pointer to it.
+     * Creates an {@code mp_bitcnt_t} with value 0
      */
-    public RandstatePointer() {
-        setPointer(new Memory(RANDSTATE_SIZE));
+    public MpBitcntT() {
+        this(0);
+    }
+
+    /**
+     * Creates a {@code mp_bitcnt_t} with the specified {@code value}. The value is
+     * truncated when {@code mp_bitcnt_t} is a 32 bit integer.
+     */
+    public MpBitcntT(long value) {
+        super(SIZE, value, true);
     }
 }

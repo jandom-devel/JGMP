@@ -17,21 +17,21 @@
 
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randclear;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_default;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_lc_2exp;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_lc_2exp_size;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_mt;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randinit_set;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randseed;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_randseed_ui;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_urandomb_ui;
-import static it.unich.jgmp.nativelib.LibGMP.gmp_urandomm_ui;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randclear;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_default;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_lc_2exp;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_lc_2exp_size;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_mt;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_set;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randseed;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_randseed_ui;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_urandomb_ui;
+import static it.unich.jgmp.nativelib.LibGmp.gmp_urandomm_ui;
 
 import com.sun.jna.NativeLong;
 
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
-import it.unich.jgmp.nativelib.RandstatePointer;
+import it.unich.jgmp.nativelib.GmpRandstateT;
 
 /**
  * The class encapsulating the {@code gmp_randstate_t} data type, which holds
@@ -66,15 +66,15 @@ public class RandState {
     /**
      * The pointer to the native {@code gmp_randstate_t} object.
      */
-    private RandstatePointer randstatePointer;
+    private GmpRandstateT randstatePointer;
 
     /**
      * Cleaning action for the {@code RandState} class.
      */
     private static class RandomStateCleaner implements Runnable {
-        private RandstatePointer randstatePointer;
+        private GmpRandstateT randstatePointer;
 
-        RandomStateCleaner(RandstatePointer randstatePointer) {
+        RandomStateCleaner(GmpRandstateT randstatePointer) {
             this.randstatePointer = randstatePointer;
         }
 
@@ -88,7 +88,7 @@ public class RandState {
      * A private constructor which build a {@code RandState} starting from a pointer
      * to its native data object. The native object needs to be already initialized.
      */
-    private RandState(RandstatePointer pointer) {
+    private RandState(GmpRandstateT pointer) {
         this.randstatePointer = pointer;
         GMP.cleaner.register(this, new RandomStateCleaner(pointer));
     }
@@ -96,7 +96,7 @@ public class RandState {
     /**
      * Returns the native pointer to the GMP object.
      */
-    public RandstatePointer getPointer() {
+    public GmpRandstateT getPointer() {
         return randstatePointer;
     }
 
@@ -104,7 +104,7 @@ public class RandState {
      * Builds the default random state.
      */
     public RandState() {
-        randstatePointer = new RandstatePointer();
+        randstatePointer = new GmpRandstateT();
         gmp_randinit_default(randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
@@ -113,7 +113,7 @@ public class RandState {
      * Builds a copy of the specified random state.
      */
     public RandState(RandState state) {
-        randstatePointer = new RandstatePointer();
+        randstatePointer = new GmpRandstateT();
         gmp_randinit_set(randstatePointer, state.randstatePointer);
         GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
     }
@@ -130,7 +130,7 @@ public class RandState {
      * fast and has good randomness properties.
      */
     public static RandState randinitMt() {
-        var m = new RandstatePointer();
+        var m = new GmpRandstateT();
         gmp_randinit_mt(m);
         return new RandState(m);
     }
@@ -144,7 +144,7 @@ public class RandState {
      *          longs.
      */
     public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
-        var m = new RandstatePointer();
+        var m = new GmpRandstateT();
         gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
         return new RandState(m);
     }
@@ -157,7 +157,7 @@ public class RandState {
      * @apiNote both {@code size} should be treated as an unsigned long.
      */
     public static RandState randinitLc2ExpSize(long size) {
-        var m = new RandstatePointer();
+        var m = new GmpRandstateT();
         var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
             throw new IllegalArgumentException("Parameter size is too big");

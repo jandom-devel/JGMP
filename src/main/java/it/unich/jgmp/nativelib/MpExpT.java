@@ -20,15 +20,15 @@ import com.sun.jna.IntegerType;
 import com.sun.jna.Native;
 
 /**
- * The native {@code mp_size_t} data type, which may be a 32, 48 or 64 bit
+ * The native {@code mp_exp_t} data type, which may be a 32, 48 or 64 bit
  * signed integer. Here we assume that its size is the same of a native long.
  * This should work on almost every system, with the exception of some Cray's,
  * where the native size of {@code mp_size_t} is 48 bit.
  */
-public class MPSizeT extends IntegerType {
+public class MpExpT extends IntegerType {
 
     /**
-     * The size of the native {@code mp_size_t} data type. We assume it to be equal
+     * The size of the native {@code mp_exp_t} data type. We assume it to be equal
      * to the size of a native long.
      */
     static final int SIZE = Native.LONG_SIZE;
@@ -36,15 +36,15 @@ public class MPSizeT extends IntegerType {
     /**
      * Creates an {@code mp_size_t} with value 0
      */
-    public MPSizeT() {
+    public MpExpT() {
         this(0);
     }
 
     /**
-     * Creates a {@code mp_size_t} with the specified {@code value}. The value is
-     * truncated when {@code mp_size_t} is not a 32 bit integer.
+     * Creates a {@code mp_exp_t} with the specified {@code value}. The value is
+     * truncated when {@code mp_exp_t} is not a 32 bit integer.
      */
-    public MPSizeT(long value) {
+    public MpExpT(long value) {
         super(SIZE, value, false);
     }
 }
