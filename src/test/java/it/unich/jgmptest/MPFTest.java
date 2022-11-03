@@ -14,6 +14,7 @@ import java.io.ObjectOutputStream;
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
 
+import it.unich.jgmp.GMP;
 import it.unich.jgmp.MPF;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
@@ -57,11 +58,11 @@ public class MPFTest {
         assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
         assertThrows(IllegalArgumentException.class, () -> z.set(Double.NaN));
         assertEquals(new MPF(5.25), z.set(new MPQ(21, 4)));
-        assertEquals(0, z.set("-1A.1", 16));
+        assertEquals(0, z.set("-1A" + GMP.getDecimalSeparator() + "1", 16));
         assertEquals(new MPF(-26.0625), z);
         assertEquals(-1, z.set("2", 63));
         assertEquals(new MPF(-26.0625), z);
-        assertEquals(0, z.set("3.5e2", 10));
+        assertEquals(0, z.set("3" + GMP.getDecimalSeparator() + "5e2", 10));
         assertEquals(new MPF(350), z);
         assertEquals(0, z.set("1@100", 2));
         assertEquals(new MPF(16), z);
@@ -82,9 +83,9 @@ public class MPFTest {
         assertEquals(new MPF(-1), MPF.initSet(-1));
         assertEquals(new MPF(5.25), MPF.initSet(5.25));
         assertThrows(IllegalArgumentException.class, () -> MPF.initSet(Double.POSITIVE_INFINITY));
-        assertEquals(new Pair<>(0, new MPF(-26.0625)), MPF.initSet("-1A.1", 16));
+        assertEquals(new Pair<>(0, new MPF(-26.0625)), MPF.initSet("-1A" + GMP.getDecimalSeparator() + "1", 16));
         assertEquals(new Pair<>(-1, new MPF(0)), MPF.initSet("2", 63));
-        assertEquals(new Pair<>(0, new MPF(350)), MPF.initSet("3.5e2", 10));
+        assertEquals(new Pair<>(0, new MPF(350)), MPF.initSet("3" + GMP.getDecimalSeparator() + "5e2", 10));
         assertEquals(new Pair<>(0, new MPF(16)), MPF.initSet("1@100", 2));
         assertEquals(new Pair<>(0, new MPF(16)), MPF.initSet("1@4", -2));
     }

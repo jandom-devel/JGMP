@@ -81,6 +81,13 @@ public class GMP {
     }
 
     /**
+     * Returns the system decimal separator, as used by the {@link sscanf} and {@link sprintf} methods.
+     */
+    public static String getDecimalSeparator() {
+        return LibGMP.decimalSeparator;
+    }
+
+    /**
      * Prints to the standard output according to the format specification in
      * {@code fmt} and the additional arguments in {@code args}.
      * <p>

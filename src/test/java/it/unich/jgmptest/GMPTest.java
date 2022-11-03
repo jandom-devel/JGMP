@@ -23,12 +23,13 @@ public class GMPTest {
 
     @Test
     void test_sprintf() {
-        assertEquals("12 23 2/3 2.50", GMP.sprintf("%Zd %d %Qd %.2Ff", new MPZ(12), Integer.valueOf(23), new MPQ(2, 3), new MPF(2.5)));
+        assertEquals("12 23 2/3 2" + GMP.getDecimalSeparator() + "50",
+                GMP.sprintf("%Zd %d %Qd %.2Ff", new MPZ(12), Integer.valueOf(23), new MPQ(2, 3), new MPF(2.5)));
     }
 
     @Test
     void test_sscanf() {
-        String s = "12 3/2 2.5";
+        String s = "12 3/2 2" + GMP.getDecimalSeparator() + "5";
         var z = new MPZ();
         var q = new MPQ();
         var f = new MPF();

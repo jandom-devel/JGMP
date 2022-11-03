@@ -208,6 +208,25 @@ public class LibGMP {
     }
 
     /**
+     * Returns the system decimal separator. Just called one to initialize the
+     * {@code decimalSeparator} field.
+     */
+    private static String getDecimalSeparator() {
+        var pp = new PointerByReference();
+        gmp_asprintf(pp, "%.1Ff", mpf_zero);
+        var p = pp.getValue();
+        var s = p.getString(0);
+        Native.free(Pointer.nativeValue(p));
+        return s.substring(1, s.length() - 1);
+    }
+
+    /**
+     * The system decimal separator. We compute this value when the {@link LibGMP}
+     * class is loaded, and we assume it is not changed later.
+     */
+    public static final String decimalSeparator = getDecimalSeparator();
+
+    /**
      * Interface for the native functions with a variable number of arguments. These
      * are not supported by direct mapping, so we need to register them separately.
      */

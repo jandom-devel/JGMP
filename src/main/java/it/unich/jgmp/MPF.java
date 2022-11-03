@@ -266,7 +266,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * Sets this {@code MPF} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Floats" target="
-     * _blank">{@code mpf_set_str}</a>.
+     * _blank">{@code mpf_set_str}</a>. The decimal point character is taken from
+     * the current system locale, which may be different from the Java locale.
      *
      * @return 0 if the operation succeeded, -1 otherwise. In the latter case,
      *         {@code this} is not altered.
@@ -337,7 +338,9 @@ public class MPF extends Number implements Comparable<MPF> {
      * Returns an {@code MPF} whose value is the number represented by the string
      * {@code str} in the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
-     * target="_blank">{@code mpq_init_set_str}</a>.
+     * target="_blank">{@code mpq_init_set_str}</a>. The decimal point character is
+     * taken from the current system locale, which may be different from the Java
+     * locale.
      *
      * @return a pair whose first component is {@code 0} if the operation succeeded,
      *         and {@code -1} if either {@code base} is not valid, or {@code str} is
@@ -1069,7 +1072,7 @@ public class MPF extends Number implements Comparable<MPF> {
      */
     public MPF(String str, int base) {
         mpfPointer = new MPFPointer();
-        int result = mpf_init_set_str(mpfPointer, str, base);
+        int result = mpf_init_set_str(mpfPointer, str.replace(".", GMP.getDecimalSeparator()), base);
         if (result == -1) {
             mpf_clear(mpfPointer);
             throw new IllegalArgumentException(
@@ -1139,7 +1142,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * Set this {@code MPF} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Floats" target="
-     * _blank">{@code mpf_set_str}</a>.
+     * _blank">{@code mpf_set_str}</a>. The decimal point character is taken from
+     * the current system locale, which may be different from the Java locale.
      *
      * @throws IllegalArgumentException if either {@code base} is not valid or
      *                                  {@code str} is not a valid number
@@ -1292,7 +1296,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         mpfPointer = new MPFPointer();
-        mpf_init_set_str(mpfPointer, (String) in.readObject(), 62);
+        var s = (String) in.readObject();
+        mpf_init_set_str(mpfPointer, s.replace(".", decimalSeparator), 62);
         GMP.cleaner.register(this, new MPFCleaner(mpfPointer));
     }
 
