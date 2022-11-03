@@ -1072,7 +1072,14 @@ public class MPF extends Number implements Comparable<MPF> {
      */
     public MPF(String str, int base) {
         mpfPointer = new MPFPointer();
-        int result = mpf_init_set_str(mpfPointer, str.replace(".", GMP.getDecimalSeparator()), base);
+        String strCorrect = str;
+        if (! GMP.getDecimalSeparator().equals("."))
+            if (str.indexOf(GMP.getDecimalSeparator()) == -1)
+                strCorrect = str.replace(".", GMP.getDecimalSeparator());
+            else
+                throw new IllegalArgumentException(
+                    "either base is not valid or str is not a valid number in the specified base");
+        int result = mpf_init_set_str(mpfPointer, strCorrect, base);
         if (result == -1) {
             mpf_clear(mpfPointer);
             throw new IllegalArgumentException(
