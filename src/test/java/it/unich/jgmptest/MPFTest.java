@@ -42,6 +42,8 @@ public class MPFTest {
         var f2 = new MPF(new MPQ(1, 10));
         assertTrue(f2.compareTo(f1) > 0);
         f2.setPrec(10);
+        // The following assertion fails. This seems to contradict the fact that
+        // calling setPrec will truncate the number to the new precision.
         // assertEquals(f1, f2);
     }
 
@@ -252,12 +254,11 @@ public class MPFTest {
 
     @Test
     void test_number_class() {
-        var f= new MPF(-4.25);
+        var f = new MPF(-4.25);
         assertEquals(-4, f.intValue());
         assertEquals(-4l, f.longValue());
         assertEquals(-4.25, f.doubleValue());
         assertEquals(-4.25f, f.floatValue());
     }
-
 
 }

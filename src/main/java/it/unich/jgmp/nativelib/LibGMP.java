@@ -147,7 +147,8 @@ public class LibGMP {
 
     /**
      * Returns the value of the global error variable, used by obsolete random
-     * number functions. Every bit of this variable has a different meaning.
+     * number functions. Every bit of this variable has a different meaning, encoded
+     * by the {@code GMP_ERROR_xx}
      */
     public static int gmp_errno() {
         return gmp_errno_pointer.getInt(0);
@@ -879,7 +880,6 @@ public class LibGMP {
     }
 
     public static native int gmp_vasprintf(PointerByReference pp, String fmt, Pointer ap);
-
 
     // Formatted Input
 

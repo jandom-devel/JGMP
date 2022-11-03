@@ -191,7 +191,7 @@ public class MPF extends Number implements Comparable<MPF> {
      *
      * @return this {@code MPF}
      *
-     * @apiNote {@code prec} should be treated as an unsigned long
+     * @apiNote {@code prec} should be treated as an unsigned long.
      */
     public MPF setPrec(long prec) {
         mpf_set_prec(mpfPointer, new MPBitcntT(prec));

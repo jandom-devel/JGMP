@@ -12,6 +12,7 @@ import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 
 public class GMPTest {
+
     @Test
     void test_misc() {
         assertTrue(GMP.getNativeVersion().length() > 0);
@@ -34,7 +35,7 @@ public class GMPTest {
         var q = new MPQ();
         var f = new MPF();
         GMP.sscanf(s, "%Zd %Qd %Ff", z, q, f);
-        assertEquals(new MPQ(3, 2),q);
+        assertEquals(new MPQ(3, 2), q);
         assertEquals(new MPZ(12), z);
         assertEquals(new MPF(2.5), f);
     }

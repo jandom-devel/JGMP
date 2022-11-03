@@ -30,8 +30,8 @@ import com.sun.jna.ptr.PointerByReference;
 import it.unich.jgmp.nativelib.LibGMP;
 
 /**
- * Class collecting global variables and static methods which do no fit in
- * more specific classes.
+ * Class collecting global variables and static methods which do no fit in more
+ * specific classes.
  */
 public class GMP {
     /**
@@ -103,8 +103,7 @@ public class GMP {
      * <p>
      * See also page
      * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
-     * "_blank">Formatted Output
-     * Strings</a> from the GMP manual.
+     * "_blank">Formatted Output Strings</a> from the GMP manual.
      *
      * @return the number of characters written, -1 if an error occured.
      */
@@ -115,15 +114,15 @@ public class GMP {
     /**
      * Returns a string according to the format specification in {@code fmt} and the
      * additional arguments in {@code args}. This is similar to the C
-     * {@code asprintf} function
-     * and the Java {@link String#format(String, Object...)} method. If the format
-     * string is invalid, or the arguments don’t match what the format specifies,
-     * then the behaviour of any of these functions will be unpredictable.
+     * {@code asprintf} function and the Java
+     * {@link String#format(String, Object...)} method. If the format string is
+     * invalid, or the arguments don’t match what the format specifies, then the
+     * behaviour of any of these functions will be unpredictable.
      * <p>
      * See also page
      * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
-     * "_blank">Formatted Output
-     * Strings</a> from the GMP manual..org/manual/Formatted-Output-Strings
+     * "_blank">Formatted Output Strings</a> from the GMP
+     * manual..org/manual/Formatted-Output-Strings
      */
     public static String sprintf(String format, Object... args) {
         var pp = new PointerByReference();
@@ -147,11 +146,9 @@ public class GMP {
      * <p>
      * See also pages
      * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
-     * "_blank">Formatted Input
-     * Strings</a> and
+     * "_blank">Formatted Input Strings</a> and
      * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
-     * "_blank">Formatted Input
-     * Functions</a> from the GMP manual.
+     * "_blank">Formatted Input Functions</a> from the GMP manual.
      *
      * @return the number of fields successfully parsed and stored.
      */
@@ -169,11 +166,9 @@ public class GMP {
      * <p>
      * See also pages
      * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
-     * "_blank">Formatted Input
-     * Strings</a> and
+     * "_blank">Formatted Input Strings</a> and
      * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
-     * "_blank">Formatted Input
-     * Functions</a> from the GMP manual.
+     * "_blank">Formatted Input Functions</a> from the GMP manual.
      *
      * @return the number of fields successfully parsed and stored.
      */
