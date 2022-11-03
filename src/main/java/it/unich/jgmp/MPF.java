@@ -1266,6 +1266,7 @@ public class MPF extends Number implements Comparable<MPF> {
         var t = getStr(base, nDigits);
         var mantissa = t.getValue0();
         var position = t.getValue1().intValue();
+        if (mantissa.length() == 0) return "0";
         var isNegative = mantissa.charAt(0) == '-';
         if (position >= 0) {
             if (isNegative)
