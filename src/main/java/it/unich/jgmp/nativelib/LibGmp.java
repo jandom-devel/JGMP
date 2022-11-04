@@ -730,7 +730,6 @@ public class LibGmp {
 
     public static native int mpf_cmp_si(MpfT op1, NativeLong op2);
 
-    @Deprecated
     public static native boolean mpf_eq(MpfT op1, MpfT op2, MpBitcntT op3);
 
     public static native int mpf_reldiff(MpfT rop, MpfT op1, MpfT op2);
