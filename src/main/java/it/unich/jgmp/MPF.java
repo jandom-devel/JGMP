@@ -1198,7 +1198,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Set this {@code MPF} to the value represented by the string {@code str} in
-     * decimal base.
+     * decimal base. The decimal point character is taken from the current system
+     * locale, which may be different from the Java locale.
      *
      * @throws IllegalArgumentException if {@code str} is not a valid number
      *                                  representation in decimal base.
