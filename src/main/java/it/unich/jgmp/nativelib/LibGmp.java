@@ -842,4 +842,13 @@ public class LibGmp {
     }
 
     public static native int gmp_vsscanf(String s, String fmt, Pointer ap);
+
+    // Custom Allocation
+
+    public static native void mp_set_memory_functions(AllocFunc alloc_func_ptr, ReallocFunc realloc_func_ptr,
+            FreeFunc free_func_ptr);
+
+    public static native void mp_get_memory_functions(AllocFuncByReference alloc_func_ptr,
+            ReallocFuncByReference realloc_func_ptr, FreeFuncByReference free_func_ptr);
+
 }
