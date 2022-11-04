@@ -23,12 +23,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 
-import org.javatuples.Pair;
-
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
+
+import org.javatuples.Pair;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpExpT;

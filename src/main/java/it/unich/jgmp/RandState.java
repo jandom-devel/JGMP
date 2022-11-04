@@ -17,21 +17,12 @@
 
 package it.unich.jgmp;
 
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randclear;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_default;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_lc_2exp;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_lc_2exp_size;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_mt;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randinit_set;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randseed;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_randseed_ui;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_urandomb_ui;
-import static it.unich.jgmp.nativelib.LibGmp.gmp_urandomm_ui;
+import static it.unich.jgmp.nativelib.LibGmp.*;
 
 import com.sun.jna.NativeLong;
 
-import it.unich.jgmp.nativelib.NativeUnsignedLong;
 import it.unich.jgmp.nativelib.GmpRandstateT;
+import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
  * The class encapsulating the {@code gmp_randstate_t} data type, which holds

@@ -16,8 +16,8 @@
 */
 package it.unich.jgmp.nativelib;
 
-import com.sun.jna.Pointer;
 import com.sun.jna.FromNativeConverter;
+import com.sun.jna.Pointer;
 import com.sun.jna.ToNativeContext;
 import com.sun.jna.ToNativeConverter;
 import com.sun.jna.TypeMapper;

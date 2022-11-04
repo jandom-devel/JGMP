@@ -25,13 +25,13 @@ import java.io.ObjectStreamException;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import org.javatuples.Pair;
-import org.javatuples.Triplet;
-
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
+
+import org.javatuples.Pair;
+import org.javatuples.Triplet;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpSizeT;

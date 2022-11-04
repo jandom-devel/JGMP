@@ -1,14 +1,24 @@
 
 package it.unich.jgmptest;
 
-import static it.unich.jgmp.nativelib.LibGmp.*;
+import static it.unich.jgmp.nativelib.LibGmp.mp_get_memory_functions;
+import static it.unich.jgmp.nativelib.LibGmp.mpq_clear;
+import static it.unich.jgmp.nativelib.LibGmp.mpq_denref;
+import static it.unich.jgmp.nativelib.LibGmp.mpq_init;
+import static it.unich.jgmp.nativelib.LibGmp.mpq_numref;
+import static it.unich.jgmp.nativelib.LibGmp.mpq_set_si;
+import static it.unich.jgmp.nativelib.LibGmp.mpz_get_si;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.sun.jna.NativeLong;
 
 import org.junit.jupiter.api.Test;
 
-import it.unich.jgmp.nativelib.*;
+import it.unich.jgmp.nativelib.AllocFuncByReference;
+import it.unich.jgmp.nativelib.FreeFuncByReference;
+import it.unich.jgmp.nativelib.MpqT;
+import it.unich.jgmp.nativelib.ReallocFuncByReference;
+import it.unich.jgmp.nativelib.SizeT;
 
 
 public class LowLevelTest {
