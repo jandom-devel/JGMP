@@ -20,7 +20,7 @@ import com.sun.jna.Memory;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to an {@code mpq_t} native type.
+ * Type representing an object of the {@code mpq_t} native type.
  */
 public class MpqT extends PointerType {
 

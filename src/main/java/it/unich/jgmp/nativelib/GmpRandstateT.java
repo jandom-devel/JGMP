@@ -21,8 +21,7 @@ import com.sun.jna.Native;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to a {@code gmp_randstate_t}
- * structure.
+ * Type representing an object of the {@code gmp_randstate_t} native type.
  */
 public class GmpRandstateT extends PointerType {
 
@@ -32,8 +31,8 @@ public class GmpRandstateT extends PointerType {
     static final int RANDSTATE_SIZE = 2 * MpzT.MPZ_SIZE + 4 + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code gmp_randstate_t} structure
-     * and returns the pointer to it.
+     * Allocates the memory needed for an {@code gmp_randstate_t} structure and
+     * returns the pointer to it.
      */
     public GmpRandstateT() {
         setPointer(new Memory(RANDSTATE_SIZE));

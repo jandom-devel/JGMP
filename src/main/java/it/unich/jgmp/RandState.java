@@ -57,21 +57,21 @@ public class RandState {
     /**
      * The pointer to the native {@code gmp_randstate_t} object.
      */
-    private GmpRandstateT randstatePointer;
+    private GmpRandstateT randstateNative;
 
     /**
      * Cleaning action for the {@code RandState} class.
      */
     private static class RandomStateCleaner implements Runnable {
-        private GmpRandstateT randstatePointer;
+        private GmpRandstateT randstateNative;
 
-        RandomStateCleaner(GmpRandstateT randstatePointer) {
-            this.randstatePointer = randstatePointer;
+        RandomStateCleaner(GmpRandstateT randstateNative) {
+            this.randstateNative = randstateNative;
         }
 
         @Override
         public void run() {
-            gmp_randclear(randstatePointer);
+            gmp_randclear(randstateNative);
         }
     }
 
@@ -80,33 +80,33 @@ public class RandState {
      * to its native data object. The native object needs to be already initialized.
      */
     private RandState(GmpRandstateT pointer) {
-        this.randstatePointer = pointer;
+        this.randstateNative = pointer;
         GMP.cleaner.register(this, new RandomStateCleaner(pointer));
     }
 
     /**
      * Returns the native pointer to the GMP object.
      */
-    public GmpRandstateT getPointer() {
-        return randstatePointer;
+    public GmpRandstateT getNative() {
+        return randstateNative;
     }
 
     /**
      * Builds the default random state.
      */
     public RandState() {
-        randstatePointer = new GmpRandstateT();
-        gmp_randinit_default(randstatePointer);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
+        randstateNative = new GmpRandstateT();
+        gmp_randinit_default(randstateNative);
+        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
     }
 
     /**
      * Builds a copy of the specified random state.
      */
     public RandState(RandState state) {
-        randstatePointer = new GmpRandstateT();
-        gmp_randinit_set(randstatePointer, state.randstatePointer);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstatePointer));
+        randstateNative = new GmpRandstateT();
+        gmp_randinit_set(randstateNative, state.randstateNative);
+        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
     }
 
     /**
@@ -136,7 +136,7 @@ public class RandState {
      */
     public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
         var m = new GmpRandstateT();
-        gmp_randinit_lc_2exp(m, a.getPointer(), new NativeLong(c), new NativeLong(m2exp));
+        gmp_randinit_lc_2exp(m, a.getNative(), new NativeLong(c), new NativeLong(m2exp));
         return new RandState(m);
     }
 
@@ -167,7 +167,7 @@ public class RandState {
      * Sets an initial seed value into state.
      */
     public RandState randseed(MPZ seed) {
-        gmp_randseed(randstatePointer, seed.getPointer());
+        gmp_randseed(randstateNative, seed.getNative());
         return this;
     }
 
@@ -177,7 +177,7 @@ public class RandState {
      * @apiNote {@code seed} should be treated as an unsigned long.
      */
     public RandState randseedUi(long seed) {
-        gmp_randseed_ui(randstatePointer, new NativeUnsignedLong(seed));
+        gmp_randseed_ui(randstateNative, new NativeUnsignedLong(seed));
         return this;
     }
 
@@ -189,7 +189,7 @@ public class RandState {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public long urandombUi(long n) {
-        return gmp_urandomb_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
+        return gmp_urandomb_ui(randstateNative, new NativeUnsignedLong(n)).longValue();
     }
 
     /**
@@ -199,6 +199,6 @@ public class RandState {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public long urandommUi(long n) {
-        return gmp_urandomm_ui(randstatePointer, new NativeUnsignedLong(n)).longValue();
+        return gmp_urandomm_ui(randstateNative, new NativeUnsignedLong(n)).longValue();
     }
 }

@@ -21,7 +21,7 @@ import com.sun.jna.Native;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to an {@code mpf_t} native type.
+ * Type representing an object of the {@code mpf_t} native type.
  */
 public class MpfT extends PointerType {
 

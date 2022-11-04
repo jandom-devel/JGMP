@@ -22,7 +22,7 @@ import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
- * Type representing a native pointer to an {@code mpz_t} native type.
+ * Type representing an object of the {@code mpz_t} native type.
  */
 public class MpzT extends PointerType {
 

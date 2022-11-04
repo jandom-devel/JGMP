@@ -50,7 +50,7 @@ class GmpTypeMapper implements TypeMapper {
 
         @Override
         public Object toNative(Object value, ToNativeContext context) {
-            return ((MPZ) value).getPointer().getPointer();
+            return ((MPZ) value).getNative().getPointer();
         }
     }
 
@@ -66,7 +66,7 @@ class GmpTypeMapper implements TypeMapper {
 
         @Override
         public Object toNative(Object value, ToNativeContext context) {
-            return ((MPQ) value).getPointer().getPointer();
+            return ((MPQ) value).getNative().getPointer();
         }
     }
 
@@ -82,7 +82,7 @@ class GmpTypeMapper implements TypeMapper {
 
         @Override
         public Object toNative(Object value, ToNativeContext context) {
-            return ((MPF) value).getPointer().getPointer();
+            return ((MPF) value).getNative().getPointer();
         }
     }
 

@@ -89,29 +89,29 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * The pointer to the native {@code mpq_t} object.
      */
-    private transient MpqT mpqPointer;
+    private transient MpqT mpqNative;
 
     /**
      * Cleaning action for the {@code MPQ} class.
      */
     private static class MPQCleaner implements Runnable {
-        private MpqT mpqPointer;
+        private MpqT mpqNative;
 
-        MPQCleaner(MpqT mpqPointer) {
-            this.mpqPointer = mpqPointer;
+        MPQCleaner(MpqT mpqNative) {
+            this.mpqNative = mpqNative;
         }
 
         @Override
         public void run() {
-            mpq_clear(mpqPointer);
+            mpq_clear(mpqNative);
         }
     }
 
     /**
      * Returns the native pointer to the GMP object.
      */
-    public MpqT getPointer() {
-        return mpqPointer;
+    public MpqT getNative() {
+        return mpqNative;
     }
 
     // Initializing Integers
@@ -131,7 +131,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ set(MPQ op) {
-        mpq_set(mpqPointer, op.mpqPointer);
+        mpq_set(mpqNative, op.mpqNative);
         return this;
     }
 
@@ -141,7 +141,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ set(MPZ op) {
-        mpq_set_z(mpqPointer, op.getPointer());
+        mpq_set_z(mpqNative, op.getNative());
         return this;
     }
 
@@ -153,8 +153,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code den} should be treated as an unsigned long.
      */
     public MPQ set(long num, long den) {
-        mpq_set_si(mpqPointer, new NativeLong(num), new NativeLong(den));
-        mpq_canonicalize(mpqPointer);
+        mpq_set_si(mpqNative, new NativeLong(num), new NativeLong(den));
+        mpq_canonicalize(mpqNative);
         return this;
     }
 
@@ -164,7 +164,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ set(long op) {
-        mpq_set_si(mpqPointer, new NativeLong(op), new NativeLong(1));
+        mpq_set_si(mpqNative, new NativeLong(op), new NativeLong(1));
         return this;
     }
 
@@ -176,7 +176,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code num} and {@code den} should be treated as an unsigned long.
      */
     public MPQ setUi(long num, long den) {
-        mpq_set_ui(mpqPointer, new NativeUnsignedLong(num), new NativeUnsignedLong(den));
+        mpq_set_ui(mpqNative, new NativeUnsignedLong(num), new NativeUnsignedLong(den));
         return this;
     }
 
@@ -190,9 +190,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
      *         {@code this} is not altered.
      */
     public int set(String str, int base) {
-        int res = mpq_set_str(mpqPointer, str, base);
+        int res = mpq_set_str(mpqNative, str, base);
         if (res == 0)
-            mpq_canonicalize(mpqPointer);
+            mpq_canonicalize(mpqNative);
         return res;
     }
 
@@ -202,7 +202,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ swap(MPQ op) {
-        mpq_swap(mpqPointer, op.mpqPointer);
+        mpq_swap(mpqNative, op.mpqNative);
         return this;
     }
 
@@ -216,7 +216,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * underflow and denorm traps may or may not occur.
      */
     public double getD() {
-        return mpq_get_d(mpqPointer);
+        return mpq_get_d(mpqNative);
     }
 
     /**
@@ -230,7 +230,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ set(double op) {
         if (!Double.isFinite(op))
             throw new IllegalArgumentException("op should be a finite number");
-        mpq_set_d(mpqPointer, op);
+        mpq_set_d(mpqNative, op);
         return this;
     }
 
@@ -241,7 +241,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ set(MPF op) {
-        mpq_set_f(mpqPointer, op.getPointer());
+        mpq_set_f(mpqNative, op.getNative());
         return this;
     }
 
@@ -252,7 +252,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * "_blank">{@code mpq_get_str}</a>.
      */
     public String getStr(int base) {
-        Pointer ps = mpq_get_str(null, base, mpqPointer);
+        Pointer ps = mpq_get_str(null, base, mpqNative);
         if (ps == null)
             return null;
         var s = ps.getString(0);
@@ -268,7 +268,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ addAssign(MPQ op1, MPQ op2) {
-        mpq_add(mpqPointer, op1.mpqPointer, op2.mpqPointer);
+        mpq_add(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
     }
 
@@ -285,7 +285,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ subAssign(MPQ op1, MPQ op2) {
-        mpq_sub(mpqPointer, op1.mpqPointer, op2.mpqPointer);
+        mpq_sub(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
     }
 
@@ -302,7 +302,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ mulAssign(MPQ op1, MPQ op2) {
-        mpq_mul(mpqPointer, op1.mpqPointer, op2.mpqPointer);
+        mpq_mul(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
     }
 
@@ -319,7 +319,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ divAssign(MPQ op1, MPQ op2) {
-        mpq_div(mpqPointer, op1.mpqPointer, op2.mpqPointer);
+        mpq_div(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
     }
 
@@ -338,7 +338,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ mul2ExpAssign(MPQ op, long b) {
-        mpq_mul_2exp(mpqPointer, op.mpqPointer, new MpBitcntT(b));
+        mpq_mul_2exp(mpqNative, op.mpqNative, new MpBitcntT(b));
         return this;
     }
 
@@ -359,7 +359,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public MPQ div2ExpAssign(MPQ op, long b) {
-        mpq_div_2exp(mpqPointer, op.mpqPointer, new MpBitcntT(b));
+        mpq_div_2exp(mpqNative, op.mpqNative, new MpBitcntT(b));
         return this;
     }
 
@@ -378,7 +378,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ negAssign(MPQ op) {
-        mpq_neg(mpqPointer, op.mpqPointer);
+        mpq_neg(mpqNative, op.mpqNative);
         return this;
     }
 
@@ -395,7 +395,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ absAssign(MPQ op) {
-        mpq_abs(mpqPointer, op.mpqPointer);
+        mpq_abs(mpqNative, op.mpqNative);
         return this;
     }
 
@@ -413,7 +413,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @return this {@code MPQ}.
      */
     public MPQ invAssign(MPQ op) {
-        mpq_inv(mpqPointer, op.mpqPointer);
+        mpq_inv(mpqNative, op.mpqNative);
         return this;
     }
 
@@ -433,7 +433,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * {@code this < op}.
      */
     public int cmp(MPQ op) {
-        return mpq_cmp(mpqPointer, op.mpqPointer);
+        return mpq_cmp(mpqNative, op.mpqNative);
     }
 
     /**
@@ -442,7 +442,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * {@code this < op}.
      */
     public int cmp(MPZ op) {
-        return mpq_cmp_z(mpqPointer, op.getPointer());
+        return mpq_cmp_z(mpqNative, op.getNative());
     }
 
     /**
@@ -453,7 +453,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code b} should be treated as an unsigned long.
      */
     public int cmp(long num, long den) {
-        return mpq_cmp_si(mpqPointer, new NativeLong(num), new NativeUnsignedLong(den));
+        return mpq_cmp_si(mpqNative, new NativeLong(num), new NativeUnsignedLong(den));
     }
 
     /**
@@ -464,7 +464,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @apiNote {@code num} and {@code den} should be treated as an unsigned long.
      */
     public int cmpUi(long num, long den) {
-        return mpq_cmp_ui(mpqPointer, new NativeUnsignedLong(num), new NativeUnsignedLong(den));
+        return mpq_cmp_ui(mpqNative, new NativeUnsignedLong(num), new NativeUnsignedLong(den));
     }
 
     /**
@@ -472,7 +472,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * {@code -1} if {@code this < 0}.
      */
     public int sgn() {
-        return mpq_sgn(mpqPointer);
+        return mpq_sgn(mpqNative);
     }
 
     /**
@@ -481,7 +481,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * faster.
      */
     public boolean equal(MPQ op) {
-        return mpq_equal(mpqPointer, op.mpqPointer);
+        return mpq_equal(mpqNative, op.mpqNative);
     }
 
     // Applying Integer Functions to Rationals
@@ -491,7 +491,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     public MPZ getNum() {
         MPZ res = new MPZ();
-        mpq_get_num(res.getPointer(), mpqPointer);
+        mpq_get_num(res.getNative(), mpqNative);
         return res;
     }
 
@@ -500,7 +500,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     public MPZ getDen() {
         MPZ res = new MPZ();
-        mpq_get_den(res.getPointer(), mpqPointer);
+        mpq_get_den(res.getNative(), mpqNative);
         return res;
     }
 
@@ -508,8 +508,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Sets the numerator of {@code this} to the value {@code num}.
      */
     public MPQ setNum(MPZ num) {
-        mpq_set_num(mpqPointer, num.getPointer());
-        mpq_canonicalize(mpqPointer);
+        mpq_set_num(mpqNative, num.getNative());
+        mpq_canonicalize(mpqNative);
         return this;
     }
 
@@ -517,8 +517,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Sets the denominator of {@code this} to the value {@code den}.
      */
     public MPQ setDen(MPZ den) {
-        mpq_set_den(mpqPointer, den.getPointer());
-        mpq_canonicalize(mpqPointer);
+        mpq_set_den(mpqNative, den.getNative());
+        mpq_canonicalize(mpqNative);
         return this;
     }
 
@@ -528,9 +528,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Builds an {@code MPQ} whose value is zero.
      */
     public MPQ() {
-        mpqPointer = new MpqT();
-        mpq_init(mpqPointer);
-        GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
+        mpqNative = new MpqT();
+        mpq_init(mpqNative);
+        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
     }
 
     /**
@@ -692,7 +692,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     @Override
     public int compareTo(MPQ op) {
-        return mpq_cmp(mpqPointer, op.mpqPointer);
+        return mpq_cmp(mpqNative, op.mpqNative);
     }
 
     /**
@@ -706,7 +706,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
             return true;
         if (obj instanceof MPQ) {
             var q = (MPQ) obj;
-            return mpq_equal(mpqPointer, q.mpqPointer);
+            return mpq_equal(mpqNative, q.mpqNative);
         }
         return false;
     }
@@ -776,17 +776,17 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
-        mpqPointer = new MpqT();
-        mpq_init(mpqPointer);
-        mpq_set_str(mpqPointer, (String) in.readObject(), 62);
-        GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
+        mpqNative = new MpqT();
+        mpq_init(mpqNative);
+        mpq_set_str(mpqNative, (String) in.readObject(), 62);
+        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
     }
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
-        mpqPointer = new MpqT();
-        mpq_init(mpqPointer);
-        GMP.cleaner.register(this, new MPQCleaner(mpqPointer));
+        mpqNative = new MpqT();
+        mpq_init(mpqNative);
+        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
     }
 
 }
