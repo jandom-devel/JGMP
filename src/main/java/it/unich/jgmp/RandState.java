@@ -145,13 +145,15 @@ public class RandState {
      * function <a href=
      * "https://gmplib.org/manual/Random-State-Initialization">{@code gmp_randinit_lc_2exp_size}</a>.
      *
+     * @throws IllegalArgumentException if {@code size} is too big.
+     *
      * @apiNote both {@code size} should be treated as an unsigned long.
      */
     public static RandState randinitLc2ExpSize(long size) {
         var m = new GmpRandstateT();
         var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
-            throw new IllegalArgumentException("Parameter size is too big");
+            throw new IllegalArgumentException(GMP.MSG_PARAMETER_TOO_BIG);
         }
         return new RandState(m);
     }

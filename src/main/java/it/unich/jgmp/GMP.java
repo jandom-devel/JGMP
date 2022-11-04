@@ -76,6 +76,11 @@ public class GMP {
     static final String MSG_INVALID_DECIMAL_STRING_CONVERSION = "str is not a valid number in decimal base";
 
     /**
+     * ERror for parameter size too big.
+     */
+    static final String MSG_PARAMETER_TOO_BIG = "Parameter size is too big";
+
+    /**
      * Cleaner used by the JGMP library.
      */
     static final Cleaner cleaner = Cleaner.create();
