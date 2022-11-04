@@ -19,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
-import it.unich.jgmp.nativelib.LibGmp;
 import it.unich.jgmp.RandState;
 
 public class MPZTest {
@@ -282,15 +281,6 @@ public class MPZTest {
         var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
         var n2 = ois.readObject();
         assertEquals(n, n2);
-    }
-
-    @Test
-    void test_native() {
-        var q = new MPQ(2, 3);
-        var num = LibGmp.mpq_numref(q.getPointer());
-        var den = LibGmp.mpq_denref(q.getPointer());
-        assertTrue(LibGmp.mpz_cmp(num, new MPZ(2).getPointer()) == 0);
-        assertTrue(LibGmp.mpz_cmp(den, new MPZ(3).getPointer()) == 0);
     }
 
 }
