@@ -21,21 +21,21 @@ import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
 import it.unich.jgmp.RandState;
 
-public class MPZTest {
+public class MpzTest {
 
     public static final String MAX_ULONG = "18446744073709551615";
 
     public static final MPZ zMaxUlong = new MPZ(MAX_ULONG);
 
     @Test
-    void test_init() {
+    void testInit() {
         assertEquals(new MPZ(0), MPZ.init());
         assertEquals(new MPZ(0), MPZ.init2(1000));
         assertEquals(new MPZ(15), new MPZ(15).realloc2(10000));
     }
 
     @Test
-    void test_assignment() {
+    void testAssignment() {
         var z = new MPZ();
         assertEquals(new MPZ(15), z.set(new MPZ(15)));
         assertEquals(zMaxUlong, z.setUi(-1));
@@ -54,7 +54,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_initandassignment() {
+    void testInitAndAssignment() {
         assertEquals(new MPZ(15), MPZ.initSet(new MPZ(15)));
         assertEquals(new MPZ(15), MPZ.initSetUi(15));
         assertEquals(zMaxUlong, MPZ.initSetUi(-1));
@@ -66,7 +66,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_constructors() {
+    void testConstructors() {
         assertEquals(new MPZ(0), new MPZ());
         assertEquals(new MPZ(15), new MPZ("15"));
         assertEquals(new MPZ(15), new MPZ(15.4));
@@ -74,7 +74,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_conversion() {
+    void testConversions() {
         assertEquals(4l, new MPZ(-4).getUi());
         assertEquals(-4l, new MPZ(-4).getSi());
         assertEquals(-4.0, new MPZ(-4).getD());
@@ -84,7 +84,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_arithmetic() {
+    void testArithmetic() {
         assertEquals(new MPZ(15), new MPZ(8).add(new MPZ(7)));
         assertEquals(new MPZ(15), new MPZ(8).addUi(7));
         assertEquals(new MPZ(1), new MPZ(8).sub(new MPZ(7)));
@@ -103,7 +103,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_division() {
+    void testDivision() {
         assertEquals(new MPZ(4), new MPZ(15).cdivq(new MPZ(4)));
         assertEquals(new MPZ(-1), new MPZ(15).cdivr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(4), new MPZ(-1)), new MPZ(15).cdivqr(new MPZ(4)));
@@ -140,7 +140,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_exponentiation() {
+    void testExponentiation() {
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmSec(new MPZ(4), new MPZ(3)));
@@ -149,7 +149,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_roots() {
+    void testRoots() {
         assertEquals(new Pair<>(false, new MPZ(2)), new MPZ(17).root(4));
         assertEquals(new Pair<>(new MPZ(2), new MPZ(1)), new MPZ(17).rootrem(4));
         assertEquals(new MPZ(8), new MPZ(65).sqrt());
@@ -160,7 +160,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_numbertheory() {
+    void testNumberTheory() {
         assertEquals(PrimalityStatus.PRIME, new MPZ(17).isProbabPrime(15));
         assertEquals(new MPZ(19), new MPZ(17).nextprime());
         assertEquals(new MPZ(6), new MPZ(30).gcd(new MPZ(24)));
@@ -194,7 +194,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_comparison() {
+    void testComparison() {
         var a = new MPZ(10);
         var b = new MPZ(2);
         assertTrue(a.compareTo(b) > 0);
@@ -208,7 +208,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_bitmanipulation() {
+    void testBitManipulation() {
         var a = new MPZ(65535);
         assertEquals(1, a.tstbit(15));
         assertEquals(0, a.tstbit(16));
@@ -230,7 +230,7 @@ public class MPZTest {
 
     @Test
     @SuppressWarnings("deprecation")
-    void test_random() {
+    void testRandom() {
         var s = new RandState();
         var a = MPZ.urandomb(s, 2);
         assertTrue(a.cmp(0) >= 0);
@@ -246,7 +246,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_importexport() {
+    void testImportExport() {
         var a = new MPZ("124485");
         var buffer = a.bufferExport(1, 1, 0, 0);
         var b = MPZ.bufferImport(1, 1, 0, 0, buffer);
@@ -254,7 +254,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_miscellaneous() {
+    void testMiscellaneous() {
         var a = new MPZ("-213945");
         assertTrue(a.fitsSlong());
         assertFalse(a.fitsUlong());
@@ -270,7 +270,7 @@ public class MPZTest {
     }
 
     @Test
-    void test_serialize() throws IOException, ClassNotFoundException {
+    void testSerialization() throws IOException, ClassNotFoundException {
         var n = new MPZ(1524132);
         var baos = new ByteArrayOutputStream();
         var oos = new ObjectOutputStream(baos);

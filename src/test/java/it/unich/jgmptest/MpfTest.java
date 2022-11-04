@@ -20,14 +20,14 @@ import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.RandState;
 
-public class MPFTest {
+public class MpfTest {
 
     public static final String MAX_ULONG = "18446744073709551615";
 
     public static final MPF zMaxUlong = new MPF(MAX_ULONG);
 
     @Test
-    void test_init() {
+    void testInit() {
         MPF.setDefaultPrec(10);
         assertTrue(MPF.getDefaultPrec() >= 10);
         assertEquals(new MPF(0), MPF.init());
@@ -48,7 +48,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_assignment() {
+    void testAssignment() {
         var z = new MPF();
         assertEquals(new MPF(0), z);
         assertEquals(new MPF(1.5), z.set(new MPF(1.5)));
@@ -77,7 +77,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_initandassignment() {
+    void testInitAndAssignment() {
         assertEquals(new MPF(1.5), MPF.initSet(new MPF(1.5)));
         assertEquals(new MPF(1), MPF.initSetUi(1));
         assertEquals(zMaxUlong, MPF.initSetUi(-1));
@@ -93,7 +93,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_conversion() {
+    void testConversion() {
         assertEquals(-4.25, new MPF(-4.25).getD());
         assertEquals(new Pair<>(-0.53125, 3l), new MPF(-4.25).getD2Exp());
         assertEquals(4l, new MPF(-4.25).getUi());
@@ -105,7 +105,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_arithmetic1() {
+    void testArithmetic1() {
         assertEquals(new MPF(15), new MPF(8).add(new MPF(7)));
         assertEquals(new MPF(15), new MPF(8).addUi(7));
         assertEquals(new MPF(1), new MPF(8).sub(new MPF(7)));
@@ -126,7 +126,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_arithmetic2() {
+    void testArithmetic2() {
         var f = new MPF(8);
         assertEquals(new MPF(15), f.addAssign(f, new MPF(7)));
         assertEquals(new MPF(16), f.addUiAssign(f, 1));
@@ -148,7 +148,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_comparison() {
+    void testComparisons() {
         var a = new MPF(10);
         var b = new MPF(2);
         assertTrue(a.compareTo(b) > 0);
@@ -179,7 +179,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_miscellaneous() {
+    void testMiscellaneous() {
         var f = new MPF();
         assertEquals(new MPF(3), f.ceilAssign(new MPF(2.1)));
         assertEquals(new MPF(-2), f.ceilAssign(new MPF(-2.1)));
@@ -214,7 +214,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_serialize() throws IOException, ClassNotFoundException {
+    void testSerialization() throws IOException, ClassNotFoundException {
         var n = new MPF(1524132.25);
         var baos = new ByteArrayOutputStream();
         var oos = new ObjectOutputStream(baos);
@@ -228,7 +228,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_constructors() {
+    void testConstructors() {
         assertEquals(new MPF(1.5), new MPF(new MPF(1.5)));
         assertEquals(new MPF(1), new MPF(1));
         assertEquals(new MPF(-1), new MPF(-1));
@@ -245,7 +245,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_toString() {
+    void testToString() {
         assertEquals("14.125", new MPF(14.125).toString());
         assertEquals("-14.125", new MPF(-14.125).toString());
         assertEquals("0.0078125", new MPF(0.0078125).toString());
@@ -256,7 +256,7 @@ public class MPFTest {
     }
 
     @Test
-    void test_number_class() {
+    void testNumberClass() {
         var f = new MPF(-4.25);
         assertEquals(-4, f.intValue());
         assertEquals(-4l, f.longValue());

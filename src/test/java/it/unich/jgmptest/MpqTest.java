@@ -16,10 +16,10 @@ import org.junit.jupiter.api.Test;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 
-public class MPQTest {
+public class MpqTest {
 
     @Test
-    void test_init_assignments() {
+    void testInitAssignments() {
         var z = MPQ.init();
         assertEquals(new MPQ(0, 1), z);
         assertEquals(new MPQ(15, 1), z.set(new MPQ(15)));
@@ -40,7 +40,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_conversion() {
+    void testConversions() {
         var z = new MPQ();
         assertEquals(-5.25, new MPQ(-21, 4).getD());
         assertEquals(new MPQ(21, 4), z.set(5.25));
@@ -50,7 +50,7 @@ public class MPQTest {
         assertEquals(null, new MPQ(21, 4).getStr(63));
     }
 
-    void test_constructors() {
+    void testConstructors() {
         assertEquals(new MPQ(0, 1), new MPQ());
         assertEquals(new MPQ(15, 1), new MPQ(new MPQ(15)));
         assertEquals(new MPQ(15, 1), new MPQ(new MPZ(15)));
@@ -60,7 +60,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_arithmetic1() {
+    void testArithmetic1() {
         assertEquals(new MPQ(15), new MPQ(8).add(new MPQ(7)));
         assertEquals(new MPQ(1), new MPQ(8).sub(new MPQ(7)));
         assertEquals(new MPQ(56), new MPQ(8).mul(new MPQ(7)));
@@ -73,7 +73,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_arithmetic2() {
+    void testArithmetic2() {
         var z = new MPQ();
         assertEquals(new MPQ(7), z.addAssign(z, new MPQ(7)));
         assertEquals(new MPQ(2), z.subAssign(z, new MPQ(5)));
@@ -87,7 +87,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_comparison() {
+    void testComparison() {
         var a = new MPQ(10);
         var b = new MPQ(2);
         assertTrue(a.cmp(b) > 0);
@@ -109,7 +109,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_serialize() throws IOException, ClassNotFoundException {
+    void testSerialization() throws IOException, ClassNotFoundException {
         var n = new MPQ(1524132, 7);
         var baos = new ByteArrayOutputStream();
         var oos = new ObjectOutputStream(baos);
@@ -123,7 +123,7 @@ public class MPQTest {
     }
 
     @Test
-    void test_apply_integers() {
+    void testNumDem() {
         var q = new MPQ(3, 5);
         var n = q.getNum();
         var d = q.getDen();

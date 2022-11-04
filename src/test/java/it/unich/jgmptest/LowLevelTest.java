@@ -1,4 +1,3 @@
-
 package it.unich.jgmptest;
 
 import static it.unich.jgmp.nativelib.LibGmp.mp_get_memory_functions;

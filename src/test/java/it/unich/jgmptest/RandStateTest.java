@@ -12,7 +12,7 @@ import it.unich.jgmp.RandState;
 public class RandStateTest {
 
     @Test
-    void test_initialization() {
+    void testInitialization() {
         assertDoesNotThrow(() -> new RandState());
         assertDoesNotThrow(() -> RandState.randinitDefault());
         assertDoesNotThrow(() -> RandState.randinitMt());
@@ -30,7 +30,7 @@ public class RandStateTest {
     }
 
     @Test
-    void test_seeding() {
+    void testSeeding() {
         var rs = new RandState();
         rs.randseed(new MPZ(10));
         var a = rs.urandommUi(10000);
@@ -40,7 +40,7 @@ public class RandStateTest {
     }
 
     @Test
-    void test_miscellaneous() {
+    void testMiscellaneous() {
         var rs = new RandState();
         assertDoesNotThrow(() -> rs.urandombUi(3));
         assertDoesNotThrow(() -> rs.urandommUi(100));
