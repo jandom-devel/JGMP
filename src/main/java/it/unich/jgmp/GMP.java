@@ -41,6 +41,41 @@ public class GMP {
     }
 
     /**
+     * Exception message for division by zero.
+     */
+    static final String MSG_DIVIDE_BY_ZERO = "/ by zero";
+
+    /**
+     * Exception message for a non-finite double.
+     */
+    static final String MSG_FINITE_DOUBLE_REQUIRED = "Non-finite number is not allowrd here";
+
+    /**
+     * Exception message for a NaN double.
+     */
+    static final String MSG_NAN_NOT_ALLOWED = "NaN is not allowed here";
+
+    /**
+     * Error messages when arguments this and r cannot be the same object.
+     */
+    static final String MSG_SAME_OBJECT = "This and r cannot be the same object";
+
+    /**
+     * Error for invalid base in conversion to strings.
+     */
+    static final String MSG_INVALID_BASE = "The value of base can vary from 2 to 62";
+
+    /**
+     * Error for invalid conversion from strings.
+     */
+    static final String MSG_INVALID_STRING_CONVERSION = "either base is not valid or str is not a valid number in the specified base";
+
+    /**
+     * Error for invalid conversion from strings in base 10.
+     */
+    static final String MSG_INVALID_DECIMAL_STRING_CONVERSION = "str is not a valid number in decimal base";
+
+    /**
      * Cleaner used by the JGMP library.
      */
     static final Cleaner cleaner = Cleaner.create();
@@ -81,7 +116,8 @@ public class GMP {
     }
 
     /**
-     * Returns the system decimal separator, as used by the {@link sscanf} and {@link sprintf} methods.
+     * Returns the system decimal separator, as used by the {@link sscanf} and
+     * {@link sprintf} methods.
      */
     public static String getDecimalSeparator() {
         return LibGmp.decimalSeparator;

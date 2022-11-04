@@ -42,7 +42,7 @@ public class MpzTest {
         assertEquals(new MPZ(-3), z.set(-3));
         assertEquals(new MPZ(5), z.set(5.2));
         assertEquals(new MPZ(5), z.set(new MPQ(21, 4)));
-        assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
+        assertThrows(ArithmeticException.class, () -> z.set(Double.POSITIVE_INFINITY));
         assertEquals(0, z.set("-1A", 16));
         assertEquals(new MPZ(-26), z);
         assertEquals(-1, z.set("2", 63));
@@ -137,6 +137,13 @@ public class MpzTest {
         assertTrue(new MPZ(15).isCongruent(new MPZ(3), new MPZ(4)));
         assertTrue(new MPZ(15).isCongruentUi(3, 4));
         assertFalse(new MPZ(15).isCongruent2Exp(new MPZ(1), 3));
+    }
+
+    @Test
+    void testDivisionByZero() {
+        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cdivq(new MPZ(0)));
+        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cmp(Double.NaN));
+        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cmpabs(Double.NaN));
     }
 
     @Test
