@@ -57,8 +57,8 @@ public class MpfTest {
         assertEquals(new MPF(1), z.set(1));
         assertEquals(new MPF(-1), z.set(-1));
         assertEquals(new MPF(5.25), z.set(5.25));
-        assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
-        assertThrows(IllegalArgumentException.class, () -> z.set(Double.NaN));
+        assertThrows(ArithmeticException.class, () -> z.set(Double.POSITIVE_INFINITY));
+        assertThrows(ArithmeticException.class, () -> z.set(Double.NaN));
         assertEquals(new MPF(5.25), z.set(new MPQ(21, 4)));
         assertEquals(0, z.set("-1A" + GMP.getDecimalSeparator() + "1", 16));
         assertEquals(new MPF(-26.0625), z);
@@ -84,7 +84,7 @@ public class MpfTest {
         assertEquals(new MPF(1), MPF.initSet(1));
         assertEquals(new MPF(-1), MPF.initSet(-1));
         assertEquals(new MPF(5.25), MPF.initSet(5.25));
-        assertThrows(IllegalArgumentException.class, () -> MPF.initSet(Double.POSITIVE_INFINITY));
+        assertThrows(ArithmeticException.class, () -> MPF.initSet(Double.POSITIVE_INFINITY));
         assertEquals(new Pair<>(0, new MPF(-26.0625)), MPF.initSet("-1A" + GMP.getDecimalSeparator() + "1", 16));
         assertEquals(new Pair<>(-1, new MPF(0)), MPF.initSet("2", 63));
         assertEquals(new Pair<>(0, new MPF(350)), MPF.initSet("3" + GMP.getDecimalSeparator() + "5e2", 10));
@@ -114,6 +114,7 @@ public class MpfTest {
         assertEquals(new MPF(56), new MPF(8).mul(new MPF(7)));
         assertEquals(new MPF(56), new MPF(8).mulUi(7));
         assertEquals(new MPF(0.5), new MPF(1).div(new MPF(2)));
+        assertThrows(ArithmeticException.class, () -> new MPF(1).div(new MPF(0)));
         assertEquals(new MPF(0.5), new MPF(2).uiDiv(1));
         assertEquals(new MPF(0.5), new MPF(1).divUi(2));
         assertEquals(new Pair<>("806", 1l), new MPF(65).sqrt().getStr(10, 3));
@@ -233,7 +234,7 @@ public class MpfTest {
         assertEquals(new MPF(1), new MPF(1));
         assertEquals(new MPF(-1), new MPF(-1));
         assertEquals(new MPF(5.25), new MPF(5.25));
-        assertThrows(IllegalArgumentException.class, () -> new MPF(Double.POSITIVE_INFINITY));
+        assertThrows(ArithmeticException.class, () -> new MPF(Double.POSITIVE_INFINITY));
         assertEquals(new MPF(5.25), new MPF(new MPQ(21, 4)));
         assertEquals(new MPF(-26.0625), new MPF("-1A.1", 16));
         assertThrows(IllegalArgumentException.class, () -> new MPF("2", 63));

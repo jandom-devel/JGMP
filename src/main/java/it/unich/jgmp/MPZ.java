@@ -317,6 +317,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the truncation of {@code op}.
+     *
+     * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public static MPZ initSet(double op) {
         return new MPZ(op);
@@ -2752,8 +2754,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Builds an {@code MPZ} whose value is the truncation of {@code op}.
      *
-     * @throws ArithmeticException if {@code op} is not a finite number. In this
-     *                             case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public MPZ(double op) {
         mpzNative = new MpzT();

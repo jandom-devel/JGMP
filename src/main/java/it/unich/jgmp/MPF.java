@@ -97,6 +97,11 @@ public class MPF extends Number implements Comparable<MPF> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The zero multi-precision floating point.
+     */
+    private static final MPF zero = new MPF();
+
+    /**
      * The pointer to the native {@code mpf_t} object.
      */
     private transient MpfT mpfNative;
@@ -235,13 +240,13 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code op}, truncating if necessary.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number. In this
+     *                             case, {@code this} is not altered.
      * @return this {@code MPF}.
      */
     public MPF set(double op) {
         if (!Double.isFinite(op))
-            throw new IllegalArgumentException("op should be a finite number");
+            throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
         mpf_set_d(mpfNative, op);
         return this;
     }
@@ -293,8 +298,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * will be taken from the active default precision, as set by
      * {@link setDefaultPrec}.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number. In this
+     *                             case, {@code this} is not altered.
      *
      */
     public static MPF initSet(MPF op) {
@@ -328,7 +333,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * precision of the result will be taken from the active default precision, as
      * set by {@link setDefaultPrec}.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number.
+     * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public static MPF initSet(double op) {
         return new MPF(op);
@@ -558,15 +563,21 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code (op1 / op2)}.
      *
+     * @throws ArithmeticException if {@code op2} is zero.
+     *
      * @return this {@code MPF}.
      */
     public MPF divAssign(MPF op1, MPF op2) {
+        if (op2.isZero())
+            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpf_div(mpfNative, op1.mpfNative, op2.mpfNative);
         return this;
     }
 
     /**
      * Returns an {@code MPF} whose value is {@code (this / op)}.
+     *
+     * @throws ArithmeticException if {@code op2} is zero.
      */
     public MPF div(MPF op) {
         return new MPF().divAssign(this, op);
@@ -575,17 +586,23 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code (op1 / op2)}.
      *
+     * @throws ArithmeticException if {@code op2} is zero.
+     *
      * @return this {@code MPF}.
      *
      * @apiNote {@code op2} should be treated as an unsigned long.
      */
     public MPF divUiAssign(MPF op1, long op2) {
+        if (op2 == 0l)
+            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpf_div_ui(mpfNative, op1.mpfNative, new NativeUnsignedLong(op2));
         return this;
     }
 
     /**
      * Returns an {@code MPF} whose value is {@code (this / op)}.
+     *
+     * @throws ArithmeticException if {@code op2} is zero.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -596,17 +613,23 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code (op1 / op2)}.
      *
+     * @throws ArithmeticException if {@code op2} is zero.
+     *
      * @return this {@code MPF}.
      *
      * @apiNote {@code op1} should be treated as an unsigned long.
      */
     public MPF uiDivAssign(long op1, MPF op2) {
+        if (op2.isZero())
+            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpf_ui_div(mpfNative, new NativeUnsignedLong(op1), op2.mpfNative);
         return this;
     }
 
     /**
      * Returns an {@code MPF} whose value is {@code (op / this)}.
+     *
+     * @throws ArithmeticException if {@code op2} is zero.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -777,8 +800,12 @@ public class MPF extends Number implements Comparable<MPF> {
      * {@code (this > op)}, zero if {@code this = op}, or a negative value if
      * {@code this < op}. The value of {@code op} may be infinite, but the result is
      * undefined on NaNs.
+     *
+     * @throws ArithmeticException if {@code op} is a NaN.
      */
     public int cmp(double op) {
+        if (Double.isNaN(op))
+            throw new ArithmeticException(GMP.MSG_NAN_NOT_ALLOWED);
         return mpf_cmp_d(mpfNative, op);
     }
 
@@ -940,6 +967,13 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Returns true if and only if this {@code this} MPF is zero.
+     */
+    public boolean isZero() {
+        return mpf_cmp(mpfNative, zero.mpfNative) == 0;
+    }
+
+    /**
      * Sets this {@code MPF} to a uniformly distributed random float in the range
      * from {@code 0} included to {@code 1} excluded, with {@code nbits} significant
      * bits in the mantissa, or less if the precision of this {@code MPF} is
@@ -1026,11 +1060,11 @@ public class MPF extends Number implements Comparable<MPF> {
      * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number.
+     * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public MPF(double op) {
         if (!Double.isFinite(op))
-            throw new IllegalArgumentException("op should be a finite number");
+            throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
         mpfNative = new MpfT();
         mpf_init_set_d(mpfNative, op);
         GMP.cleaner.register(this, new MPFCleaner(mpfNative));
@@ -1073,17 +1107,15 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF(String str, int base) {
         mpfNative = new MpfT();
         String strCorrect = str;
-        if (! GMP.getDecimalSeparator().equals("."))
+        if (!GMP.getDecimalSeparator().equals("."))
             if (str.indexOf(GMP.getDecimalSeparator()) == -1)
                 strCorrect = str.replace(".", GMP.getDecimalSeparator());
             else
-                throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the specified base");
+                throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
         int result = mpf_init_set_str(mpfNative, strCorrect, base);
         if (result == -1) {
             mpf_clear(mpfNative);
-            throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the specified base");
+            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
         }
         GMP.cleaner.register(this, new MPFCleaner(mpfNative));
     }
@@ -1122,8 +1154,8 @@ public class MPF extends Number implements Comparable<MPF> {
      * Sets this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number. In this
+     *                             case, {@code this} is not altered.
      */
     public MPF setValue(double op) {
         return set(op);
@@ -1160,8 +1192,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
-            throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the specified base");
+            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
@@ -1176,7 +1207,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF setValue(String str) {
         var result = set(str, 10);
         if (result == -1)
-            throw new IllegalArgumentException("str is not a valid number in decimal base");
+            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
         return this;
     }
 
@@ -1266,7 +1297,8 @@ public class MPF extends Number implements Comparable<MPF> {
         var t = getStr(base, nDigits);
         var mantissa = t.getValue0();
         var position = t.getValue1().intValue();
-        if (mantissa.length() == 0) return "0";
+        if (mantissa.length() == 0)
+            return "0";
         var isNegative = mantissa.charAt(0) == '-';
         if (position >= 0) {
             if (isNegative)

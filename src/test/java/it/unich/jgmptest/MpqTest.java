@@ -44,7 +44,7 @@ public class MpqTest {
         var z = new MPQ();
         assertEquals(-5.25, new MPQ(-21, 4).getD());
         assertEquals(new MPQ(21, 4), z.set(5.25));
-        assertThrows(IllegalArgumentException.class, () -> z.set(Double.POSITIVE_INFINITY));
+        assertThrows(ArithmeticException.class, () -> z.set(Double.POSITIVE_INFINITY));
         assertEquals("21/4", new MPQ(21, 4).getStr(10));
         assertEquals("-21/4", new MPQ(-21, 4).getStr(10));
         assertEquals(null, new MPQ(21, 4).getStr(63));
@@ -66,6 +66,7 @@ public class MpqTest {
         assertEquals(new MPQ(56), new MPQ(8).mul(new MPQ(7)));
         assertEquals(new MPQ(48), new MPQ(3).mul2Exp(4));
         assertEquals(new MPQ(2, 3), new MPQ(4).div(new MPQ(6)));
+        assertThrows(ArithmeticException.class, () ->  new MPQ(4).div(new MPQ(0)));
         assertEquals(new MPQ(1, 16), new MPQ(1).div2Exp(4));
         assertEquals(new MPQ(-5), new MPQ(5).neg());
         assertEquals(new MPQ(5), new MPQ(-5).abs());

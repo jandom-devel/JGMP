@@ -87,6 +87,11 @@ public class MPQ extends Number implements Comparable<MPQ> {
     private static final long serialVersionUID = 1L;
 
     /**
+     * The zero multi-precision rational.
+     */
+    private static final MPQ zero = new MPQ();
+
+    /**
      * The pointer to the native {@code mpq_t} object.
      */
     private transient MpqT mpqNative;
@@ -223,13 +228,13 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
      * exact.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number. In this
+     *                             case, {@code this} is not altered.
      * @return this {@code MPQ}.
      */
     public MPQ set(double op) {
         if (!Double.isFinite(op))
-            throw new IllegalArgumentException("op should be a finite number");
+            throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
         mpq_set_d(mpqNative, op);
         return this;
     }
@@ -316,15 +321,21 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Sets this {@code MPQ} to {@code (op1 / op2)}.
      *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
      * @return this {@code MPQ}.
      */
     public MPQ divAssign(MPQ op1, MPQ op2) {
+        if (op2.isZero())
+            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpq_div(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
     }
 
     /**
      * Returns an {@code MPQ} whose value is {@code (this / op)}.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
      */
     public MPQ div(MPQ op) {
         return new MPQ().divAssign(this, op);
@@ -522,6 +533,13 @@ public class MPQ extends Number implements Comparable<MPQ> {
         return this;
     }
 
+    /**
+     * Returns true if and only if this {@code this} MPQ is zero.
+     */
+    public boolean isZero() {
+        return mpq_cmp(mpqNative, zero.mpqNative) == 0;
+    }
+
     // Java name aliases
 
     /**
@@ -572,8 +590,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Builds an {@code MPQ} whose value is {@code op}. There is no rounding, this
      * conversion is exact.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public MPQ(double op) {
         this();
@@ -602,7 +619,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     public MPQ(String str, int base) {
         this();
-        set(str, base);
+        if (set(str, base) == -1)
+            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+
     }
 
     /**
@@ -615,7 +634,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
      *                                  representation in decimal base.
      */
     public MPQ(String str) {
-        this(str, 10);
+        this();
+        if (set(str, 10) == -1)
+            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
     }
 
     /**
@@ -636,8 +657,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Sets this {@code MPQ} to op {@code op}. There is no rounding, this conversion
      * is exact.
      *
-     * @throws IllegalArgumentException if {@code op} is not a finite number. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if {@code op} is not a finite number. In this
+     *                             case, {@code this} is not altered.
      */
     public MPQ setValue(double op) {
         return set(op);
@@ -665,8 +686,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
-            throw new IllegalArgumentException(
-                    "either base is not valid or str is not a valid number in the specified base");
+            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
@@ -681,7 +701,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ setValue(String str) {
         var result = set(str, 10);
         if (result == -1)
-            throw new IllegalArgumentException("str is not a valid number in decimal base");
+            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
         return this;
     }
 
