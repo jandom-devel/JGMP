@@ -15,7 +15,7 @@ public class GMPTest {
 
     @Test
     void test_misc() {
-        assertTrue(GMP.getNativeVersion().length() > 0);
+        assertTrue(GMP.getVersion().length() > 0);
         assertTrue(GMP.getMajorVersion() >= 0);
         assertTrue(GMP.getMinorVersion() >= 0);
         assertTrue(GMP.getPatchLevel() >= 0);

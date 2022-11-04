@@ -48,7 +48,7 @@ public class GMP {
     /**
      * Returns the version of the native GMP library.
      */
-    public static String getNativeVersion() {
+    public static String getVersion() {
         return LibGmp.gmp_version;
     }
 
