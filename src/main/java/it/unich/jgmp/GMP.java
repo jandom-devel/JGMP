@@ -21,7 +21,9 @@ import static it.unich.jgmp.nativelib.LibGmp.gmp_printf;
 import static it.unich.jgmp.nativelib.LibGmp.gmp_scanf;
 import static it.unich.jgmp.nativelib.LibGmp.gmp_sscanf;
 
+import java.io.IOException;
 import java.lang.ref.Cleaner;
+import java.util.Properties;
 
 import com.sun.jna.Native;
 import com.sun.jna.Pointer;
@@ -38,6 +40,22 @@ public class GMP {
      * A private constructor since this class should never be instantiated.
      */
     private GMP() {
+    }
+
+    private static final Properties properties = new Properties();
+
+    static {
+        final var resource = GMP.class.getClassLoader().getResourceAsStream("project.properties");
+        if (resource != null) try {
+            properties.load(resource);
+        } catch (IOException e) { };
+    }
+
+    /**
+     * Returns the JGMP library version.
+     */
+    public static String getJGmpVersion() {
+        return properties.getProperty("jgmp.version");
     }
 
     /**

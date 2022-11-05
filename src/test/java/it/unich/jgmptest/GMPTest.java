@@ -19,6 +19,7 @@ public class GMPTest {
         assertTrue(GMP.getMinorVersion() >= 0);
         assertTrue(GMP.getPatchLevel() >= 0);
         assertTrue(GMP.getBitsPerLimb() > 0);
+        assertTrue(GMP.getJGmpVersion().length() >= 3);
     }
 
     @Test
