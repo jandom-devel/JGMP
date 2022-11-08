@@ -10,7 +10,7 @@ import it.unich.jgmp.MPF;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 
-public class GMPTest {
+public class GmpTest {
 
     @Test
     void testMiscellaneous() {
