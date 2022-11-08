@@ -25,9 +25,9 @@ import it.unich.jgmp.nativelib.GmpRandstateT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
- * The class encapsulating the {@code gmp_randstate_t} data type, which holds
- * the current state of a random number generator. It’s not safe for two threads
- * to generate a random number from the same {@code RandState} simultaneously,
+ * A class encapsulating the {@code gmp_randstate_t} data type, which holds the
+ * current state of a random number generator. It’s not safe for two threads to
+ * generate a random number from the same {@code RandState} simultaneously,
  * since this involves an update of that variable.
  *
  * <p>
@@ -36,12 +36,14 @@ import it.unich.jgmp.nativelib.NativeUnsignedLong;
  * {@link GMP#cleaner} for freeing all allocated memory during garbage
  * collection.
  * <p>
- * In determining the names and prototypes of the methods of the {@code MPZ}
- * class, we adopted the following rules:
+ * In determining the names and prototypes of the methods of the
+ * {@code RandState} class, we adopted the following rules:
  * <ul>
- * <li>functions {@code gmp_randclear} and {@code gmp_randinit} are not exposed
- * by the {@code RandState} class;
- * <li>if {@code baseName} begins with {@code randinit}, we create a static
+ * <li>the function {@code gmp_randclear} is only used internally and it is not
+ * exposed by the {@code RandState} class;
+ * <li>the obsolete function {@code gmp_randinit} is not exposed by the
+ * {@code RandState} class;
+ * <li>if {@code baseName} begins with {@code gmp_randinit_}, we create a static
  * method {@code baseName} which returns a new {@code RandState} object;
  * <li>otherwise, we create a method {@code baseName} which calls the original
  * function, implicitly using {@code this} as the first non-constant
@@ -49,8 +51,7 @@ import it.unich.jgmp.nativelib.NativeUnsignedLong;
  * </ul>
  * <p>
  * In general, all the parameters which are not provided implicitly to the
- * original GMP function through {@code this} should be provided explicitly by
- * having them in the method prototype.
+ * original GMP function through {@code this} should be provided explicitly.
  */
 public class RandState {
 
@@ -76,8 +77,9 @@ public class RandState {
     }
 
     /**
-     * A private constructor which build a {@code RandState} starting from a pointer
-     * to its native data object. The native object needs to be already initialized.
+     * A private constructor which builds a {@code RandState} starting from a
+     * pointer to its native data object. The native object needs to be already
+     * initialized.
      */
     private RandState(GmpRandstateT pointer) {
         this.randstateNative = pointer;
@@ -110,46 +112,41 @@ public class RandState {
     }
 
     /**
-     * Returns the default random state.
-     */
-    public static RandState randinitDefault() {
-        return new RandState();
-    }
-
-    /**
      * Returns a random state for a Mersenne Twister algorithm. This algorithm is
      * fast and has good randomness properties.
      */
-    public static RandState randinitMt() {
+    public static RandState mt() {
         var m = new GmpRandstateT();
         gmp_randinit_mt(m);
         return new RandState(m);
     }
 
     /**
-     * Returns a random state for a linear congruential algorithm. See the GMP
-     * function <a href=
+     * Returns a random state for a linear congruential algorithm
+     * {@code X = (a*X + c) mod 2 ^ m2exp}. See the GMP function <a href=
      * "https://gmplib.org/manual/Random-State-Initialization">{@code gmp_randinit_lc_2exp}</a>.
      *
      * @apiNote both {@code c} and {@code m2exp} should be treated as unsigned
      *          longs.
      */
-    public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
+    public static RandState lc(MPZ a, long c, long m2exp) {
         var m = new GmpRandstateT();
         gmp_randinit_lc_2exp(m, a.getNative(), new NativeLong(c), new NativeLong(m2exp));
         return new RandState(m);
     }
 
     /**
-     * Returns a random state for a linear congruential algorithm. See the GMP
-     * function <a href=
+     * Returns a random state for a linear congruential algorithm. Parameters
+     * {@code a}, {@code c} and {@code m2exp} are selected from a table, chosen so
+     * that {@code size} bits (or more) of each X will be used, i.e.
+     * {@code m2exp/2 >= size}. See the GMP function <a href=
      * "https://gmplib.org/manual/Random-State-Initialization">{@code gmp_randinit_lc_2exp_size}</a>.
      *
      * @throws IllegalArgumentException if {@code size} is too big.
      *
      * @apiNote both {@code size} should be treated as an unsigned long.
      */
-    public static RandState randinitLc2ExpSize(long size) {
+    public static RandState lc(long size) {
         var m = new GmpRandstateT();
         var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
@@ -159,32 +156,25 @@ public class RandState {
     }
 
     /**
-     * Returns a random state which is a copy of {@code op}.
+     * Sets an initial seed value into this random state.
      */
-    public RandState randinitSet(RandState op) {
-        return new RandState(op);
-    }
-
-    /**
-     * Sets an initial seed value into state.
-     */
-    public RandState randseed(MPZ seed) {
+    public RandState setSeed(MPZ seed) {
         gmp_randseed(randstateNative, seed.getNative());
         return this;
     }
 
     /**
-     * Sets an initial seed value into state.
+     * Sets an initial seed value into this state.
      *
      * @apiNote {@code seed} should be treated as an unsigned long.
      */
-    public RandState randseedUi(long seed) {
+    public RandState setSeed(long seed) {
         gmp_randseed_ui(randstateNative, new NativeUnsignedLong(seed));
         return this;
     }
 
     /**
-     * Return a uniformly distributed random number of {@code n} bits, i.e. in the
+     * Returns a uniformly distributed random number of {@code n} bits, i.e. in the
      * range {@code 0} to <code>(2<sup>n</sup>-1)</code> inclusive. {@code n} must
      * be less than or equal to the number of bits in a native unsigned long.
      *
@@ -195,7 +185,7 @@ public class RandState {
     }
 
     /**
-     * Return a uniformly distributed random number in the range {@code 0} to
+     * Returns a uniformly distributed random number in the range {@code 0} to
      * {@code (n - 1)} inclusive.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
