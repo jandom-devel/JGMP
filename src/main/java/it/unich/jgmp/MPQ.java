@@ -32,52 +32,19 @@ import it.unich.jgmp.nativelib.MpqT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
- * The class encapsulating the {@code mpq_t} data type, i.e., multi-precision
- * rational numbers.
- *
- * <p>
- * An element of {@code MPQ} contains a pointer to a native {@code mpq_t}
- * variable and registers itself with {@link GMP#cleaner} for freeing all
- * allocated memory during garbage collection.
- * <p>
- * In determining the names and prototypes of the methods of the {@code MPQ}
- * class, we adopted the following rules:
+ * Multi-precision rational numbers. This class encapsulates the {@code mpq_t}
+ * data type, see the
+ * <a href="https://gmplib.org/manual/Rational-Number-Functions" target=
+ * "_blank">Rational Number Functions</a> page of the GMP manual. In determining
+ * the names and signatures of the methods of the {@code MPQ} class, we adopt
+ * the rules described in the documentation of the {@link it.unich.jgmp}
+ * package, enriched with the following ones:
  * <ul>
- * <li>functions {@code mpq_inits}, {@code mpq_clear}, {@code mpq_clears} and
- * {@code mpq_canonicalize} are only used internally and are not exposed by the
- * {@code MPQ} class;
- * <li>functions in the category <em>Input and Output Functions</em>, and macros
+ * <li>the function {@code mpq_canonicalize} is only used internally;
+ * <li>the functions in the category <em>I/O of Rationals</em>, and the macros
  * {@code mpq_numref} and {@code mpq_denref} are not exposed by the {@code MPQ}
- * class;
- * <li>if {@code baseName} begins with {@code set} or {@code swap}, we create a
- * method called {@code baseName} which calls the original function, implicitly
- * using {@code this} as the first {@code mpq_t} parameter;
- * <li>if {@code baseName} begins with {@code init}, we create a side-effect
- * free static method (see later);
- * <li>for all the other functions:
- * <ul>
- * <li>if the function has a non constant {@code mpq_t} parameter, then we
- * create a method {@code baseNameAssign} which calls the original function,
- * implicitly using {@code this} as the non-constant {@code mpq_t} parameter;
- * <li>we create e side-effect free method called {@code baseName}, with the
- * exception of a few cases where such as a method would not be particularly
- * useful.
+ * class.
  * </ul>
- * </ul>
- * <p>
- * In general, all the parameters which are not provided implicitly to the
- * original GMP function through {@code this} should be provided explicitly by
- * having them in the method prototype.
- * <p>
- * The side-effect free methods are designed as follows. First of all, we
- * distinguish between input and output parameters for the GMP function. The
- * side-effect free method takes all input parameters in its prototype, with the
- * exception of the first input {@code mpq_t} parameter which is mapped to
- * {@code this}. If there are no input {@code mpq_t} parameters, the method will
- * be static. The method creates a new object for the output parameter,
- * eventually cloning the ones also used as an input. After calling the GMP
- * functions, the return value or the output parameter is returned by the
- * method.
  */
 public class MPQ extends Number implements Comparable<MPQ> {
 
@@ -113,19 +80,30 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * A private constructor which build an {@code MPQ} starting from a pointer to
+     * its native data object. The native object needs to be already initialized.
+     */
+    private MPQ(MpqT pointer) {
+        this.mpqNative = pointer;
+        GMP.cleaner.register(this, new MPQCleaner(pointer));
+    }
+
+    /**
      * Returns the native pointer to the GMP object.
      */
     public MpqT getNative() {
         return mpqNative;
     }
 
-    // Initializing Integers
+    // Initialization and Assignment Functions
 
     /**
      * Returns an {@code MPQ} whose value is zero.
      */
     static public MPQ init() {
-        return new MPQ();
+        var mpqNative = new MpqT();
+        mpq_init(mpqNative);
+        return new MPQ(mpqNative);
     }
 
     // Assigning Integers
@@ -151,7 +129,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code num/den}.
+     * Sets this {@code MPQ} to {@code (<num/>den)}.
      *
      * @return this {@code MPQ}.
      *
@@ -164,17 +142,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}.
-     *
-     * @return this {@code MPQ}.
-     */
-    public MPQ set(long op) {
-        mpq_set_si(mpqNative, new NativeLong(op), new NativeLong(1));
-        return this;
-    }
-
-    /**
-     * Sets this {@code MPQ} to {@code num/den}.
+     * Sets this {@code MPQ} to {@code (num/den)}.
      *
      * @return this {@code MPQ}.
      *
@@ -182,6 +150,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     public MPQ setUi(long num, long den) {
         mpq_set_ui(mpqNative, new NativeUnsignedLong(num), new NativeUnsignedLong(den));
+        mpq_canonicalize(mpqNative);
         return this;
     }
 
@@ -429,8 +398,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code 1/this}. If the new denominator
-     * is zero, this routine will divide by zero.
+     * Returns an {@code MPQ} whose value is {@code (1/this)}. If the new
+     * denominator is zero, this routine will divide by zero.
      */
     public MPQ inv() {
         return new MPQ().invAssign(this);
@@ -440,8 +409,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}.
      */
     public int cmp(MPQ op) {
         return mpq_cmp(mpqNative, op.mpqNative);
@@ -457,9 +426,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares {@code this} with {@code num/dem}. Returns a positive value if
-     * {@code (this > num/dem)}, zero if {@code this = num/dem}, or a negative value
-     * if {@code this < num/dem}.
+     * Compares {@code this} with {@code (num/dem)}. Returns a positive value if
+     * {@code (this > num/dem)}, zero if {@code (this = num/dem)}, or a negative
+     * value if {@code (this < num/dem)}.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -468,9 +437,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares {@code this} with {@code num/dem}. Returns a positive value if
-     * {@code (this > num/dem)}, zero if {@code this = num/dem}, or a negative value
-     * if {@code this < num/dem}.
+     * Compares {@code this} with {@code (num/dem)}. Returns a positive value if
+     * {@code (this > num/dem)}, zero if {@code (this = num/dem)}, or a negative
+     * value if {@code (this < num/dem)}.
      *
      * @apiNote {@code num} and {@code den} should be treated as an unsigned long.
      */
@@ -480,7 +449,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
 
     /**
      * Returns {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
-     * {@code -1} if {@code this < 0}.
+     * {@code -1} if {@code (this < 0)}.
      */
     public int sgn() {
         return mpq_sgn(mpqNative);
@@ -534,13 +503,13 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns true if and only if this {@code this} MPQ is zero.
+     * Returns true if and only if {@code this} MPQ is zero.
      */
     public boolean isZero() {
         return mpq_cmp(mpqNative, zero.mpqNative) == 0;
     }
 
-    // Java name aliases
+    // Constructors
 
     /**
      * Builds an {@code MPQ} whose value is zero.
@@ -568,7 +537,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code num/dem}.
+     * Builds an {@code MPQ} whose value is {@code (num/dem)}.
      *
      * @apiNote {@code den} should be treated as an unsigned long.
      *
@@ -583,7 +552,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     public MPQ(long num) {
         this();
-        set(num);
+        set(num, 1);
     }
 
     /**
@@ -612,15 +581,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_set_str}</a>.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid string in the
-     *                                  specified {@code base}.
+     * @throws NumberFormatException if either {@code base} is not valid or
+     *                               {@code str} is not a valid string in the
+     *                               specified {@code base}.
      *
      */
     public MPQ(String str, int base) {
         this();
         if (set(str, base) == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
 
     }
 
@@ -630,24 +599,30 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_set_str}</a>.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
+     * @throws NumberFormatException if {@code str} is not a valid number
+     *                               representation in decimal base.
      */
     public MPQ(String str) {
         this();
         if (set(str, 10) == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
     }
+
+    // setValue functions
 
     /**
      * Sets this {@code MPQ} to {@code op}.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(MPQ op) {
         return set(op);
     }
 
     /**
-     * Sets this {@code MPQ} to signed long {@code op}.
+     * Sets this {@code MPQ} to {@code op}.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(long op) {
         return set(op);
@@ -659,56 +634,67 @@ public class MPQ extends Number implements Comparable<MPQ> {
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(double op) {
         return set(op);
     }
 
     /**
-     * Sets this {@code MPQ} to op {@code op}. There is no rounding, this conversion
-     * is exact.
+     * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
+     * exact.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(MPF op) {
         return set(op);
     }
 
     /**
-     * Set this {@code MPQ} to the number represented by the string {@code str} in
+     * Sets this {@code MPQ} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target="
      * _blank">{@code mpq_set_str}</a>.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid number
-     *                                  representation in the specified base. In
-     *                                  this case, {@code this} is not altered.
+     * @throws NumberFormatException if either {@code base} is not valid or
+     *                               {@code str} is not a valid number
+     *                               representation in the specified base. In this
+     *                               case, {@code this} is not altered.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
     /**
-     * Set this {@code MPQ} to the value represented by the string {@code str} in
-     * decimal base.
+     * Sets this {@code MPQ} to the value represented by the string {@code str} in
+     * decimal base. See the GMP function
+     * <a href="https://gmplib.org/manual/Initializing-Rationals" target="
+     * _blank">{@code mpq_set_str}</a>.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
-     * @see setValue(String, int)
+     * @throws NumberFormatException if {@code str} is not a valid number
+     *                               representation in decimal base.
+     *
+     * @return this {@code MPF}.
      */
     public MPQ setValue(String str) {
         var result = set(str, 10);
         if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
+    // Interface methods
+
     /**
      * Compares this {@code MPQ} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}. This order is compatible with equality.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}. This order is compatible with equality.
      */
     @Override
     public int compareTo(MPQ op) {
@@ -736,27 +722,35 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     @Override
     public int hashCode() {
-        return 0;
+        var num = mpz_get_si(mpq_numref(mpqNative)).intValue();
+        var den = mpz_get_si(mpq_numref(mpqNative)).intValue();
+        return num ^ den;
     }
 
     /**
-     * Converts this {@code MPQ} to an integer, truncating if necessary.
+     * Converts this {@code MPQ} to an int, truncating if necessary.
+     *
+     * @implNote Returns the result of {@link doubleValue} cast to an {@code int}.
      */
     public int intValue() {
-        return (int) doubleValue();
+        return (int) getD();
     }
 
     /**
      * Converts this {@code MPQ} to an long, truncating if necessary.
+     *
+     * @implNote Returns the result of {@link doubleValue} cast to a {@code long}.
      */
     public long longValue() {
-        return (long) doubleValue();
+        return (long) getD();
     }
 
     /**
-     * Converts this {@code MPQ} to a double, truncating if necessary.
-     *
-     * @see getD
+     * Converts this {@code MPQ} to a double, truncating if necessary. If the
+     * exponent from the conversion is too big or too small to fit a double then the
+     * result is system dependent. For too big an infinity is returned when
+     * available. For too small 0.0 is normally returned. Hardware overflow,
+     * underflow and denorm traps may or may not occur.
      */
     public double doubleValue() {
         return getD();
@@ -765,7 +759,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Converts this {@code MPQ} to a float, truncating if necessary.
      *
-     * @see getD
+     * @implNote Returns the result of {@link doubleValue} cast to a {@code float}.
      */
     public float floatValue() {
         return (float) getD();
@@ -776,9 +770,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_get_str}</a>.
+     *
+     * @throws IllegalArgumentException if the base is not valid.
      */
     public String toString(int base) {
-        return getStr(base);
+        var s = getStr(base);
+        if (s == null)
+            throw new IllegalArgumentException(GMP.MSG_INVALID_BASE);
+        return s;
     }
 
     /**
@@ -788,6 +787,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public String toString() {
         return getStr(10);
     }
+
+    // Serialization
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         // writeUTF seems more efficient, but has a limit of 64Kb

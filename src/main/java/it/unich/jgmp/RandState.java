@@ -25,32 +25,31 @@ import it.unich.jgmp.nativelib.GmpRandstateT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
- * The class encapsulating the {@code gmp_randstate_t} data type, which holds
- * the current state of a random number generator. It’s not safe for two threads
- * to generate a random number from the same {@code RandState} simultaneously,
- * since this involves an update of that variable.
- *
- * <p>
- * An element of {@code RandState} contains a pointer to a native
- * {@code gmp_randstate_t} variable and registers itself with
- * {@link GMP#cleaner} for freeing all allocated memory during garbage
- * collection.
- * <p>
- * In determining the names and prototypes of the methods of the {@code MPZ}
- * class, we adopted the following rules:
+ * Current state of a random number generator. This class enapsulates the native
+ * {@code gmp_randstate_t} data type, see the
+ * <a href="https://gmplib.org/manual/Random-Number-Functions" target=
+ * "_blank">Random Number Function</a> page of the GMP manual. In determining
+ * the names and signatures of the methods of the {@code RandState} class, we
+ * adopted the following rules:
  * <ul>
- * <li>functions {@code gmp_randclear} and {@code gmp_randinit} are not exposed
- * by the {@code RandState} class;
- * <li>if {@code baseName} begins with {@code randinit}, we create a static
- * method {@code baseName} which returns a new {@code RandState} object;
+ * <li>the function {@code gmp_randclear} is only used internally;
+ * <li>the obsolete function {@code gmp_randinit} is not exposed by the
+ * {@code RandState} class;
+ * <li>if the function name begins with {@code gmp_randinit}, we create a static
+ * method caleed {@code baseName} which returns a new {@code RandState} object;
  * <li>otherwise, we create a method {@code baseName} which calls the original
  * function, implicitly using {@code this} as the first non-constant
- * {@code gmp_randstate_t} parameter;
+ * {@code gmp_randstate_t} parameter.
  * </ul>
+ * Other methods and constructors which conform to standard Java naming
+ * conventions might be provided.
  * <p>
  * In general, all the parameters which are not provided implicitly to the
- * original GMP function through {@code this} should be provided explicitly by
- * having them in the method prototype.
+ * original GMP function through {@code this} should be provided explicitly.
+ * <p>
+ * Note that it is not safe for two threads to generate a random number from the
+ * same {@code RandState} simultaneously, since this involves an update of the
+ * object.
  */
 public class RandState {
 
@@ -92,28 +91,12 @@ public class RandState {
     }
 
     /**
-     * Builds the default random state.
-     */
-    public RandState() {
-        randstateNative = new GmpRandstateT();
-        gmp_randinit_default(randstateNative);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
-    }
-
-    /**
-     * Builds a copy of the specified random state.
-     */
-    public RandState(RandState state) {
-        randstateNative = new GmpRandstateT();
-        gmp_randinit_set(randstateNative, state.randstateNative);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
-    }
-
-    /**
      * Returns the default random state.
      */
     public static RandState randinitDefault() {
-        return new RandState();
+        var randstateNative = new GmpRandstateT();
+        gmp_randinit_default(randstateNative);
+        return new RandState(randstateNative);
     }
 
     /**
@@ -147,7 +130,7 @@ public class RandState {
      *
      * @throws IllegalArgumentException if {@code size} is too big.
      *
-     * @apiNote both {@code size} should be treated as an unsigned long.
+     * @apiNote {@code size} should be treated as an unsigned long.
      */
     public static RandState randinitLc2ExpSize(long size) {
         var m = new GmpRandstateT();
@@ -162,11 +145,13 @@ public class RandState {
      * Returns a random state which is a copy of {@code op}.
      */
     public RandState randinitSet(RandState op) {
-        return new RandState(op);
+        var randstateNative = new GmpRandstateT();
+        gmp_randinit_set(randstateNative, op.randstateNative);
+        return new RandState(randstateNative);
     }
 
     /**
-     * Sets an initial seed value into state.
+     * Sets an initial seed value into this.
      */
     public RandState randseed(MPZ seed) {
         gmp_randseed(randstateNative, seed.getNative());
@@ -174,7 +159,7 @@ public class RandState {
     }
 
     /**
-     * Sets an initial seed value into state.
+     * Sets an initial seed value into this.
      *
      * @apiNote {@code seed} should be treated as an unsigned long.
      */
@@ -184,9 +169,9 @@ public class RandState {
     }
 
     /**
-     * Return a uniformly distributed random number of {@code n} bits, i.e. in the
-     * range {@code 0} to <code>(2<sup>n</sup>-1)</code> inclusive. {@code n} must
-     * be less than or equal to the number of bits in a native unsigned long.
+     * Returns a uniformly distributed random number of {@code n} bits, in the range
+     * {@code 0} to <code>(2<sup>n</sup>-1)</code> inclusive. {@code n} must be less
+     * than or equal to the number of bits in a native unsigned long.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
@@ -195,12 +180,32 @@ public class RandState {
     }
 
     /**
-     * Return a uniformly distributed random number in the range {@code 0} to
+     * Returns a uniformly distributed random number in the range {@code 0} to
      * {@code (n - 1)} inclusive.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public long urandommUi(long n) {
         return gmp_urandomm_ui(randstateNative, new NativeUnsignedLong(n)).longValue();
+    }
+
+    // Constructors
+
+    /**
+     * Builds the default random state.
+     */
+    public RandState() {
+        randstateNative = new GmpRandstateT();
+        gmp_randinit_default(randstateNative);
+        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
+    }
+
+    /**
+     * Builds a copy of the specified random state.
+     */
+    public RandState(RandState state) {
+        randstateNative = new GmpRandstateT();
+        gmp_randinit_set(randstateNative, state.randstateNative);
+        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
     }
 }

@@ -237,9 +237,9 @@ public class MpfTest {
         assertThrows(ArithmeticException.class, () -> new MPF(Double.POSITIVE_INFINITY));
         assertEquals(new MPF(5.25), new MPF(new MPQ(21, 4)));
         assertEquals(new MPF(-26.0625), new MPF("-1A.1", 16));
-        assertThrows(IllegalArgumentException.class, () -> new MPF("2", 63));
+        assertThrows(NumberFormatException.class, () -> new MPF("2", 63));
         if (!GMP.getDecimalSeparator().equals("."))
-            assertThrows(IllegalArgumentException.class, () -> new MPF("0" + GMP.getDecimalSeparator() + "5"));
+            assertThrows(NumberFormatException.class, () -> new MPF("0" + GMP.getDecimalSeparator() + "5"));
         assertEquals(new MPF(350), new MPF("3.5e2", 10));
         assertEquals(new MPF(16), new MPF("1@100", 2));
         assertEquals(new MPF(16), new MPF("1@4", -2));

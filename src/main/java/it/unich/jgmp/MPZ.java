@@ -41,56 +41,18 @@ import it.unich.jgmp.nativelib.SizeT;
 import it.unich.jgmp.nativelib.SizeTByReference;
 
 /**
- * The class encapsulating the {@code mpz_t} data type, i.e., multi-precision
- * integer numbers.
- *
- * <p>
- * An element of {@code MPZ} contains a pointer to a native {@code mpz_t}
- * variable and registers itself with {@link GMP#cleaner} for freeing all
- * allocated memory during garbage collection.
- * <p>
- * In determining the names and prototypes of the methods of the {@code MPZ}
- * class, we adopted the following rules:
+ * Multi-precision integer number. This class encapsulates the {@code mpz_t}
+ * data type, see the
+ * <a href="https://gmplib.org/manual/Integer-Functions" target="_blank">Integer
+ * Functions</a> page of the GMP manual. In determining the names and prototypes
+ * of the methods of the {@code MPZ} class, we adopt the rules described in the
+ * documentation of the {@link it.unich.jgmp} package, enriched with the
+ * following ones:
  * <ul>
- * <li>functions {@code mpz_inits}, {@code mpz_clear} and {@code mpz_clears} are
- * only used internally and are not exposed by the {@code MPZ} class;
- * <li>functions in the categories <em>Integer Import and Export</em> and
- * <em>Special Functions</em> are not exposed by the {@code MPZ} class;
- * <li>if {@code baseName} begins with {@code realloc2}, {@code set} or
- * {@code swap}, we create a method called {@code baseName} which calls the
- * original function, implicitly using {@code this} as the first {@code mpz_t}
- * parameter;
- * <li>if {@code baseName} begins with {@code init}, we create a side-effect
- * free static method (see later);
- * <li>for all the other functions:
- * <ul>
- * <li>if the function has at least a non constant {@code mpz_t} parameter, then
- * we create a method {@code baseNameAssign} which calls the original function,
- * implicitly using {@code this} as the first non-constant {@code mpz_t}
- * parameter;
- * <li>we create e side-effect free method called {@code baseName}, with the
- * exception of a few cases where such as a method would not be particularly
- * useful.
+ * <li>the functions in the categories <em>I/O of Integers</em>, <em>Integer
+ * Import and Export</em> and <em>Special Functions</em> are not exposed by the
+ * {@code MPZ} class.
  * </ul>
- * </ul>
- * <p>
- * In general, all the parameters which are not provided implicitly to the
- * original GMP function through {@code this} should be provided explicitly by
- * having them in the method prototype.
- * <p>
- * The side-effect free methods are designed as follows. First of all, we
- * distinguish between input and output parameters for the GMP function. Some
- * parameters may have both an input and an output nature. The side-effect free
- * method takes all input parameters in its prototype, with the exception of the
- * first input {@code mpz_t} parameter which is mapped to {@code this}. If there
- * are no input {@code mpz_t} parameters, the method will be static. The method
- * creates new objects for the output parameters, eventually cloning the ones
- * also used as an input. After calling the GMP functions, the return value and
- * all the output parameters are returned by the method, eventually packed in a
- * {@link org.javatuples.Tuple}, from left to right according to the function
- * prototype. Sometimes, when the first {@code mpz_t} input parameter comes
- * after other input parameters, this procedure may lead to a prototype clash.
- * In this case, the name of the method is changed into {@code baseNameReverse}.
  */
 public class MPZ extends Number implements Comparable<MPZ> {
 
@@ -110,7 +72,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     private transient MpzT mpzNative;
 
     /**
-     * Result enumeration for the {@link isProbabPrime isProbabPrime} method.
+     * Result enumeration for the {@link isProbabPrime} method.
      */
     public static enum PrimalityStatus {
         /**
@@ -165,7 +127,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns an {@code MPZ} whose value is zero.
      */
     static public MPZ init() {
-        return new MPZ();
+        var mpzNative = new MpzT();
+        mpz_init(mpzNative);
+        return new MPZ(mpzNative);
     }
 
     /**
@@ -193,6 +157,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * automatically by GMP when needed. This function can be used to increase the
      * space for a variable in order to avoid repeated automatic reallocations, or
      * to decrease it to give memory back to the heap.
+     *
+     * @return this {@code MPZ}.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
@@ -251,6 +217,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the truncation of {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ set(MPQ op) {
         mpz_set_q(mpzNative, op.getNative());
@@ -259,6 +227,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the truncation of {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ set(MPF op) {
         mpz_set_f(mpzNative, op.getNative());
@@ -294,14 +264,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns an {@code MPZ} whose value is {@code op}.
      */
     public static MPZ initSet(MPZ op) {
-        return new MPZ(op);
+        var mpzNative = new MpzT();
+        mpz_init_set(mpzNative, op.mpzNative);
+        return new MPZ(mpzNative);
     }
 
     /**
      * Returns an {@code MPZ} whose value is {@code op}.
      */
     public static MPZ initSet(long op) {
-        return new MPZ(op);
+        var mpzNative = new MpzT();
+        mpz_init_set_si(mpzNative, new NativeLong(op));
+        return new MPZ(mpzNative);
     }
 
     /**
@@ -321,7 +295,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public static MPZ initSet(double op) {
-        return new MPZ(op);
+        var mpzNative = new MpzT();
+        if (!Double.isFinite(op))
+            throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
+        mpz_init_set_d(mpzNative, op);
+        return new MPZ(mpzNative);
     }
 
     /**
@@ -346,11 +324,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
     // Converting Integers
 
     /**
-     * Converts this {@code MPZ} to an unsigned long.
-     *
-     * If this number is too big to fit a native unsigned long, then just the least
-     * significant bits that do fit are returned. The sign of this number is
-     * ignored, only the absolute value is used.
+     * Converts this {@code MPZ} to an unsigned long. If this number is too big to
+     * fit a native unsigned long, then just the least significant bits that do fit
+     * are returned. The sign of this number is ignored, only the absolute value is
+     * used.
      *
      * @apiNote the return value should be treated as an unsigned long.
      */
@@ -359,10 +336,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Converts this {@code MPZ} to a signed long.
-     *
-     * If this number is too big to fit a native signed long, return the least
-     * significant part, preserving the sign.
+     * Converts this {@code MPZ} to a signed long. If this number is too big to fit
+     * a native signed long, return the least significant part, preserving the sign.
      */
     public long getSi() {
         return mpz_get_si(mpzNative).longValue();
@@ -2450,7 +2425,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         return mpz_tstbit(mpzNative, new MpBitcntT(index));
     }
 
-    // Random Number Functions
+    // Integer Random Numbers
 
     /**
      * Sets this {@code MPZ} to a uniformly distributed random integer in the range
@@ -2722,7 +2697,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         return mpz_sizeinbase(mpzNative, base).longValue();
     }
 
-    // Java name aliases
+    // Constructors
 
     /**
      * Builds an {@code MPZ} whose value is zero.
@@ -2790,9 +2765,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
      * target="_blank">{@code mpz_init_set_str}</a>.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid string in the
-     *                                  specified {@code base}.
+     * @throws NumberFormatException if either {@code base} is not valid or
+     *                               {@code str} is not a valid string in the
+     *                               specified {@code base}.
      *
      */
     public MPZ(String str, int base) {
@@ -2800,7 +2775,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         int result = mpz_init_set_str(mpzNative, str, base);
         if (result == -1) {
             mpz_clear(mpzNative);
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         }
         GMP.cleaner.register(this, new MPZCleaner(mpzNative));
     }
@@ -2811,15 +2786,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <a href="https://gmplib.org/manual/Simultaneous-Integer-Init-_0026-Assign"
      * target="_blank">{@code mpz_init_set_str}</a>.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
+     * @throws NumberFormatException if {@code str} is not a valid number
+     *                               representation in decimal base.
      */
     public MPZ(String str) {
         this(str, 10);
     }
 
+    // setValue functions
+
     /**
      * Sets this {@code MPZ} to {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ setValue(MPZ op) {
         return set(op);
@@ -2827,6 +2806,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to signed long {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ setValue(long op) {
         return set(op);
@@ -2837,6 +2818,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ setValue(double op) {
         return set(op);
@@ -2844,6 +2827,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the truncation op {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ setValue(MPQ op) {
         return set(op);
@@ -2851,6 +2836,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the truncation op {@code op}.
+     *
+     * @return this {@code MPZ}.
      */
     public MPZ setValue(MPF op) {
         return set(op);
@@ -2862,15 +2849,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * <a href="https://gmplib.org/manual/Assigning-Integers" target="
      * _blank">{@code mpz_set_str}</a>.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid number
-     *                                  representation in the specified base. In
-     *                                  this case, {@code this} is not altered.
+     * @throws NumberFormatException if either {@code base} is not valid or
+     *                               {@code str} is not a valid number
+     *                               representation in the specified base. In this
+     *                               case, {@code this} is not altered.
      */
     public MPZ setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
@@ -2878,16 +2865,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Set this {@code MPZ} to the value represented by the string {@code str} in
      * decimal base.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
+     * @throws NumberFormatException if {@code str} is not a valid number
+     *                               representation in decimal base.
      * @see setValue(String, int)
      */
     public MPZ setValue(String str) {
-        var result = set(str, 10);
-        if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
-        return this;
+        return setValue(str, 10);
     }
+
+    // Interface methods
 
     /**
      * Compares this {@code MPZ} with {@code op}. Returns a positive value if
@@ -2917,6 +2903,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /***
      * Returns a hash code value for this {@code MPZ}.
+     *
+     * @implNote Returns its {@link intValue}.
      */
     @Override
     public int hashCode() {
@@ -2924,10 +2912,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Converts this {@code MPZ} to a signed long.
-     *
-     * If this number is too big to fit a signed long, return the least significant
-     * part, preserving the sign.
+     * Converts this {@code MPZ} to a signed long. If this number is too big to fit
+     * a native signed long, return the least significant part, preserving the sign.
      */
     @Override
     public long longValue() {
@@ -2935,10 +2921,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Converts this {@code MPZ} to a signed int.
+     * Converts this {@code MPZ} to a signed int, truncating if necessary.
      *
-     * If this number is too big to fit a signed long, return the least significant
-     * part, preserving the sign.
+     * @implNote Returns the result of {@link longValue} cast to an {@code int}.
      */
     @Override
     public int intValue() {
@@ -2946,9 +2931,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Converts this {@code MPZ} to a double, truncating if necessary.
-     *
-     * @see getD
+     * Converts this {@code MPZ} to a double, truncating if necessary. If the
+     * exponent from the conversion is too big, the result is system dependent. An
+     * infinity is returned where available. A hardware overflow trap may or may not
+     * occur.
      */
     @Override
     public double doubleValue() {
@@ -2958,7 +2944,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Converts this {@code MPZ} to a float, truncating if necessary.
      *
-     * @see getD
+     * @implNote Returns the result of {@link doubleValue} cast to a {@code float}.
      */
     @Override
     public float floatValue() {
@@ -2972,7 +2958,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * "_blank">{@code mpz_get_str}</a>.
      */
     public String toString(int base) {
-        return getStr(base);
+        var s = getStr(base);
+        if (s == null)
+            throw new IllegalArgumentException(GMP.MSG_INVALID_BASE);
+        return s;
     }
 
     /**
@@ -2982,6 +2971,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public String toString() {
         return getStr(10);
     }
+
+    // Serialization
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         // writeUTF seems more efficient, but has a limit of 64Kb

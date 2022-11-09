@@ -38,56 +38,23 @@ import it.unich.jgmp.nativelib.MpfT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
- * The class encapsulating the {@code mpf_t} data type, i.e., multi-precision
- * floating point numbers. See the
+ * Multi-precision floating point numbers. This class encapsulates the
+ * {@code mpf_t} data type, see the
  * <a href="https://gmplib.org/manual/Floating_002dpoint-Functions" target=
- * "_blank">Floating-point Functions</a> manual page of the GMP manual.
- *
- * <p>
- * An element of {@code MPF} contains a pointer to a native {@code mpf_t}
- * variable and registers itself with {@link GMP#cleaner} for freeing all
- * allocated memory during garbage collection.
- * <p>
- * In determining the names and prototypes of the methods of the {@code MPF}
- * class, we adopted the following rules:
+ * "_blank">Floating-point Functions</a> page of the GMP manual. In determining
+ * the names and signatures of the methods of the {@code MPF} class, we adopt
+ * the rules described in the documentation of the {@link it.unich.jgmp}
+ * package, enriched with the following ones:
  * <ul>
- * <li>functions {@code mpf_inits}, {@code mpf_clear}, {@code mpf_clears} and
- * {@code mpq_set_prec_raw} are only used internally and are not exposed by the
- * {@code MPF} class;
- * <li>functions in the categories <em>I/O of Floats</em> are not exposed by the
- * {@code MPF} class;
- * <li>if {@code baseName} begins with {@code set} or {@code swap}, we create a
- * method called {@code baseName} which calls the original function, implicitly
- * using {@code this} as the first {@code mpf_t} parameter;
- * <li>if {@code baseName} begins with {@code init}, we create a side-effect
- * free static method (see later);
- * <li>for all the other functions:
- * <ul>
- * <li>if the function has at least a non constant {@code mpf_t} parameter, then
- * we create a method {@code baseNameAssign} which calls the original function,
- * implicitly using {@code this} as the first non-constant {@code mpf_t}
- * parameter;
- * <li>we create a side-effect free method called {@code baseName}, with the
- * exception of a few cases where such as a method would not be particularly
- * useful.
- * </ul>
+ * <li>the function {@code mpq_set_prec_raw} is not exposed by the {@code MPF}
+ * class;
+ * <li>the functions in the "<em>I/O of Floats</em>" category are not exposed by
+ * the {@code MPF} class.
  * </ul>
  * <p>
- * In general, all the parameters which are not provided implicitly to the
- * original GMP function through {@code this} should be provided explicitly by
- * having them in the method prototype.
- * <p>
- * The side-effect free methods are designed as follows. First of all, we
- * distinguish between input and output parameters for the GMP function. Some
- * parameters may have both an input and an output nature. The side-effect free
- * method takes all input parameters in its prototype, with the exception of the
- * first input {@code mpf_t} parameter which is mapped to {@code this}. If there
- * are no input {@code mpf_t} parameters, the method will be static. The method
- * creates new objects for the output parameters, eventually cloning the ones
- * also used as an input. After calling the GMP functions, the return value and
- * all the output parameters are returned by the method, eventually packed in a
- * {@link org.javatuples.Tuple}, from left to right according to the function
- * prototype.
+ * Every method which returns a new {@code MPF}, use the default precision set
+ * by the {@link setDefaultPrec} method, with the excpetion of the {@link init2}
+ * method where precision is specificied explicitly.
  */
 public class MPF extends Number implements Comparable<MPF> {
 
@@ -144,7 +111,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * Set the default precision to be at least {@code prec} bits. Previously
      * initialized variables are unaffected.
      *
-     * @apiNote {@code n} should be treated as an unsigned long.
+     * @apiNote {@code prec} should be treated as an unsigned long.
      */
     static public void setDefaultPrec(long prec) {
         mpf_set_default_prec(new MpBitcntT(prec));
@@ -153,19 +120,20 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Returns the default precision actually used.
      *
-     * @apiNote return value should be treated as an unsigned long.
+     * @apiNote the return value should be treated as an unsigned long.
      */
     static public long getDefaultPrec() {
         return mpf_get_default_prec().longValue();
     }
 
     /**
-     * Returns an {@code MPF} whose value is zero. The precision of x is undefined
-     * unless a default precision has already been established by a call to
-     * {@link setDefaultPrec}.
+     * Returns an {@code MPF} whose value is zero. The precision of the result will
+     * be taken from the active default precision, as set by {@link setDefaultPrec}.
      */
     static public MPF init() {
-        return new MPF();
+        var mpfNative = new MpfT();
+        mpf_init(mpfNative);
+        return new MPF(mpfNative);
     }
 
     /**
@@ -183,7 +151,7 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Returns the current precision of this {@code MPF}, in bits.
      *
-     * @apiNote return value should be treated as an unsigned long.
+     * @apiNote the return value should be treated as an unsigned long.
      */
     public long getPrec() {
         return mpf_get_prec(mpfNative).longValue();
@@ -206,7 +174,8 @@ public class MPF extends Number implements Comparable<MPF> {
     // Assigning Integers
 
     /**
-     * Sets this {@code MPF} to {@code op}.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
      *
      * @return this {@code MPF}.
      */
@@ -216,7 +185,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
      *
      * @return this {@code MPF}.
      */
@@ -226,7 +196,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
      *
      * @return this {@code MPF}.
      *
@@ -238,7 +209,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, truncating if necessary.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
@@ -252,7 +224,10 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the truncation of {@code op}.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
+     *
+     * @return this {@code MPF}.
      */
     public MPF set(MPZ op) {
         mpf_set_z(mpfNative, op.getNative());
@@ -260,7 +235,10 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the truncation of {@code op}.
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
+     *
+     * @return this {@code MPF}.
      */
     public MPF set(MPQ op) {
         mpf_set_q(mpfNative, op.getNative());
@@ -269,7 +247,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Sets this {@code MPF} to the number represented by the string {@code str} in
-     * the specified {@code base}. See the GMP function
+     * the specified {@code base}, possibly truncated according to precision. See
+     * the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Floats" target="
      * _blank">{@code mpf_set_str}</a>. The decimal point character is taken from
      * the current system locale, which may be different from the Java locale.
@@ -282,7 +261,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Swap the value of this {@code MPF} with the value of {@code op}.
+     * Swap the value of this {@code MPF} with the value of {@code op}. Both the
+     * value and the precision of the two objects are swapped.
      *
      * @return this {@code MPF}.
      */
@@ -294,31 +274,22 @@ public class MPF extends Number implements Comparable<MPF> {
     // Simultaneous Integer Init & Assign
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}. The precision of the result
-     * will be taken from the active default precision, as set by
-     * {@link setDefaultPrec}.
+     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * default precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
      *
      */
     public static MPF initSet(MPF op) {
-        return new MPF(op);
+        var mpfNative = new MpfT();
+        mpf_init_set(mpfNative, op.mpfNative);
+        return new MPF(mpfNative);
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}. The precision of the result
-     * will be taken from the active default precision, as set by
-     * {@link setDefaultPrec}.
-     */
-    public static MPF initSet(long op) {
-        return new MPF(op);
-    }
-
-    /**
-     * Returns an {@code MPF} whose value is {@code op}. The precision of the result
-     * will be taken from the active default precision, as set by
-     * {@link setDefaultPrec}.
+     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * default precision.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -329,19 +300,33 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the truncation of {@code op}. The
-     * precision of the result will be taken from the active default precision, as
-     * set by {@link setDefaultPrec}.
+     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * default precision.
+     */
+    public static MPF initSet(long op) {
+        var mpfNative = new MpfT();
+        mpf_init_set_si(mpfNative, new NativeLong(op));
+        return new MPF(mpfNative);
+    }
+
+    /**
+     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * default precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number.
      */
     public static MPF initSet(double op) {
-        return new MPF(op);
+        if (!Double.isFinite(op))
+            throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
+        var mpfNative = new MpfT();
+        mpf_init_set_d(mpfNative, op);
+        return new MPF(mpfNative);
     }
 
     /**
      * Returns an {@code MPF} whose value is the number represented by the string
-     * {@code str} in the specified {@code base}. See the GMP function
+     * {@code str} in the specified {@code base}, possibly truncated to the default
+     * precision. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
      * target="_blank">{@code mpq_init_set_str}</a>. The decimal point character is
      * taken from the current system locale, which may be different from the Java
@@ -364,9 +349,10 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Converts this {@code MPF} to a double, truncating if necessary. If the
-     * exponent from the conversion is too big, the result is system dependent. An
-     * infinity is returned where available. Hardware overflow, underflow and denorm
-     * traps may or may not occur.
+     * exponent from the conversion is too big or too small, the result is system
+     * dependent. For too big an infinity is returned when available. For too small
+     * 0.0 is normally returned. Hardware overflow, underflow and denorm traps may
+     * or may not occur.
      */
     public double getD() {
         return mpf_get_d(mpfNative);
@@ -386,9 +372,7 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Converts this {@code MPF} to an unsigned long, truncating any fraction part.
-     *
-     * If this number is too big to fit a native unsigned long, the result is
-     * undefined.
+     * If this number is too big to fit an unsigned long, the result is undefined.
      *
      * @apiNote the return value should be treated as an unsigned long.
      */
@@ -397,11 +381,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to an signed long, truncating any fraction part.
-     *
-     * If this number is too big to fit a native unsigned long, the result is
-     * undefined.
-     *
+     * Converts this {@code MPF} to a long, truncating any fraction part. If this
+     * number is too big to fit a long, the result is undefined.
      */
     public long getSi() {
         return mpf_get_si(mpfNative).longValue();
@@ -778,8 +759,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}.
      */
     public int cmp(MPF op) {
         return mpf_cmp(mpfNative, op.mpfNative);
@@ -787,9 +768,9 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}. The value of {@code op} may be infinite, but the result is
-     * undefined on NaNs.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}. The value of {@code op} may be infinite, but the result
+     * is undefined on NaNs.
      */
     public int cmp(MPZ op) {
         return mpf_cmp_z(mpfNative, op.getNative());
@@ -797,9 +778,9 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}. The value of {@code op} may be infinite, but the result is
-     * undefined on NaNs.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}. The value of {@code op} may be infinite, but the result
+     * is undefined on NaNs.
      *
      * @throws ArithmeticException if {@code op} is a NaN.
      */
@@ -811,8 +792,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}.
      */
     public int cmp(long op) {
         return mpf_cmp_si(mpfNative, new NativeLong(op));
@@ -820,8 +801,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Compares {@code this} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -832,6 +813,8 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to the relative difference between {@code op1} and
      * {@code op2}, i.e., {@code (abs(op1-op2)/op1)}.
+     *
+     * @return this {@code MPF}.
      */
     public MPF reldiffAssign(MPF op1, MPF op2) {
         mpf_reldiff(mpfNative, op1.mpfNative, op2.mpfNative);
@@ -848,7 +831,7 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Returns {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
-     * {@code -1} if {@code this < 0}.
+     * {@code -1} if {@code (this < 0)}.
      */
     public int sgn() {
         return mpf_sgn(mpfNative);
@@ -975,11 +958,11 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /**
      * Sets this {@code MPF} to a uniformly distributed random float in the range
-     * from {@code 0} included to {@code 1} excluded, with {@code nbits} significant
-     * bits in the mantissa, or less if the precision of this {@code MPF} is
-     * smaller.
+     * from {@code 0} included to {@code 1} excluded. The result has {@code nbits}
+     * significant bits in the mantissa, or less if the precision of this
+     * {@code MPF} is smaller.
      *
-     * @apiNote {@code n} should be treated as an unsigned long.
+     * @apiNote {@code nbits} should be treated as an unsigned long.
      */
     public MPF urandombAssign(RandState s, long nbits) {
         mpf_urandomb(mpfNative, s.getNative(), new MpBitcntT(nbits));
@@ -987,13 +970,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is an uniformly distributed random integer
-     * in the range {@code 0}} to <code>(2<sup>n</sup> - 1)</code>, inclusive.
+     * Returns an {@code MPF} whose value is an uniformly distributed random float
+     * in the range from {@code 0} included to {@code 1} excluded. The result has
+     * {@code nbits} significant bits in the mantissa, or less if the default
+     * precision is smaller.
      *
-     * @apiNote {@code n} should be treated as an unsigned long.
+     * @apiNote {@code nbits} should be treated as an unsigned long.
      */
-    public static MPF urandomb(RandState s, long n) {
-        return new MPF().urandombAssign(s, n);
+    public static MPF urandomb(RandState s, long nbits) {
+        return new MPF().urandombAssign(s, nbits);
     }
 
     /**
@@ -1013,7 +998,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose valie is a random integer of at most
+     * Returns an {@code MPF} whose value is a random integer of at most
      * {@code maxSize} limbs, with long strings of zeros and ones in the binary
      * representation. The exponent of the number is in the interval {@code -exp} to
      * {@code exp} (in limbs). This function is useful for testing functions and
@@ -1025,7 +1010,7 @@ public class MPF extends Number implements Comparable<MPF> {
         return (new MPF()).random2Assign(maxSize, exp);
     }
 
-    // Java name aliases
+    // Constructors
 
     /**
      * Builds an {@code MPF} whose value is zero.
@@ -1099,9 +1084,9 @@ public class MPF extends Number implements Comparable<MPF> {
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
      * target="_blank">{@code mpf_init_set_str}</a>.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid string in the
-     *                                  specified {@code base}.
+     * @throws NumberFormatException if either {@code base} is not valid or
+     *                               {@code str} is not a valid string in the
+     *                               specified {@code base}.
      *
      */
     public MPF(String str, int base) {
@@ -1111,11 +1096,11 @@ public class MPF extends Number implements Comparable<MPF> {
             if (str.indexOf(GMP.getDecimalSeparator()) == -1)
                 strCorrect = str.replace(".", GMP.getDecimalSeparator());
             else
-                throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+                throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         int result = mpf_init_set_str(mpfNative, strCorrect, base);
         if (result == -1) {
             mpf_clear(mpfNative);
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         }
         GMP.cleaner.register(this, new MPFCleaner(mpfNative));
     }
@@ -1127,16 +1112,20 @@ public class MPF extends Number implements Comparable<MPF> {
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
      * target="_blank">{@code mpf_init_set_str}</a>.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
+     * @throws NumberFormatException if {@code str} is not a valid number
+     *                               representation in decimal base.
      */
     public MPF(String str) {
         this(str, 10);
     }
 
+    // setValue functions
+
     /**
      * Sets this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
+     *
+     * @return this {@code MPF}.
      */
     public MPF setValue(MPF op) {
         return set(op);
@@ -1145,6 +1134,8 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
+     *
+     * @return this {@code MPF}.
      */
     public MPF setValue(long op) {
         return set(op);
@@ -1156,6 +1147,8 @@ public class MPF extends Number implements Comparable<MPF> {
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
+     *
+     * @return this {@code MPF}.
      */
     public MPF setValue(double op) {
         return set(op);
@@ -1164,58 +1157,66 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Sets this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
-     */
-    public MPF setValue(MPQ op) {
-        return set(op);
-    }
-
-    /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
-     * precision.
+     *
+     * @return this {@code MPF}.
      */
     public MPF setValue(MPZ op) {
         return set(op);
     }
 
     /**
+     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * precision.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF setValue(MPQ op) {
+        return set(op);
+    }
+
+    /**
      * Set this {@code MPF} to the number represented by the string {@code str} in
-     * the specified {@code base}. See the GMP function
+     * the specified {@code base}, possibly truncated according to precision. See
+     * the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Floats" target="
      * _blank">{@code mpf_set_str}</a>. The decimal point character is taken from
      * the current system locale, which may be different from the Java locale.
      *
-     * @throws IllegalArgumentException if either {@code base} is not valid or
-     *                                  {@code str} is not a valid number
-     *                                  representation in the specified base. In
-     *                                  this case, {@code this} is not altered.
+     * @throws ArithmeticException if either {@code base} is not valid or
+     *                             {@code str} is not a valid number representation
+     *                             in the specified base. In this case, {@code this}
+     *                             is not altered.
      */
     public MPF setValue(String str, int base) {
         var result = set(str, base);
         if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_STRING_CONVERSION);
+            throw new ArithmeticException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
     /**
      * Set this {@code MPF} to the value represented by the string {@code str} in
-     * decimal base. The decimal point character is taken from the current system
-     * locale, which may be different from the Java locale.
+     * decimal base, possibly truncated according to precision. The decimal point
+     * character is taken from the current system locale, which may be different
+     * from the Java locale.
      *
-     * @throws IllegalArgumentException if {@code str} is not a valid number
-     *                                  representation in decimal base.
+     * @throws ArithmeticException if {@code str} is not a valid number
+     *                             representation in decimal base.
      * @see setValue(String, int)
      */
     public MPF setValue(String str) {
         var result = set(str, 10);
         if (result == -1)
-            throw new IllegalArgumentException(GMP.MSG_INVALID_DECIMAL_STRING_CONVERSION);
+            throw new ArithmeticException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
     }
 
+    // Interface methods
+
     /**
      * Compares this {@code MPF} with {@code op}. Returns a positive value if
-     * {@code (this > op)}, zero if {@code this = op}, or a negative value if
-     * {@code this < op}. This order is compatible with equality.
+     * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
+     * {@code (this < op)}. This order is compatible with equality.
      */
     @Override
     public int compareTo(MPF op) {
@@ -1240,6 +1241,8 @@ public class MPF extends Number implements Comparable<MPF> {
 
     /***
      * Returns a hash code value for this {@code MPF}.
+     *
+     * @implNote Returns its {@link intValue}.
      */
     @Override
     public int hashCode() {
@@ -1247,10 +1250,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a signed long.
-     *
-     * If this number is too big to fit a signed long, return the least significant
-     * part, preserving the sign.
+     * Converts this {@code MPF} to a {@code long}, truncating any fraction part. If
+     * this number is too big to fit a {@code long}, the result is undefined.
      */
     @Override
     public long longValue() {
@@ -1258,10 +1259,9 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a signed int.
+     * Converts this {@code MPF} to an {@code int}.
      *
-     * If this number is too big to fit a signed long, return the least significant
-     * part, preserving the sign.
+     * @implNote Returns the result of {@link longValue} cast to an {@code int}.
      */
     @Override
     public int intValue() {
@@ -1269,9 +1269,11 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a double, truncating if necessary.
-     *
-     * @see getD
+     * Converts this {@code MPF} to a double, truncating if necessary. If the
+     * exponent from the conversion is too big or too small to fit a double then the
+     * result is system dependent. For too big an infinity is returned when
+     * available. For too small 0.0 is normally returned. Hardware overflow,
+     * underflow and denorm traps may or may not occur.
      */
     @Override
     public double doubleValue() {
@@ -1281,7 +1283,7 @@ public class MPF extends Number implements Comparable<MPF> {
     /**
      * Converts this {@code MPF} to a float, truncating if necessary.
      *
-     * @see getD
+     * @implNote Returns the result of {@link doubleValue} cast to a {@code float}.
      */
     @Override
     public float floatValue() {
@@ -1293,9 +1295,13 @@ public class MPF extends Number implements Comparable<MPF> {
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Floats" target=
      * "_blank">{@code mpf_get_str}</a>.
+     *
+     * @throws IllegalArgumentException if the base is not valid.
      */
     public String toString(int base, long nDigits) {
         var t = getStr(base, nDigits);
+        if (t == null)
+            throw new IllegalArgumentException(GMP.MSG_INVALID_BASE);
         var mantissa = t.getValue0();
         var position = t.getValue1().intValue();
         if (mantissa.length() == 0)
@@ -1318,7 +1324,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * "_blank">{@code mpf_get_str}</a>.
      */
     public String toString(int base) {
-        return toString(base, 0);
+        return toString(base, 10);
     }
 
     /**
@@ -1328,6 +1334,8 @@ public class MPF extends Number implements Comparable<MPF> {
     public String toString() {
         return toString(10, 0);
     }
+
+    // Serialization
 
     private void writeObject(ObjectOutputStream out) throws IOException {
         // writeUTF seems more efficient, but has a limit of 64Kb

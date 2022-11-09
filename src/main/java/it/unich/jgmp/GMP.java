@@ -32,8 +32,8 @@ import com.sun.jna.ptr.PointerByReference;
 import it.unich.jgmp.nativelib.LibGmp;
 
 /**
- * Class collecting global variables and static methods which do no fit in more
- * specific classes.
+ * Collects global variables and static methods which do no fit in more specific
+ * classes.
  */
 public class GMP {
     /**
@@ -42,20 +42,19 @@ public class GMP {
     private GMP() {
     }
 
+    /**
+     * Java Properties used by JGMP.
+     */
     private static final Properties properties = new Properties();
 
     static {
         final var resource = GMP.class.getClassLoader().getResourceAsStream("project.properties");
-        if (resource != null) try {
-            properties.load(resource);
-        } catch (IOException e) { };
-    }
-
-    /**
-     * Returns the JGMP library version.
-     */
-    public static String getJGmpVersion() {
-        return properties.getProperty("jgmp.version");
+        if (resource != null)
+            try {
+                properties.load(resource);
+            } catch (IOException e) {
+            }
+        ;
     }
 
     /**
@@ -74,27 +73,22 @@ public class GMP {
     static final String MSG_NAN_NOT_ALLOWED = "NaN is not allowed here";
 
     /**
-     * Error messages when arguments this and r cannot be the same object.
+     * Error message when arguments this and r cannot be the same object.
      */
     static final String MSG_SAME_OBJECT = "This and r cannot be the same object";
 
     /**
-     * Error for invalid base in conversion to strings.
+     * Error messages for invalid base in toString and sizeinbase methods.
      */
-    static final String MSG_INVALID_BASE = "The value of base can vary from 2 to 62";
+    static final String MSG_INVALID_BASE = "base is not valid";
 
     /**
-     * Error for invalid conversion from strings.
+     * Error messages for invalid conversion from strings.
      */
-    static final String MSG_INVALID_STRING_CONVERSION = "either base is not valid or str is not a valid number in the specified base";
+    static final String MSG_INVALID_STRING_CONVERSION = "Either base is not valid or str is not a valid number in the specified base";
 
     /**
-     * Error for invalid conversion from strings in base 10.
-     */
-    static final String MSG_INVALID_DECIMAL_STRING_CONVERSION = "str is not a valid number in decimal base";
-
-    /**
-     * ERror for parameter size too big.
+     * Error message for parameter size big.
      */
     static final String MSG_PARAMETER_TOO_BIG = "Parameter size is too big";
 
@@ -108,6 +102,13 @@ public class GMP {
      */
     public static String getVersion() {
         return LibGmp.gmp_version;
+    }
+
+    /**
+     * Returns the JGMP library version.
+     */
+    public static String getJGmpVersion() {
+        return properties.getProperty("jgmp.version");
     }
 
     /**
@@ -132,15 +133,19 @@ public class GMP {
     }
 
     /**
-     * Returns the number of bits per limb.
+     * Returns the number of bits per limb. A limb means the part of a
+     * multi-precision number that fits in a single machine word.
      */
     public static int getBitsPerLimb() {
         return LibGmp.mp_bits_per_limb;
     }
 
     /**
-     * Returns the system decimal separator, as used by the {@link sscanf} and
-     * {@link sprintf} methods.
+     * Returns the system decimal separator, as used by the
+     * {@link GMP#sscanf(String, String, Object...)} and
+     * {@link GMP#sprintf(String, Object...)} methods. This might not correspond to
+     * the decimal separator of the current Java locale, since native locales are
+     * more fine-grained then Java ones.
      */
     public static String getDecimalSeparator() {
         return LibGmp.decimalSeparator;
@@ -148,19 +153,18 @@ public class GMP {
 
     /**
      * Prints to the standard output according to the format specification in
-     * {@code fmt} and the additional arguments in {@code args}.
-     * <p>
-     * This is similar to the C {@code printf} function and the Java
+     * {@code fmt} and the additional arguments in {@code args}. This is similar to
+     * the C {@code printf} function and the Java
      * {@link java.io.PrintStream#printf(String, Object...)} method. If the format
      * string is invalid, or the arguments don’t match what the format specifies,
-     * then the behaviour of any of these functions will be unpredictable. It will
+     * then the behaviour of any of this function will be unpredictable. It will
      * return -1 to indicate a write error. Output is not “atomic”, so partial
      * output may be produced if a write error occurs.
      * <p>
-     * This method bypasses the standard I/O streams of Java. It is generally better
-     * to use the {@link sprintf(String, Object...)} method.
+     * This method bypasses the standard I/O procedures of the JVM. It is generally
+     * better to use the {@link GMP#sprintf(String, Object...)} method.
      * <p>
-     * See also page
+     * See also the page
      * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
      * "_blank">Formatted Output Strings</a> from the GMP manual.
      *
@@ -176,9 +180,9 @@ public class GMP {
      * {@code asprintf} function and the Java
      * {@link String#format(String, Object...)} method. If the format string is
      * invalid, or the arguments don’t match what the format specifies, then the
-     * behaviour of any of these functions will be unpredictable.
+     * behaviour of any of this function will be unpredictable.
      * <p>
-     * See also page
+     * See also the page
      * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
      * "_blank">Formatted Output Strings</a> from the GMP
      * manual..org/manual/Formatted-Output-Strings
@@ -194,16 +198,15 @@ public class GMP {
 
     /**
      * Parses the standard input according to the format specification in
-     * {@code fmt} and fills the variables in {@code args}. This is similar to the C
+     * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code scanf} function. If the format string is invalid, or the arguments
-     * don’t match what the format specifies, then the behaviour of any of these
-     * functions will be unpredictable. No overlap is permitted between the fmt
-     * string and any of the results produced.
+     * don’t match what the format specifies, then the behaviour of any of this
+     * function will be unpredictable.
      * <p>
-     * This method bypasses the standard I/O streams of Java. It is generally better
-     * to use the {@link sscanf} method.
+     * This method bypasses the standard I/O procedures of the JVM. It is generally
+     * better to use the {@link GMP#sscanf(String, String, Object...)} method.
      * <p>
-     * See also pages
+     * See also the pages
      * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
      * "_blank">Formatted Input Strings</a> and
      * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
@@ -216,14 +219,13 @@ public class GMP {
     }
 
     /**
-     * Parses a string according to the format specification in {@code fmt} and
-     * fills the variables in {@code args}. This is similar to the C {@code scanf}
-     * function. If the format string is invalid, or the arguments don’t match what
-     * the format specifies, then the behaviour of any of these functions will be
-     * unpredictable. No overlap is permitted between the fmt string and any of the
-     * results produced.
+     * Parses the string {@code s} according to the format specification in
+     * {@code fmt}, filling the variables in {@code args}. This is similar to the C
+     * {@code scanf} function. If the format string is invalid, or the arguments
+     * don’t match what the format specifies, then the behaviour of any of this
+     * function will be unpredictable.
      * <p>
-     * See also pages
+     * See also the pages
      * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
      * "_blank">Formatted Input Strings</a> and
      * <a href="https://gmplib.org/manual/Formatted-Input-Functions" target=
