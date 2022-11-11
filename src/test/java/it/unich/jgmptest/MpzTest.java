@@ -180,6 +180,9 @@ public class MpzTest {
         assertEquals(new MPZ(120), new MPZ(30).lcm(new MPZ(24)));
         assertEquals(new MPZ(120), new MPZ(30).lcmUi(24));
         assertEquals(Optional.of(new MPZ(3)), new MPZ(5).invert(new MPZ(7)));
+        assertEquals(Optional.empty(), new MPZ(0).invert(new MPZ(7)));
+        assertEquals(Optional.empty(), new MPZ(5).invert(new MPZ(0)));
+
         assertEquals(-1, new MPZ(5).jacobi(new MPZ(3)));
         assertEquals(0, new MPZ(9).legendre(new MPZ(3)));
         assertEquals(1, new MPZ(5).kronecker(new MPZ(4)));
