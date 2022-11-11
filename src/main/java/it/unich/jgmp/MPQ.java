@@ -247,6 +247,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this + op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPQ addAssign(MPQ op) {
+        return addAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPQ} whose value is {@code (this + op)}.
      */
     public MPQ add(MPQ op) {
@@ -261,6 +270,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ subAssign(MPQ op1, MPQ op2) {
         mpq_sub(mpqNative, op1.mpqNative, op2.mpqNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to {@code (this - op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPQ subAssign(MPQ op) {
+        return subAssign(this, op);
     }
 
     /**
@@ -281,6 +299,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this * op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPQ mulAssign(MPQ op) {
+        return mulAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPQ} whose value is {@code (this * op)}.
      */
     public MPQ mul(MPQ op) {
@@ -290,7 +317,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Sets this {@code MPQ} to {@code (op1 / op2)}.
      *
-     * @throws ArithmeticException if {@code d} is zero.
+     * @throws ArithmeticException if {@code op} is zero.
      *
      * @return this {@code MPQ}.
      */
@@ -302,9 +329,20 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this * op)}
+     *
+     * @throws ArithmeticException if {@code op} is zero.
+     *
+     * @return this {@code MPQ}
+     */
+    public MPQ divAssign(MPQ op) {
+        return divAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPQ} whose value is {@code (this / op)}.
      *
-     * @throws ArithmeticException if {@code d} is zero.
+     * @throws ArithmeticException if {@code op} is zero.
      */
     public MPQ div(MPQ op) {
         return new MPQ().divAssign(this, op);
@@ -320,6 +358,17 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ mul2ExpAssign(MPQ op, long b) {
         mpq_mul_2exp(mpqNative, op.mpqNative, new MpBitcntT(b));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to <code>(this * 2<sup>b</sup>)</code>.
+     *
+     * @return this {@code MPQ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPQ mul2ExpAssign(long b) {
+        return mul2ExpAssign(this, b);
     }
 
     /**
@@ -344,6 +393,17 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * Sets this {@code MPQ} to <code>(this / 2<sup>b</sup>)</code>.
+     *
+     * @return this {@code MPQ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPQ div2ExpAssign(long b) {
+        return div2ExpAssign(this, b);
+    }
+
+    /**
      * Returns an {@code MPQ} whose value is <code>(this / 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
@@ -360,6 +420,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ negAssign(MPQ op) {
         mpq_neg(mpqNative, op.mpqNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to its opposite.
+     *
+     * @return this {@code MPQ}.
+     */
+    public MPQ negAssign() {
+        return negAssign(this);
     }
 
     /**
@@ -380,6 +449,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
+     * Sets this {@code MPQ} to its absolute value.
+     *
+     * @return this {@code MPQ}.
+     */
+    public MPQ absAssign() {
+        return absAssign(this);
+    }
+
+    /**
      * Returns an {@code MPQ} whose value is the absolute value of {@code this}.
      */
     public MPQ abs() {
@@ -395,6 +473,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ invAssign(MPQ op) {
         mpq_inv(mpqNative, op.mpqNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to its inverse.
+     *
+     * @return this {@code MPQ}.
+     */
+    public MPQ invAssign() {
+        return invAssign(this);
     }
 
     /**

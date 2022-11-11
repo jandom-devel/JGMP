@@ -417,6 +417,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (this + op)}
+     *
+     * @return this {@code MPF}
+     */
+    public MPF addAssign(MPF op) {
+        return addAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (this + op)}.
      */
     public MPF add(MPF op) {
@@ -433,6 +442,17 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF addUiAssign(MPF op1, long op2) {
         mpf_add_ui(mpfNative, op1.mpfNative, new NativeUnsignedLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to {@code (this + op)}
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF addUiAssign(long op) {
+        return addUiAssign(this, op);
     }
 
     /**
@@ -455,6 +475,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (this - op)}
+     *
+     * @return this {@code MPF}
+     */
+    public MPF subAssign(MPF op) {
+        return subAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (this - op)}.
      */
     public MPF sub(MPF op) {
@@ -471,6 +500,17 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF subUiAssign(MPF op1, long op2) {
         mpf_sub_ui(mpfNative, op1.mpfNative, new NativeUnsignedLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to {@code (this - op)}
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF subUiAssign(long op) {
+        return subUiAssign(this, op);
     }
 
     /**
@@ -495,6 +535,17 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (op - this)}
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF uiSubAssign(long op) {
+        return uiSubAssign(op, this);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (op - this)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
@@ -514,6 +565,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (this * op)}
+     *
+     * @return this {@code MPF}
+     */
+    public MPF mulAssign(MPF op) {
+        return mulAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (this * op)}.
      */
     public MPF mul(MPF op) {
@@ -530,6 +590,17 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF mulUiAssign(MPF op1, long op2) {
         mpf_mul_ui(mpfNative, op1.mpfNative, new NativeUnsignedLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to {@code (this * op)}
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF mulUiAssign(long op) {
+        return mulUiAssign(this, op);
     }
 
     /**
@@ -556,9 +627,20 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (this / op)}
+     *
+     * @throws ArithmeticException if {@code op} is zero.
+     *
+     * @return this {@code MPF}
+     */
+    public MPF divAssign(MPF op) {
+        return divAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (this / op)}.
      *
-     * @throws ArithmeticException if {@code op2} is zero.
+     * @throws ArithmeticException if {@code op} is zero.
      */
     public MPF div(MPF op) {
         return new MPF().divAssign(this, op);
@@ -581,9 +663,22 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (this / op)}
+     *
+     * @throws ArithmeticException if {@code op} is zero.
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF divUiAssign(long op) {
+        return divUiAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (this / op)}.
      *
-     * @throws ArithmeticException if {@code op2} is zero.
+     * @throws ArithmeticException if {@code op} is zero.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -608,9 +703,22 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to {@code (op / this)}
+     *
+     * @throws ArithmeticException if {@code this} is zero.
+     *
+     * @return this {@code MPF}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPF uiDivAssign(long op) {
+        return uiDivAssign(op, this);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code (op / this)}.
      *
-     * @throws ArithmeticException if {@code op2} is zero.
+     * @throws ArithmeticException if {@code this} is zero.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -626,6 +734,15 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF sqrtAssign(MPF op) {
         mpf_sqrt(mpfNative, op.mpfNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to its square root.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF sqrtAssign() {
+        return sqrtAssign(this);
     }
 
     /**
@@ -670,6 +787,18 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to <code>(this<sup>exp</sup>)</code>. The case
+     * <code>0<sup>0</sup></code> yields {@code 1}.
+     *
+     * @return this {@code MPF}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
+     */
+    public MPF powUiAssign(long exp) {
+        return powUiAssign(this, exp);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is <code>(this<sup>exp</sup>)</code>. The
      * case <code>0<sup>0</sup></code> yields {@code 1}.
      *
@@ -690,7 +819,16 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the quotient of {@code (- this)}.
+     * Sets this {@code MPF} to its opposite.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF negAssign() {
+        return negAssign(this);
+    }
+
+    /**
+     * Returns an {@code MPF} whose value is {@code (- this)}.
      */
     public MPF neg() {
         return new MPF().negAssign(this);
@@ -704,6 +842,15 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF absAssign(MPF op) {
         mpf_abs(mpfNative, op.mpfNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to its absolute value.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF absAssign() {
+        return absAssign(this);
     }
 
     /**
@@ -726,6 +873,17 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to <code>(this * 2<sup>b</sup>)</code>.
+     *
+     * @return this {@code MPF}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPF mul2ExpAssign(long b) {
+        return mul2ExpAssign(this, b);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
@@ -744,6 +902,17 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF div2ExpAssign(MPF op, long b) {
         mpf_div_2exp(mpfNative, op.mpfNative, new MpBitcntT(b));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to <code>(this / 2<sup>b</sup>)</code>.
+     *
+     * @return this {@code MPF}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPF div2ExpAssign(long b) {
+        return div2ExpAssign(this, b);
     }
 
     /**
@@ -822,6 +991,16 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to the relative difference between {@code this} and
+     * {@code op}, i.e., {@code (abs(this-op)/this)}.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF reldiffAssign(MPF op) {
+        return reldiffAssign(this, op);
+    }
+
+    /**
      * Return the relative difference between {@code this} and {@code this}, i.e.,
      * {@code (abs(this-op)/this)}.
      */
@@ -851,6 +1030,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to its value rounded to the next higher integer.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF ceilAssign() {
+        return ceilAssign(this);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code this} rounded to the next higher
      * integer.
      */
@@ -870,6 +1058,15 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Sets this {@code MPF} to its value rounded to the next lower integer.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF floorAssign() {
+        return floorAssign(this);
+    }
+
+    /**
      * Returns an {@code MPF} whose value is {@code this} rounded to the next lower
      * integer.
      */
@@ -885,6 +1082,15 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF truncAssign(MPF op) {
         mpf_trunc(mpfNative, op.mpfNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPF} to its value rounded towards zero.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF truncAssign() {
+        return truncAssign(this);
     }
 
     /**

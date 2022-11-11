@@ -393,6 +393,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this + op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPZ addAssign(MPZ op) {
+        return addAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this + op)}.
      */
     public MPZ add(MPZ op) {
@@ -409,6 +418,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ addUiAssign(MPZ op1, long op2) {
         mpz_add_ui(mpzNative, op1.mpzNative, new NativeUnsignedLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to {@code (this + op)}
+     *
+     * @return this {@code MPQ}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ addUiAssign(long op) {
+        return addUiAssign(this, op);
     }
 
     /**
@@ -431,6 +451,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this - op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPZ subAssign(MPZ op) {
+        return subAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this - op)}.
      */
     public MPZ sub(MPZ op) {
@@ -447,6 +476,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ subUiAssign(MPZ op1, long op2) {
         mpz_sub_ui(mpzNative, op1.mpzNative, new NativeUnsignedLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to {@code (this - op)}
+     *
+     * @return this {@code MPQ}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ subUiAssign(long op) {
+        return subUiAssign(this, op);
     }
 
     /**
@@ -471,6 +511,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (op - this)}
+     *
+     * @return this {@code MPQ}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ uiSubAssign(long op) {
+        return uiSubAssign(op, this);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (op - this)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
@@ -487,6 +538,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ mulAssign(MPZ op1, MPZ op2) {
         mpz_mul(mpzNative, op1.mpzNative, op2.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to {@code (this * op)}
+     *
+     * @return this {@code MPQ}
+     */
+    public MPZ mulAssign(MPZ op) {
+        return mulAssign(this, op);
     }
 
     /**
@@ -509,6 +569,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPQ} to {@code (this * op)}
+     *
+     * @return this {@code MPQ}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ mulUiAssign(long op) {
+        return mulUiAssign(op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this * op)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
@@ -525,6 +596,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ mulAssign(MPZ op1, long op2) {
         mpz_mul_si(mpzNative, op1.mpzNative, new NativeLong(op2));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPQ} to {@code (this * op)}
+     *
+     * @return this {@code MPQ}
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ mulAssign(long op) {
+        return mulAssign(op);
     }
 
     /**
@@ -623,6 +705,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to <code>(this * 2<sup>b</sup>)</code>.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ mul2ExpAssign(long b) {
+        return mul2ExpAssign(this, b);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
@@ -642,6 +735,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to its opposite.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ negAssign() {
+        return negAssign(this);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the quotient of {@code (- this)}.
      */
     public MPZ neg() {
@@ -656,6 +758,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ absAssign(MPZ op) {
         mpz_abs(mpzNative, op.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to its absolute value.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ absAssign() {
+        return absAssign(this);
     }
 
     /**
@@ -683,8 +794,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards zero.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ cdivqAssign(MPZ d) {
+        return cdivqAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (n / d)}, rounded towards zero.
+     * {@code (this / d)}, rounded towards zero.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -695,6 +818,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpz_cdiv_r(mpzNative, n.mpzNative, d.mpzNative);
         return this;
+    }
+
+    public MPZ cdivrAssign(MPZ d) {
+        return cdivrAssign(this, d);
     }
 
     /**
@@ -717,6 +844,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards zero.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ cdivqrAssign(MPZ r, MPZ d) {
+        return cdivqrAssign(r, this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the quotient of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the remainder.
      *
@@ -732,6 +873,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards zero; it also returns the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
+     */
+    public long cdivqUiAssign(long d) {
+        return cdivqUiAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the remainder.
      *
@@ -744,6 +898,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (d == 0l)
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         return mpz_cdiv_r_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards zero; it also returns the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
+     */
+    public long cdivrUiAssign(long d) {
+        return cdivrUiAssign(this, d);
     }
 
     /**
@@ -764,6 +931,22 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (mpzNative == r.mpzNative)
             throw new IllegalArgumentException(GMP.MSG_SAME_OBJECT);
         return mpz_cdiv_qr_ui(mpzNative, r.mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards zero; it also returns
+     * the remainder.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @apiNote both {@code d} and the return value should be treated as unsigned
+     *          longs.
+     */
+    public long cdivqrUiAssign(MPZ r, long d) {
+        return cdivqrUiAssign(r, this, d);
     }
 
     /**
@@ -794,6 +977,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ cdivq2ExpAssign(long b) {
+        return cdivq2ExpAssign(this, b);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
@@ -804,6 +999,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ cdivr2ExpAssign(MPZ n, long b) {
         mpz_cdiv_r_2exp(mpzNative, n.mpzNative, new MpBitcntT(b));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ cdivr2ExpAssign(long b) {
+        return cdivr2ExpAssign(this, b);
     }
 
     /**
@@ -874,6 +1081,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards negative infinity.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ fdivqAssign(MPZ d) {
+        return fdivqAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards negative infinity.
      *
@@ -886,6 +1105,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpz_fdiv_r(mpzNative, n.mpzNative, d.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards negative infinity.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ fdivrAssign(MPZ d) {
+        return fdivrAssign(this, d);
     }
 
     /**
@@ -908,6 +1139,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards negative infinity.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ fdivqrAssign(MPZ r, MPZ d) {
+        return fdivqrAssign(r, this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the quotient of the integer division
      * {@code (n / d)}, rounded towards negative infinity; it also returns the
      * absolute value of the remainder.
@@ -923,6 +1168,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards negative infinity; it also returns the
+     * absolute value of the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
+     */
+    public long fdivqUiAssign(long d) {
+        return fdivqUiAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards negative infinity; it also returns the
      * absolute value of the remainder.
@@ -935,6 +1193,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (d == 0l)
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         return mpz_fdiv_r_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards negative infinity; it also returns the
+     * absolute value of the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
+     */
+    public long fdivrUiAssign(long d) {
+        return fdivrUiAssign(this, d);
     }
 
     /**
@@ -954,6 +1225,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (mpzNative == r.mpzNative)
             throw new IllegalArgumentException(GMP.MSG_SAME_OBJECT);
         return mpz_fdiv_qr_ui(mpzNative, r.mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards negative infinity; it
+     * also returns the absolute value of the remainder.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
+     */
+    public long fdivqrUiAssign(MPZ r, long d) {
+        return fdivqrUiAssign(r, this, d);
     }
 
     /**
@@ -984,6 +1270,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ fdivq2ExpAssign(long b) {
+        return fdivq2ExpAssign(this, b);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward negative infinity.
      *
@@ -994,6 +1292,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ fdivr2ExpAssign(MPZ n, long b) {
         mpz_fdiv_r_2exp(mpzNative, n.mpzNative, new NativeUnsignedLong(b));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ fdivr2ExpAssign(long b) {
+        return fdivr2ExpAssign(this, b);
     }
 
     /**
@@ -1064,6 +1374,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards zero.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ tdivqAssign(MPZ d) {
+        return tdivqAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards zero.
      *
@@ -1076,6 +1398,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpz_tdiv_r(mpzNative, n.mpzNative, d.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards zero.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ tdivrAssign(MPZ d) {
+        return tdivrAssign(this, d);
     }
 
     /**
@@ -1098,6 +1432,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards zero.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ tdivqrAssign(MPZ r, MPZ d) {
+        return tdivqrAssign(r, this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the quotient of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the absolute value of
      * the remainder.
@@ -1114,6 +1462,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * {@code (this / d)}, rounded towards zero; it also returns the absolute value
+     * of the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote both {@code d} and the returned value should be treateds as unsigned
+     *          longs.
+     */
+    public long tdivqUiAssign(long d) {
+        return tdivqUiAssign(this, d);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * {@code (n / d)}, rounded towards zero; it also returns the absolute value of
      * the remainder.
@@ -1127,6 +1489,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (d == 0l)
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         return mpz_tdiv_r_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards zero; it also returns the absolute value
+     * of the remainder.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote both {@code d} and the returned value should be treated as unsigned
+     *          longs.
+     */
+    public long tdivrUiAssign(long d) {
+        return tdivrUiAssign(this, d);
     }
 
     /**
@@ -1147,6 +1523,22 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (mpzNative == r.mpzNative)
             throw new IllegalArgumentException(GMP.MSG_SAME_OBJECT);
         return mpz_tdiv_qr_ui(mpzNative, r.mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
+     * integer division {@code (this / d)}, rounded towards zero; it also returns
+     * the absolute value of the remainder.
+     *
+     * @throws ArithmeticException      if {@code d} is zero.
+     * @throws IllegalArgumentException if {@code this} and {@code r} are the same
+     *                                  object.
+     *
+     * @apiNote both {@code d} and the returned value should be treated as unsigned
+     *          longs.
+     */
+    public long tdivqrUiAssign(MPZ r, long d) {
+        return tdivqrUiAssign(r, this, d);
     }
 
     /**
@@ -1178,6 +1570,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ tdivq2ExpAssign(long b) {
+        return tdivq2ExpAssign(this, b);
+    }
+
+    /**
      * Sets this {@code MPZ} to the remainder of the integer division
      * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
      *
@@ -1188,6 +1592,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ tdivr2ExpAssign(MPZ n, long b) {
         mpz_tdiv_r_2exp(mpzNative, n.mpzNative, new NativeUnsignedLong(b));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code b} should be treated as an unsigned long.
+     */
+    public MPZ tdivr2ExpAssign(long b) {
+        return tdivr2ExpAssign(this, b);
     }
 
     /**
@@ -1258,6 +1674,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to {@code (this mod d)}. The sign of the divisor is
+     * ignored, the result is always non-negative.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ modAssign(MPZ d) {
+        return modAssign(this, d);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this mod d)}. The sign of the
      * divisor is ignored, the result is always non-negative.
      */
@@ -1280,6 +1708,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (d == 0l)
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         return mpz_mod_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(d)).longValue();
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code (n mod d)}; it also returns the result. The
+     * sign of the divisor is ignored, the result is always non-negative.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @apiNote both {@code d} and the retuened value should be treated as unsigned
+     *          longs.
+     */
+    public long modUiAssign(long d) {
+        return modUiAssign(this, d);
     }
 
     /**
@@ -1312,6 +1753,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the quotient of {@code (this / d)}. This method
+     * produces correct results only when it is known in advance that {@code d}
+     * divides {@code this}.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ divexactAssign(MPZ d) {
+        return divexactAssign(this, d);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the quotient of {@code (this / d)}.
      * This method produces correct results only when it is known in advance that
      * {@code d} divides {@code this}.
@@ -1340,6 +1794,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpz_divexact_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(d));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the quotient of {@code (this / d)}. This method
+     * produces correct results only when it is known in advance that {@code d}
+     * divides {@code this}.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code d} should be treated as an unsigned long.
+     */
+    public MPZ divexactUiAssign(long d) {
+        return divexactUiAssign(this, d);
     }
 
     /**
@@ -1447,6 +1916,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to <code>(this<sup>exp</sup>)</code> modulo
+     * {@code mod}.
+     *
+     * @throws ArithmeticException if {@code mod} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ powmAssign(MPZ exp, MPZ mod) {
+        return powmAssign(this, mod);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>
      * modulo {@code mod}.
      */
@@ -1469,6 +1950,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpz_powm_ui(mpzNative, base.mpzNative, new NativeUnsignedLong(exp), mod.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to <code>(this<sup>exp</sup>)</code> modulo
+     * {@code mod}.
+     *
+     * @throws ArithmeticException if {@code mod} is zero.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
+     */
+    public MPZ powmUiAssign(long exp, MPZ mod) {
+        return powmUiAssign(this, exp, mod);
     }
 
     /**
@@ -1499,6 +1994,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to <code>(this<sup>exp</sup>)</code> modulo
+     * {@code mod}. It is required that {@code (exp > 0} and that {@code mod} is
+     * odd. This function is intended for cryptographic purposes, where resilience
+     * to side-channel attacks is desired.
+     *
+     * @throws ArithmeticException if {@code mod} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ powmSecAssign(MPZ exp, MPZ mod) {
+        return powmSecAssign(this, exp, mod);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is <code>(this<sup>exp</sup>)</code>
      * modulo {@code mod}. It is required that {@code (exp > 0)} and that
      * {@code mod} is odd. This function is intended for cryptographic purposes,
@@ -1519,6 +2028,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ powUiAssign(MPZ base, long exp) {
         mpz_pow_ui(mpzNative, base.mpzNative, new NativeUnsignedLong(exp));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to <code>(this<sup>exp</sup>)</code>. The case
+     * <code>0<sup>0</sup></code> yields {@code 1}.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code exp} should be treated as an unsigned long.
+     */
+    public MPZ powUiAssign(long exp) {
+        return powUiAssign(this, exp);
     }
 
     /**
@@ -1569,6 +2090,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the truncated integer part of its {@code n}th root.
+     *
+     * @return true if the computation is exact.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
+     */
+    public boolean rootAssign(long n) {
+        return rootAssign(this, n);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the truncated integer part of the
      * {@code n}th root of {@code this}, and a boolean flag which is true when the
      * result is exact.
@@ -1596,6 +2128,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the truncated integer part of the its {@code n}th
+     * root and {@code rem} to the remainder, i.e.,
+     * <code>(this - root<sup>n</sup>)</code>.
+     *
+     * @return this {@code MPZ}.
+     *
+     * @apiNote {@code n} should be treated as an unsigned long.
+     */
+    public MPZ rootremAssign(MPZ rem, long n) {
+        return rootremAssign(rem, n);
+    }
+
+    /**
      * Returns two {@code MPZ}s whose values are the truncated integer part of the
      * {@code n}th root of {@code this} and the remainder, i.e.,
      * <code>(u - root<sup>n</sup>)</code>.
@@ -1620,6 +2165,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the truncated integer part of its square root.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ sqrtAssign() {
+        return sqrtAssign(this);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the truncated integer part of the
      * square root of {@code this}.
      */
@@ -1637,6 +2191,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ sqrtremAssign(MPZ rem, MPZ op) {
         mpz_sqrtrem(mpzNative, rem.mpzNative, op.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the truncated integer part of its square root and
+     * {@code rem} to the remainder, i.e., <code>(this - root<sup>2</sup>)</code>.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ sqrtremAssign(MPZ rem) {
+        return sqrtremAssign(rem, this);
     }
 
     /**
@@ -1702,6 +2266,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the next prime greater then itself. This function
+     * uses a probabilistic algorithm to identify primes. For practical purposes
+     * it’s adequate, the chance of a composite passing will be extremely small.
+     */
+    public MPZ nextprimeAssign() {
+        return nextprimeAssign(this);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the next prime greater then
      * {@code this}.
      *
@@ -1720,6 +2293,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ gcdAssign(MPZ op1, MPZ op2) {
         mpz_gcd(mpzNative, op1.mpzNative, op2.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the greatest commond divisor of {@code this} and
+     * {@code op}. The result is always positive even if one or both operands are
+     * negative. Except if both {@code this} and {@code op} are zero; then this
+     * function returns zero.
+     */
+    public MPZ gcdAssign(MPZ op) {
+        return gcdAssign(this, op);
     }
 
     /**
@@ -1747,6 +2330,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the greatest commond divisor of {@code op1} and
+     * {@code op2}, and returns it. If the result does not fit into an unsigned
+     * long, then 0 si returned.
+     *
+     * @see gcdAssign(MPZ, MPZ)
+     *
+     * @apiNote both {@code op2} and the returned value should be treated as
+     *          unsigned longs.
+     */
+    public long gcdUiAssign(long op) {
+        return gcdUiAssign(this, op);
+    }
+
+    /**
      * Returns the greatest commond divisor of {@code this} and {@code op}. If the
      * result does not fit into an unsigned long, 0 is returned.
      *
@@ -1760,7 +2357,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Sets this {@code MPZ} to the greatest common divisor of {@code a} and
      * {@code b}, and in addition sets {@code s} and {@code t} to coefficients
-     * satisfying {@code (a*s + b*t = g)}. If {@code t} or {@code g} is null, that
+     * satisfying {@code (a*s + b*t = gcd)}. If {@code s} or {@code t} is null, that
      * value is not computed. See the GMP function
      * <a href="https://gmplib.org/manual/Number-Theoretic-Functions" target=
      * "_blank">{@code mpz_gcdext}</a>.
@@ -1768,6 +2365,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ gcdextAssign(MPZ s, MPZ t, MPZ a, MPZ b) {
         mpz_gcdext(mpzNative, s == null ? null : s.mpzNative, t == null ? null : t.mpzNative, a.mpzNative, b.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the greatest common divisor of {@code this} and
+     * {@code op}, and in addition sets {@code s} and {@code t} to coefficients
+     * satisfying {@code (this*s + op*t = gcd)}. If {@code s} or {@code t} is null,
+     * that value is not computed. See the GMP function
+     * <a href="https://gmplib.org/manual/Number-Theoretic-Functions" target=
+     * "_blank">{@code mpz_gcdext}</a>.
+     */
+    public MPZ gcdextAssign(MPZ s, MPZ t, MPZ op) {
+        return gcdextAssign(s, t, this, op);
     }
 
     /**
@@ -1795,6 +2404,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the least common multiple of {@code this} and
+     * {@code op}. The result is always non-negative even if one or both input
+     * operands are negative. The result will be zero if either {@code this} or
+     * {@code op} is zero.
+     */
+    public MPZ lcmAssign(MPZ op) {
+        return lcmAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is the least common multiple of
      * {@code this} and {@code op}.
      *
@@ -1818,6 +2437,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to the least common multiple of {@code this} and
+     * {@code op}.
+     *
+     * @see lcmAssign(MPZ, MPZ)
+     *
+     * @apiNote {@code op} should be treated as an unsigned long.
+     */
+    public MPZ lcmUiAssign(long op) {
+        return lcmUiAssign(this, op);
+    }
+
+    /**
      * Returns the least common multiple of {@code this} and {@code op}.
      *
      * @see lcmAssign(MPZ, MPZ)
@@ -1837,6 +2468,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     public boolean invertAssign(MPZ op1, MPZ op2) {
         return mpz_invert(mpzNative, op1.mpzNative, op2.mpzNative);
+    }
+
+    /**
+     * Sets this {@code MPZ} to the inverse of {@code this} modulo {@code op}. If
+     * the inverse does not exist, the new value of this {@code MPZ} is undefined.
+     * The behaviour of this function is undefined when {@code op} is zero.
+     *
+     * @return true if the inverse exists, false otherwise.
+     */
+    public boolean invertAssign(MPZ op) {
+        return invertAssign(this, op);
     }
 
     /**
@@ -1925,6 +2567,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     public long removeAssign(MPZ op, MPZ f) {
         return mpz_remove(mpzNative, op.mpzNative, f.mpzNative).longValue();
+    }
+
+    /**
+     * Removes all occurrences of the factor {@code f} from {@code this} MPZ. The
+     * return value is the number of occurrences of {@code f} which were removed.
+     */
+    public long removeAssign(MPZ f) {
+        return removeAssign(this, f);
     }
 
     /**
@@ -2030,6 +2680,18 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ binUiAssign(MPZ n, long k) {
         mpz_bin_ui(mpzNative, n.mpzNative, new NativeUnsignedLong(k));
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to the binomial coefficient {@code this} over {@code k}.
+     * Negative values of {@code this} are supported using the identity
+     * {@code (bin(-n,k) = (-1)^k * bin(n+k-1,k))}, see Knuth volume 1 section 1.2.6
+     * part G.
+     *
+     * @apiNote {@code k} should be treated as an unsigned long.
+     */
+    public MPZ binUiAssign(long k) {
+        return binUiAssign(this, k);
     }
 
     /**
@@ -2248,6 +2910,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to {@code (this & op)}.
+     */
+    public MPZ andAssign(MPZ op) {
+        return andAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this & op)}.
      */
     public MPZ and(MPZ op) {
@@ -2260,6 +2929,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ iorAssign(MPZ op1, MPZ op2) {
         mpz_ior(mpzNative, op1.mpzNative, op2.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code (this | op)}.
+     */
+    public MPZ iorAssign(MPZ op) {
+        return iorAssign(this, op);
     }
 
     /**
@@ -2278,6 +2954,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to {@code (this ^ op)}.
+     */
+    public MPZ xorAssign(MPZ op) {
+        return xorAssign(this, op);
+    }
+
+    /**
      * Returns an {@code MPZ} whose value is {@code (this ^ op)}.
      */
     public MPZ xor(MPZ op) {
@@ -2290,6 +2973,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ comAssign(MPZ op) {
         mpz_com(mpzNative, op.mpzNative);
         return this;
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code (~ this)}.
+     */
+    public MPZ comAssign() {
+        return comAssign(this);
     }
 
     /**

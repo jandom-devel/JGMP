@@ -56,6 +56,13 @@
  * {@code baseNameAssign} which calls the original function, implicitly using
  * {@code this} as the first non-constant <code><em>mptype</em>_t</code>
  * parameter;
+ * <li>if the function has at least a non constant
+ * <code><em>mptype</em>_t</code> parameter and a constant one, we create a
+ * method {@code baseNameAssign} which calls the original function, implicitly
+ * using {@code this} as both the first non-constant
+ * <code><em>mptype</em>_t</code> parameter and the most relevant constant
+ * <code><em>mptype</em>_t</code> parameter, with the exception of a few cases
+ * where such as a method would not be particularly useful;
  * <li>we create e side-effect free method called {@code baseName}, with the
  * exception of a few cases where such as a method would not be particularly
  * useful.
