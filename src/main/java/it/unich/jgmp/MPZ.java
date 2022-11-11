@@ -2081,16 +2081,22 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the truncated integer part of the {@code n}th root
      * of {@code op}.
      *
+     * @throws ArithmeticException if n is even and op is negative.
+     *
      * @return true if the computation is exact.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public boolean rootAssign(MPZ op, long n) {
+        if (n % 2 == 0 && op.sgn() < 0)
+            throw new ArithmeticException(GMP.MSG_EVEN_ROOT_OF_NEGATIVE);
         return mpz_root(mpzNative, op.mpzNative, new NativeUnsignedLong(n));
     }
 
     /**
      * Sets this {@code MPZ} to the truncated integer part of its {@code n}th root.
+     *
+     * @throws ArithmeticException if n is even and this is negative.
      *
      * @return true if the computation is exact.
      *
@@ -2105,6 +2111,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * {@code n}th root of {@code this}, and a boolean flag which is true when the
      * result is exact.
      *
+     * @throws ArithmeticException if n is even and this is negative.
+     *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public Pair<Boolean, MPZ> root(long n) {
@@ -2118,11 +2126,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * of {@code u} and {@code rem} to the remainder, i.e.,
      * <code>(u - root<sup>n</sup>)</code>.
      *
+     * @throws ArithmeticException if n is even and u is negative.
+     *
      * @return this {@code MPZ}.
      *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ rootremAssign(MPZ rem, MPZ u, long n) {
+        if (n % 2 == 0 && u.sgn() < 0)
+            throw new ArithmeticException(GMP.MSG_EVEN_ROOT_OF_NEGATIVE);
         mpz_rootrem(mpzNative, rem.mpzNative, u.mpzNative, new NativeUnsignedLong(n));
         return this;
     }
@@ -2131,6 +2143,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the truncated integer part of the its {@code n}th
      * root and {@code rem} to the remainder, i.e.,
      * <code>(this - root<sup>n</sup>)</code>.
+     *
+     * @throws ArithmeticException if n is even and this is negative.
      *
      * @return this {@code MPZ}.
      *
@@ -2145,6 +2159,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * {@code n}th root of {@code this} and the remainder, i.e.,
      * <code>(u - root<sup>n</sup>)</code>.
      *
+     * @throws ArithmeticException if n is even and this is negative.
+     *
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public Pair<MPZ, MPZ> rootrem(long n) {
@@ -2157,15 +2173,21 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Sets this {@code MPZ} to the truncated integer part of the square root of
      * {@code op}.
      *
+     * @throws ArithmeticException if op is negative.
+     *
      * @return this {@code MPZ}.
      */
     public MPZ sqrtAssign(MPZ op) {
+        if (op.sgn() < 0)
+            throw new ArithmeticException(GMP.MSG_EVEN_ROOT_OF_NEGATIVE);
         mpz_sqrt(mpzNative, op.mpzNative);
         return this;
     }
 
     /**
      * Sets this {@code MPZ} to the truncated integer part of its square root.
+     *
+     * @throws ArithmeticException if this is negative.
      *
      * @return this {@code MPZ}.
      */
@@ -2176,6 +2198,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Returns an {@code MPZ} whose value is the truncated integer part of the
      * square root of {@code this}.
+     *
+     * @throws ArithmeticException if this is negative.
      */
     public MPZ sqrt() {
         return new MPZ().sqrtAssign(this);
@@ -2186,9 +2210,13 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * {@code op} and {@code rem} to the remainder, i.e.,
      * <code>(op - root<sup>2</sup>)</code>.
      *
+     * @throws ArithmeticException if op is negative.
+     *
      * @return this {@code MPZ}.
      */
     public MPZ sqrtremAssign(MPZ rem, MPZ op) {
+        if (op.sgn() < 0)
+            throw new ArithmeticException(GMP.MSG_EVEN_ROOT_OF_NEGATIVE);
         mpz_sqrtrem(mpzNative, rem.mpzNative, op.mpzNative);
         return this;
     }
@@ -2196,6 +2224,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Sets this {@code MPZ} to the truncated integer part of its square root and
      * {@code rem} to the remainder, i.e., <code>(this - root<sup>2</sup>)</code>.
+     *
+     * @throws ArithmeticException if this is negative.
      *
      * @return this {@code MPZ}.
      */
@@ -2207,6 +2237,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Returns two {@code MPZ}s whose values are the truncated integer part of the
      * square root of {@code this} and the remainder, i.e.,
      * <code>(op - root<sup>2</sup>)</code>.
+     *
+     * @throws ArithmeticException if this is negative.
      */
     public Pair<MPZ, MPZ> sqrtrem() {
         MPZ res = new MPZ(), rem = new MPZ();

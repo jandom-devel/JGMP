@@ -158,9 +158,16 @@ public class MpzTest {
     @Test
     void testRoots() {
         assertEquals(new Pair<>(false, new MPZ(2)), new MPZ(17).root(4));
+        assertEquals(new Pair<>(true, new MPZ(-3)), new MPZ(-27).root(3));
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).root(4));
         assertEquals(new Pair<>(new MPZ(2), new MPZ(1)), new MPZ(17).rootrem(4));
+        assertEquals(new Pair<>(new MPZ(-3), new MPZ(-1)), new MPZ(-28).rootrem(3));
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).root(4));
+
         assertEquals(new MPZ(8), new MPZ(65).sqrt());
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).sqrt());
         assertEquals(new Pair<>(new MPZ(8), new MPZ(1)), new MPZ(65).sqrtrem());
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).sqrtrem());
         assertTrue(new MPZ(8).isPerfectPower());
         assertFalse(new MPZ(8).isPerfectSquare());
         assertTrue(new MPZ(16).isPerfectSquare());

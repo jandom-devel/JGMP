@@ -63,6 +63,11 @@ public class GMP {
     static final String MSG_DIVIDE_BY_ZERO = "/ by zero";
 
     /**
+     * Exception message for even root of negative number.
+     */
+    static final String MSG_EVEN_ROOT_OF_NEGATIVE = "even root of a negative number";
+
+    /**
      * Exception message for a non-finite double.
      */
     static final String MSG_FINITE_DOUBLE_REQUIRED = "Non-finite number is not allowrd here";
