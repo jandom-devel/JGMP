@@ -66,11 +66,12 @@ public class MpqTest {
         assertEquals(new MPQ(56), new MPQ(8).mul(new MPQ(7)));
         assertEquals(new MPQ(48), new MPQ(3).mul2Exp(4));
         assertEquals(new MPQ(2, 3), new MPQ(4).div(new MPQ(6)));
-        assertThrows(ArithmeticException.class, () ->  new MPQ(4).div(new MPQ(0)));
+        assertThrows(ArithmeticException.class, () -> new MPQ(4).div(new MPQ(0)));
         assertEquals(new MPQ(1, 16), new MPQ(1).div2Exp(4));
         assertEquals(new MPQ(-5), new MPQ(5).neg());
         assertEquals(new MPQ(5), new MPQ(-5).abs());
         assertEquals(new MPQ(-1, 5), new MPQ(-5).inv());
+        assertThrows(ArithmeticException.class, () -> new MPQ().inv());
     }
 
     @Test

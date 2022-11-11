@@ -465,18 +465,23 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code 1/op}. If the new denominator is zero, this
-     * routine will divide by zero.
+     * Sets this {@code MPQ} to {@code 1/op}.
+     *
+     * @throws ArithmeticException if {@code op} is zero.
      *
      * @return this {@code MPQ}.
      */
     public MPQ invAssign(MPQ op) {
+        if (op.isZero())
+            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
         mpq_inv(mpqNative, op.mpqNative);
         return this;
     }
 
     /**
      * Sets this {@code MPQ} to its inverse.
+     *
+     * @throws ArithmeticException if {@code op} is zero.
      *
      * @return this {@code MPQ}.
      */
@@ -485,8 +490,9 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (1/this)}. If the new
-     * denominator is zero, this routine will divide by zero.
+     * Returns an {@code MPQ} whose value is {@code (1/this)}.
+     *
+     * @throws ArithmeticException if {@code op} is zero.
      */
     public MPQ inv() {
         return new MPQ().invAssign(this);
