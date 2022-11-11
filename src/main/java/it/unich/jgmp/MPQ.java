@@ -317,7 +317,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Sets this {@code MPQ} to {@code (op1 / op2)}.
      *
-     * @throws ArithmeticException if {@code op} is zero.
+     * @throws ArithmeticException if {@code op2} is zero.
      *
      * @return this {@code MPQ}.
      */
@@ -329,7 +329,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this * op)}
+     * Sets this {@code MPQ} to {@code (this / op)}
      *
      * @throws ArithmeticException if {@code op} is zero.
      *

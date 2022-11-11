@@ -780,7 +780,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (n / d)}, rounded towards zero.
+     * {@code (n / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -795,7 +795,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (this / d)}, rounded towards zero.
+     * {@code (this / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -807,7 +807,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (this / d)}, rounded towards zero.
+     * {@code (n / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -826,7 +826,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (n / d)}, rounded towards zero.
+     * integer division {@code (n / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -845,7 +845,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (this / d)}, rounded towards zero.
+     * integer division {@code (this / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -859,7 +859,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (n / d)}, rounded towards zero; it also returns the remainder.
+     * {@code (n / d)}, rounded towards +∞; it also returns the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -874,7 +874,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (this / d)}, rounded towards zero; it also returns the remainder.
+     * {@code (this / d)}, rounded towards +∞; it also returns the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -887,7 +887,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (n / d)}, rounded towards zero; it also returns the remainder.
+     * {@code (n / d)}, rounded towards +∞; it also returns the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -902,7 +902,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (this / d)}, rounded towards zero; it also returns the remainder.
+     * {@code (this / d)}, rounded towards +∞; it also returns the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -915,7 +915,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (n / d)}, rounded towards zero; it also returns the
+     * integer division {@code (n / d)}, rounded towards +∞; it also returns the
      * remainder.
      *
      * @throws ArithmeticException      if {@code d} is zero.
@@ -935,8 +935,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (this / d)}, rounded towards zero; it also returns
-     * the remainder.
+     * integer division {@code (this / d)}, rounded towards +∞; it also returns the
+     * remainder.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -951,7 +951,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns the remainder of the integer division {@code (this / d)}, rounded
-     * towards zero.
+     * towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -965,7 +965,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
+     * <code>(n / 2<sup>b</sup>)</code>, rounded toward +∞.
      *
      * @return this {@code MPZ}.
      *
@@ -978,7 +978,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward +∞.
      *
      * @return this {@code MPZ}.
      *
@@ -990,7 +990,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * <code>(n / 2<sup>b</sup>)</code>, rounded toward zero.
+     * <code>(n / 2<sup>b</sup>)</code>, rounded toward +∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1003,7 +1003,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded toward zero.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward +∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1015,7 +1015,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
-     * {@code (this / d)}, rounded towards zero.
+     * {@code (this / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1025,7 +1025,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
-     * {@code (this / d)}, rounded towards zero.
+     * {@code (this / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1035,7 +1035,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns a pair of {@code MPZ}s whose values are the quotient and remainder of
-     * the integer division {@code (this / d)}, rounded towards zero.
+     * the integer division {@code (this / d)}, rounded towards +∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1047,7 +1047,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded towards +∞.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -1057,7 +1057,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded towards zero.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded towards +∞.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -1067,7 +1067,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (n / d)}, rounded towards negative infinity.
+     * {@code (n / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1082,7 +1082,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (this / d)}, rounded towards negative infinity.
+     * {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1094,7 +1094,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (n / d)}, rounded towards negative infinity.
+     * {@code (n / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1109,7 +1109,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (this / d)}, rounded towards negative infinity.
+     * {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1121,7 +1121,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (n / d)}, rounded towards negative infinity.
+     * integer division {@code (n / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -1140,7 +1140,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (this / d)}, rounded towards negative infinity.
+     * integer division {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -1154,8 +1154,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (n / d)}, rounded towards negative infinity; it also returns the
-     * absolute value of the remainder.
+     * {@code (n / d)}, rounded towards -∞; it also returns the absolute value of
+     * the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1169,8 +1169,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * {@code (this / d)}, rounded towards negative infinity; it also returns the
-     * absolute value of the remainder.
+     * {@code (this / d)}, rounded towards -∞; it also returns the absolute value of
+     * the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1182,8 +1182,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (n / d)}, rounded towards negative infinity; it also returns the
-     * absolute value of the remainder.
+     * {@code (n / d)}, rounded towards -∞; it also returns the absolute value of
+     * the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1197,8 +1197,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * {@code (this / d)}, rounded towards negative infinity; it also returns the
-     * absolute value of the remainder.
+     * {@code (this / d)}, rounded towards -∞; it also returns the absolute value of
+     * the remainder.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1210,8 +1210,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (n / d)}, rounded towards negative infinity; it also
-     * returns the absolute value of the remainder.
+     * integer division {@code (n / d)}, rounded towards -∞; it also returns the
+     * absolute value of the remainder.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -1229,8 +1229,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} and {@code r} to the quotient and remainder of the
-     * integer division {@code (this / d)}, rounded towards negative infinity; it
-     * also returns the absolute value of the remainder.
+     * integer division {@code (this / d)}, rounded towards -∞; it also returns the
+     * absolute value of the remainder.
      *
      * @throws ArithmeticException      if {@code d} is zero.
      * @throws IllegalArgumentException if {@code this} and {@code r} are the same
@@ -1244,7 +1244,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns the remainder of the integer division {@code (this / d)}, rounded
-     * towards negative infinity.
+     * towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      *
@@ -1258,7 +1258,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * <code>(n / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     * <code>(n / 2<sup>b</sup>)</code>, rounded toward -∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1271,7 +1271,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the quotient of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward -∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1283,7 +1283,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * <code>(n / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     * <code>(n / 2<sup>b</sup>)</code>, rounded toward -∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1296,7 +1296,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Sets this {@code MPZ} to the remainder of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded toward negative infinity.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded toward -∞.
      *
      * @return this {@code MPZ}.
      *
@@ -1308,7 +1308,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
-     * {@code (this / d)}, rounded towards negative infinity.
+     * {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1318,7 +1318,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
-     * {@code (this / d)}, rounded towards negative infinity.
+     * {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1328,7 +1328,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns two {@code MPZ}s whose values are the quotient and remainder of the
-     * integer division {@code (this / d)}, rounded towards negative infinity.
+     * integer division {@code (this / d)}, rounded towards -∞.
      *
      * @throws ArithmeticException if {@code d} is zero.
      */
@@ -1340,7 +1340,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the quotient of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded towards negative infinity.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded towards -∞.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -1350,7 +1350,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
     /**
      * Returns an {@code MPZ} whose value is the remainder of the integer division
-     * <code>(this / 2<sup>b</sup>)</code>, rounded towards negative infinity.
+     * <code>(this / 2<sup>b</sup>)</code>, rounded towards -∞.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -2683,8 +2683,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPZ} to the binomial coefficient {@code this} over {@code k}.
-     * Negative values of {@code this} are supported using the identity
+     * Sets this {@code MPZ} to the binomial coefficient {@code this} over
+     * {@code k}. Negative values of {@code this} are supported using the identity
      * {@code (bin(-n,k) = (-1)^k * bin(n+k-1,k))}, see Knuth volume 1 section 1.2.6
      * part G.
      *
