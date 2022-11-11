@@ -141,9 +141,9 @@ public class MpzTest {
 
     @Test
     void testDivisionByZero() {
-        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cdivq(new MPZ(0)));
-        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cmp(Double.NaN));
-        assertThrows(ArithmeticException.class, () ->  new MPZ(4).cmpabs(Double.NaN));
+        assertThrows(ArithmeticException.class, () -> new MPZ(4).cdivq(new MPZ(0)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(4).cmp(Double.NaN));
+        assertThrows(ArithmeticException.class, () -> new MPZ(4).cmpabs(Double.NaN));
     }
 
     @Test
