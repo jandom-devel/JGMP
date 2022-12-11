@@ -70,7 +70,7 @@ public class GMP {
     /**
      * Exception message for a non-finite double.
      */
-    static final String MSG_FINITE_DOUBLE_REQUIRED = "Non-finite number is not allowrd here";
+    static final String MSG_FINITE_DOUBLE_REQUIRED = "Non-finite number is not allowed here";
 
     /**
      * Exception message for a NaN double.
@@ -83,19 +83,19 @@ public class GMP {
     static final String MSG_SAME_OBJECT = "This and r cannot be the same object";
 
     /**
-     * Error messages for invalid base in toString and sizeinbase methods.
+     * Error messages for invalid base.
      */
     static final String MSG_INVALID_BASE = "base is not valid";
 
     /**
      * Error messages for invalid conversion from strings.
      */
-    static final String MSG_INVALID_STRING_CONVERSION = "Either base is not valid or str is not a valid number in the specified base";
+    static final String MSG_INVALID_STRING_CONVERSION = "either base is not valid or str is not a valid number in the specified base";
 
     /**
-     * Error message for parameter size big.
+     * Error message for parameter size too big.
      */
-    static final String MSG_PARAMETER_TOO_BIG = "Parameter size is too big";
+    static final String MSG_SIZE_TOO_BIG = "size is too big";
 
     /**
      * Cleaner used by the JGMP library.
@@ -161,9 +161,9 @@ public class GMP {
      * {@code fmt} and the additional arguments in {@code args}. This is similar to
      * the C {@code printf} function and the Java
      * {@link java.io.PrintStream#printf(String, Object...)} method. If the format
-     * string is invalid, or the arguments don’t match what the format specifies,
-     * then the behaviour of any of this function will be unpredictable. It will
-     * return -1 to indicate a write error. Output is not “atomic”, so partial
+     * string is invalid, or the arguments don't match what the format specifies,
+     * then the behaviour of this function will be unpredictable. It will
+     * return -1 to indicate a write error. Output is not "atomic", so partial
      * output may be produced if a write error occurs.
      * <p>
      * This method bypasses the standard I/O procedures of the JVM. It is generally
@@ -184,8 +184,8 @@ public class GMP {
      * additional arguments in {@code args}. This is similar to the C
      * {@code asprintf} function and the Java
      * {@link String#format(String, Object...)} method. If the format string is
-     * invalid, or the arguments don’t match what the format specifies, then the
-     * behaviour of any of this function will be unpredictable.
+     * invalid, or the arguments don't match what the format specifies, then the
+     * behaviour of this function will be unpredictable.
      * <p>
      * See also the page
      * <a href="https://gmplib.org/manual/Formatted-Output-Strings" target=
@@ -205,7 +205,7 @@ public class GMP {
      * Parses the standard input according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code scanf} function. If the format string is invalid, or the arguments
-     * don’t match what the format specifies, then the behaviour of any of this
+     * don't match what the format specifies, then the behaviour of this
      * function will be unpredictable.
      * <p>
      * This method bypasses the standard I/O procedures of the JVM. It is generally
@@ -226,8 +226,8 @@ public class GMP {
     /**
      * Parses the string {@code s} according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
-     * {@code scanf} function. If the format string is invalid, or the arguments
-     * don’t match what the format specifies, then the behaviour of any of this
+     * {@code sscanf} function. If the format string is invalid, or the arguments
+     * don't match what the format specifies, then the behaviour of this
      * function will be unpredictable.
      * <p>
      * See also the pages

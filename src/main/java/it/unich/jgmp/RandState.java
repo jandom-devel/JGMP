@@ -136,7 +136,7 @@ public class RandState {
         var m = new GmpRandstateT();
         var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
         if (res == 0) {
-            throw new IllegalArgumentException(GMP.MSG_PARAMETER_TOO_BIG);
+            throw new IllegalArgumentException(GMP.MSG_SIZE_TOO_BIG);
         }
         return new RandState(m);
     }
