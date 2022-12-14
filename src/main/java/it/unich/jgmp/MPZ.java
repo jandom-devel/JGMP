@@ -576,7 +576,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code op} should be treated as an unsigned long.
      */
     public MPZ mulUiAssign(long op) {
-        return mulUiAssign(op);
+        return mulUiAssign(this, op);
     }
 
     /**
@@ -606,7 +606,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code op} should be treated as an unsigned long.
      */
     public MPZ mulAssign(long op) {
-        return mulAssign(op);
+        return mulAssign(this, op);
     }
 
     /**
@@ -820,6 +820,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
         return this;
     }
 
+    /**
+     * Sets this {@code MPZ} to the remainder of the integer division
+     * {@code (this / d)}, rounded towards +∞.
+     *
+     * @throws ArithmeticException if {@code d} is zero.
+     *
+     * @return this {@code MPZ}.
+     */
     public MPZ cdivrAssign(MPZ d) {
         return cdivrAssign(this, d);
     }
@@ -1924,7 +1932,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @return this {@code MPZ}.
      */
     public MPZ powmAssign(MPZ exp, MPZ mod) {
-        return powmAssign(this, mod);
+        return powmAssign(this, exp, mod);
     }
 
     /**
@@ -2151,7 +2159,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * @apiNote {@code n} should be treated as an unsigned long.
      */
     public MPZ rootremAssign(MPZ rem, long n) {
-        return rootremAssign(rem, n);
+        return rootremAssign(rem, this, n);
     }
 
     /**
