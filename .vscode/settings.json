@@ -3,5 +3,8 @@
     "java.format.settings.url": ".vscode/java-formatter.xml",
     "java.sources.organizeImports.starThreshold": 10,
     "java.sources.organizeImports.staticStarThreshold": 10,
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "files.watcherExclude": {
+        "**/target": true
+    }
 }
