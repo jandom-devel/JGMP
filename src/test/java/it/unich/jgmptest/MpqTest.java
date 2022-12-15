@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,31 +21,36 @@ public class MpqTest {
 
     @Test
     void testInitAssignments() {
-        var z = MPQ.init();
-        assertEquals(new MPQ(0, 1), z);
-        assertEquals(new MPQ(15, 1), z.set(new MPQ(15)));
-        assertEquals(new MPQ(15, 1), z.set(new MPZ(15)));
-        assertEquals(new MPQ(2, 3), z.set(2, 3));
-        assertEquals(new MPQ(2, 3), z.setUi(2, 3));
-        assertEquals(0, z.set("-1A", 16));
-        assertEquals(new MPQ(-26, 1), z);
-        assertEquals(-1, z.set("2", 63));
-        assertEquals(new MPQ(-26, 1), z);
-        assertEquals(0, z.set("-1A/7", 16));
-        assertEquals(new MPQ(-26, 7), z);
+        var a = MPQ.init();
+        assertEquals(new MPQ(0, 1), a);
+        assertSame(a, a.set(new MPQ(15)));
+        assertEquals(new MPQ(15, 1), a);
+        assertSame(a, a.set(new MPZ(15)));
+        assertEquals(new MPQ(15, 1), a);
+        assertSame(a, a.set(2, 3));
+        assertEquals(new MPQ(2, 3), a);
+        assertSame(a, a.setUi(2, 3));
+        assertEquals(new MPQ(2, 3), a);
+        assertEquals(0, a.set("-1A", 16));
+        assertEquals(new MPQ(-26, 1), a);
+        assertEquals(-1, a.set("2", 63));
+        assertEquals(new MPQ(-26, 1), a);
+        assertEquals(0, a.set("-1A/7", 16));
+        assertEquals(new MPQ(-26, 7), a);
 
-        var z2 = new MPQ(-26);
-        var z3 = new MPQ(2).swap(z2);
-        assertEquals(new MPQ(-26), z3);
-        assertEquals(new MPQ(2), z2);
+        var b = new MPQ(-26);
+        var c = new MPQ(2).swap(b);
+        assertEquals(new MPQ(-26), c);
+        assertEquals(new MPQ(2), b);
     }
 
     @Test
     void testConversions() {
-        var z = new MPQ();
+        var a = new MPQ();
         assertEquals(-5.25, new MPQ(-21, 4).getD());
-        assertEquals(new MPQ(21, 4), z.set(5.25));
-        assertThrows(ArithmeticException.class, () -> z.set(Double.POSITIVE_INFINITY));
+        assertSame(a, a.set(5.25));
+        assertEquals(new MPQ(21, 4), a);
+        assertThrows(ArithmeticException.class, () -> a.set(Double.POSITIVE_INFINITY));
         assertEquals("21/4", new MPQ(21, 4).getStr(10));
         assertEquals("-21/4", new MPQ(-21, 4).getStr(10));
         assertEquals(null, new MPQ(21, 4).getStr(63));
@@ -76,16 +82,30 @@ public class MpqTest {
 
     @Test
     void testArithmetic2() {
-        var z = new MPQ();
-        assertEquals(new MPQ(7), z.addAssign(z, new MPQ(7)));
-        assertEquals(new MPQ(2), z.subAssign(z, new MPQ(5)));
-        assertEquals(new MPQ(6), z.mulAssign(z, new MPQ(3)));
-        assertEquals(new MPQ(6, 5), z.divAssign(z, new MPQ(5)));
-        assertEquals(new MPQ(12, 5), z.mul2ExpAssign(z, 1));
-        assertEquals(new MPQ(6, 5), z.div2ExpAssign(z, 1));
-        assertEquals(new MPQ(-6, 5), z.negAssign(z));
-        assertEquals(new MPQ(6, 5), z.absAssign(z));
-        assertEquals(new MPQ(5, 6), z.invAssign(z));
+        var a = new MPQ();
+        assertEquals(new MPQ(7), a.addAssign(a, new MPQ(7)));
+        assertEquals(new MPQ(2), a.subAssign(a, new MPQ(5)));
+        assertEquals(new MPQ(6), a.mulAssign(a, new MPQ(3)));
+        assertEquals(new MPQ(6, 5), a.divAssign(a, new MPQ(5)));
+        assertEquals(new MPQ(12, 5), a.mul2ExpAssign(a, 1));
+        assertEquals(new MPQ(6, 5), a.div2ExpAssign(a, 1));
+        assertEquals(new MPQ(-6, 5), a.negAssign(a));
+        assertEquals(new MPQ(6, 5), a.absAssign(a));
+        assertEquals(new MPQ(5, 6), a.invAssign(a));
+    }
+
+    @Test
+    void testArithmetic3() {
+        var a = new MPQ();
+        assertEquals(new MPQ(7), a.addAssign(new MPQ(7)));
+        assertEquals(new MPQ(2), a.subAssign(new MPQ(5)));
+        assertEquals(new MPQ(6), a.mulAssign(new MPQ(3)));
+        assertEquals(new MPQ(6, 5), a.divAssign(new MPQ(5)));
+        assertEquals(new MPQ(12, 5), a.mul2ExpAssign(1));
+        assertEquals(new MPQ(6, 5), a.div2ExpAssign(1));
+        assertEquals(new MPQ(-6, 5), a.negAssign());
+        assertEquals(new MPQ(6, 5), a.absAssign());
+        assertEquals(new MPQ(5, 6), a.invAssign());
     }
 
     @Test
@@ -112,31 +132,31 @@ public class MpqTest {
 
     @Test
     void testSerialization() throws IOException, ClassNotFoundException {
-        var n = new MPQ(1524132, 7);
+        var a = new MPQ(1524132, 7);
         var baos = new ByteArrayOutputStream();
         var oos = new ObjectOutputStream(baos);
-        oos.writeObject(n);
+        oos.writeObject(a);
         var arr = baos.toByteArray();
         oos.close();
 
         var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
-        var n2 = ois.readObject();
-        assertEquals(n, n2);
+        var b = ois.readObject();
+        assertEquals(a, b);
     }
 
     @Test
     void testNumDem() {
-        var q = new MPQ(3, 5);
-        var n = q.getNum();
-        var d = q.getDen();
+        var a = new MPQ(3, 5);
+        var n = a.getNum();
+        var d = a.getDen();
         assertEquals(new MPZ(3), n);
         assertEquals(new MPZ(5), d);
         d.set(1);
-        assertEquals(new MPQ(3, 5), q);
-        q.setNum(new MPZ(1));
-        assertEquals(new MPQ(1, 5), q);
-        q.setDen(new MPZ(3));
-        assertEquals(new MPQ(1, 3), q);
+        assertEquals(new MPQ(3, 5), a);
+        a.setNum(new MPZ(1));
+        assertEquals(new MPQ(1, 5), a);
+        a.setDen(new MPZ(3));
+        assertEquals(new MPQ(1, 3), a);
     }
 
 }

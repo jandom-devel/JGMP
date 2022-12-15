@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -36,17 +37,17 @@ public class MpzTest {
 
     @Test
     void testAssignment() {
-        var z = new MPZ();
-        assertEquals(new MPZ(15), z.set(new MPZ(15)));
-        assertEquals(zMaxUlong, z.setUi(-1));
-        assertEquals(new MPZ(-3), z.set(-3));
-        assertEquals(new MPZ(5), z.set(5.2));
-        assertEquals(new MPZ(5), z.set(new MPQ(21, 4)));
-        assertThrows(ArithmeticException.class, () -> z.set(Double.POSITIVE_INFINITY));
-        assertEquals(0, z.set("-1A", 16));
-        assertEquals(new MPZ(-26), z);
-        assertEquals(-1, z.set("2", 63));
-        assertEquals(new MPZ(-26), z);
+        var a = new MPZ();
+        assertEquals(new MPZ(15), a.set(new MPZ(15)));
+        assertEquals(zMaxUlong, a.setUi(-1));
+        assertEquals(new MPZ(-3), a.set(-3));
+        assertEquals(new MPZ(5), a.set(5.2));
+        assertEquals(new MPZ(5), a.set(new MPQ(21, 4)));
+        assertThrows(ArithmeticException.class, () -> a.set(Double.POSITIVE_INFINITY));
+        assertEquals(0, a.set("-1A", 16));
+        assertEquals(new MPZ(-26), a);
+        assertEquals(-1, a.set("2", 63));
+        assertEquals(new MPZ(-26), a);
         var z2 = new MPZ(-26);
         var z3 = new MPZ(2).swap(z2);
         assertEquals(new MPZ(-26), z3);
@@ -84,7 +85,7 @@ public class MpzTest {
     }
 
     @Test
-    void testArithmetic() {
+    void testArithmetic1() {
         assertEquals(new MPZ(15), new MPZ(8).add(new MPZ(7)));
         assertEquals(new MPZ(15), new MPZ(8).addUi(7));
         assertEquals(new MPZ(1), new MPZ(8).sub(new MPZ(7)));
@@ -103,7 +104,27 @@ public class MpzTest {
     }
 
     @Test
-    void testDivision() {
+    void testArithmetic2() {
+        var a = new MPZ(8);
+        assertEquals(new MPZ(15), a.addAssign(new MPZ(7)));
+        assertEquals(new MPZ(22), a.addUiAssign(7));
+        assertEquals(new MPZ(15), a.subAssign(new MPZ(7)));
+        assertEquals(new MPZ(8), a.subUiAssign(7));
+        assertEquals(new MPZ(-1), a.uiSubAssign(7));
+        assertEquals(new MPZ(-7), a.mulAssign(new MPZ(7)));
+        assertEquals(new MPZ(-14), a.mulUiAssign(2));
+        assertEquals(new MPZ(28), a.mulAssign(-2));
+        assertEquals(new MPZ(40), a.addmulAssign(new MPZ(4), new MPZ(3)));
+        assertEquals(new MPZ(52), a.addmulUiAssign(new MPZ(4), 3));
+        assertEquals(new MPZ(40), a.submulAssign(new MPZ(4), new MPZ(3)));
+        assertEquals(new MPZ(28), a.submulUiAssign(new MPZ(4), 3));
+        assertEquals(new MPZ(56), a.mul2ExpAssign(1));
+        assertEquals(new MPZ(-56), a.negAssign());
+        assertEquals(new MPZ(56), a.absAssign());
+    }
+
+    @Test
+    void testDivision1() {
         assertEquals(new MPZ(4), new MPZ(15).cdivq(new MPZ(4)));
         assertEquals(new MPZ(-1), new MPZ(15).cdivr(new MPZ(4)));
         assertEquals(new Pair<>(new MPZ(4), new MPZ(-1)), new MPZ(15).cdivqr(new MPZ(4)));
@@ -140,14 +161,78 @@ public class MpzTest {
     }
 
     @Test
+    void testDivision2() {
+        var a = new MPZ(96);
+        var r = new MPZ();
+        assertEquals(new MPZ(24), a.cdivqAssign(new MPZ(4)));
+        assertEquals(new MPZ(-16), a.cdivrAssign(new MPZ(20)));
+        assertEquals(new MPZ(-5), a.cdivqrAssign(r, new MPZ(3)));
+        assertEquals(new MPZ(-1), r);
+        a.set(96);
+        assertEquals(0, a.cdivqUiAssign(4));
+        assertEquals(new MPZ(24), a);
+        assertEquals(16, a.cdivrUiAssign(20));
+        assertEquals(new MPZ(-16), a);
+        assertEquals(1, a.cdivqrUiAssign(r, 3));
+        assertEquals(new MPZ(-5), a);
+        assertEquals(new MPZ(-1), r);
+        a.set(15);
+        assertEquals(new MPZ(4), a.cdivq2ExpAssign(2));
+        assertEquals(new MPZ(-4), a.cdivr2ExpAssign(3));
+
+        a.set(96);
+        assertEquals(new MPZ(24), a.fdivqAssign(new MPZ(4)));
+        assertEquals(new MPZ(4), a.fdivrAssign(new MPZ(20)));
+        assertEquals(new MPZ(1), a.fdivqrAssign(r, new MPZ(3)));
+        assertEquals(new MPZ(1), r);
+        a.set(96);
+        assertEquals(0, a.fdivqUiAssign(4));
+        assertEquals(new MPZ(24), a);
+        assertEquals(4, a.fdivrUiAssign(20));
+        assertEquals(new MPZ(4), a);
+        assertEquals(1, a.fdivqrUiAssign(r, 3));
+        assertEquals(new MPZ(1), a);
+        assertEquals(new MPZ(1), r);
+        a.set(15);
+        assertEquals(new MPZ(3), a.fdivq2ExpAssign(2));
+        assertEquals(new MPZ(3), a.fdivr2ExpAssign(3));
+
+        a.set(96);
+        assertEquals(new MPZ(24), a.tdivqAssign(new MPZ(4)));
+        assertEquals(new MPZ(4), a.tdivrAssign(new MPZ(20)));
+        assertEquals(new MPZ(1), a.tdivqrAssign(r, new MPZ(3)));
+        assertEquals(new MPZ(1), r);
+        a.set(96);
+        assertEquals(0, a.tdivqUiAssign(4));
+        assertEquals(new MPZ(24), a);
+        assertEquals(4, a.tdivrUiAssign(20));
+        assertEquals(new MPZ(4), a);
+        assertEquals(1, a.tdivqrUiAssign(r, 3));
+        assertEquals(new MPZ(1), a);
+        assertEquals(new MPZ(1), r);
+        a.set(-15);
+        assertEquals(new MPZ(-3), a.tdivq2ExpAssign(2));
+        assertEquals(new MPZ(-3), a.tdivr2ExpAssign(3));
+
+        a.set(15);
+        assertEquals(new MPZ(3), a.modAssign(new MPZ(6)));
+        assertEquals(new MPZ(3), a.modAssign(new MPZ(-10)));
+        a.set(12);
+        assertEquals(new MPZ(4), a.divexactAssign(new MPZ(3)));
+        assertEquals(new MPZ(2), a.divexactUiAssign(2));
+    }
+
+    @Test
     void testDivisionByZero() {
         assertThrows(ArithmeticException.class, () -> new MPZ(4).cdivq(new MPZ(0)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(4).fdivq(new MPZ(0)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(4).tdivq(new MPZ(0)));
         assertThrows(ArithmeticException.class, () -> new MPZ(4).cmp(Double.NaN));
         assertThrows(ArithmeticException.class, () -> new MPZ(4).cmpabs(Double.NaN));
     }
 
     @Test
-    void testExponentiation() {
+    void testExponentiation1() {
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmSec(new MPZ(4), new MPZ(3)));
@@ -156,13 +241,22 @@ public class MpzTest {
     }
 
     @Test
-    void testRoots() {
+    void testExponentiation2() {
+        var a = new MPZ(2);
+        assertEquals(new MPZ(3), a.powmAssign(new MPZ(4), new MPZ(13)));
+        assertEquals(new MPZ(2), a.powmUiAssign(3, new MPZ(5)));
+        assertEquals(new MPZ(3), a.powmSecAssign(new MPZ(4), new MPZ(13)));
+        assertEquals(new MPZ(27), a.powUiAssign(3));
+    }
+
+    @Test
+    void testRoots1() {
         assertEquals(new Pair<>(false, new MPZ(2)), new MPZ(17).root(4));
         assertEquals(new Pair<>(true, new MPZ(-3)), new MPZ(-27).root(3));
         assertThrows(ArithmeticException.class, () -> new MPZ(-27).root(4));
         assertEquals(new Pair<>(new MPZ(2), new MPZ(1)), new MPZ(17).rootrem(4));
         assertEquals(new Pair<>(new MPZ(-3), new MPZ(-1)), new MPZ(-28).rootrem(3));
-        assertThrows(ArithmeticException.class, () -> new MPZ(-27).root(4));
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).rootrem(4));
 
         assertEquals(new MPZ(8), new MPZ(65).sqrt());
         assertThrows(ArithmeticException.class, () -> new MPZ(-27).sqrt());
@@ -174,7 +268,40 @@ public class MpzTest {
     }
 
     @Test
-    void testNumberTheory() {
+    void testRoots2() {
+        var a = new MPZ();
+        var z = new MPZ();
+        z.set(17);
+        assertEquals(false, z.rootAssign(4));
+        assertEquals(new MPZ(2), z);
+        z.set(-27);
+        assertEquals(true, z.rootAssign(3));
+        assertEquals(new MPZ(-3), z);
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).rootAssign(4));
+        z.set(17);
+        assertEquals(new MPZ(2), z.rootremAssign(a, 4));
+        assertEquals(new MPZ(2), z);
+        assertEquals(new MPZ(1), a);
+        z.set(-28);
+        assertEquals(new MPZ(-3), z.rootremAssign(a, 3));
+        assertEquals(new MPZ(-3), z);
+        assertEquals(new MPZ(-1), a);
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).rootremAssign(a, 4));
+        assertEquals(new MPZ(-1), a);
+
+        z.set(65);
+        assertEquals(new MPZ(8), z.sqrtAssign());
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).sqrtAssign());
+        z.set(65);
+        assertEquals(new MPZ(8), z.sqrtremAssign(a));
+        assertEquals(new MPZ(8), z);
+        assertEquals(new MPZ(1), a);
+        assertThrows(ArithmeticException.class, () -> new MPZ(-27).sqrtremAssign(a));
+        assertEquals(new MPZ(1), a);
+    }
+
+    @Test
+    void testNumberTheory1() {
         assertEquals(PrimalityStatus.PRIME, new MPZ(17).isProbabPrime(15));
         assertEquals(new MPZ(19), new MPZ(17).nextprime());
         assertEquals(new MPZ(6), new MPZ(30).gcd(new MPZ(24)));
@@ -211,6 +338,45 @@ public class MpzTest {
     }
 
     @Test
+    void testNumberTheory2() {
+        var a = new MPZ();
+        var s = new MPZ();
+        var t = new MPZ();
+        a.set(17);
+        assertSame(a, a.nextprimeAssign());
+        assertEquals(new MPZ(19), a);
+        a.set(30);
+        assertSame(a, a.gcdAssign(new MPZ(24)));
+        assertEquals(new MPZ(6), a);
+        a.set(30);
+        assertEquals(6, a.gcdUiAssign(24));
+        assertEquals(new MPZ(6), a);
+        a.set(30);
+        assertSame(a, a.gcdextAssign(s, t, new MPZ(24)));
+        assertEquals(new MPZ(6), a);
+        assertEquals(new MPZ(1), s);
+        assertEquals(new MPZ(-1), t);
+        a.set(30);
+        assertSame(a, a.lcmAssign(new MPZ(24)));
+        assertEquals(new MPZ(120), a);
+        a.set(30);
+        assertSame(a, a.lcmUiAssign(24));
+        assertEquals(new MPZ(120), a);
+        a.set(5);
+        assertEquals(true, a.invertAssign(new MPZ(7)));
+        assertEquals(new MPZ(3), a);
+        a.set(5);
+        assertEquals(false, a.invertAssign(new MPZ(0)));
+        assertEquals(new MPZ(5), a);
+        a.set(12);
+        assertEquals(2, a.removeAssign(new MPZ(2)));
+        assertEquals(new MPZ(3), a);
+        a.set(7);
+        assertSame(a, a.binUiAssign(2));
+        assertEquals(new MPZ(21), a);
+    }
+
+    @Test
     void testComparison() {
         var a = new MPZ(10);
         var b = new MPZ(2);
@@ -225,7 +391,7 @@ public class MpzTest {
     }
 
     @Test
-    void testBitManipulation() {
+    void testBitManipulation1() {
         var a = new MPZ(65535);
         assertEquals(1, a.tstbit(15));
         assertEquals(0, a.tstbit(16));
@@ -246,16 +412,26 @@ public class MpzTest {
     }
 
     @Test
+    void testBitManipulation2() {
+        var a = new MPZ(15);
+        assertEquals(new MPZ(5), a.andAssign(new MPZ(21)));
+        assertEquals(new MPZ(21), a.iorAssign(new MPZ(16)));
+        assertEquals(new MPZ(22), a.xorAssign(new MPZ(3)));
+        assertSame(a, a.comAssign());
+        assertEquals(new MPZ(-23), a);
+    }
+
+    @Test
     @SuppressWarnings("deprecation")
     void testRandom() {
-        var s = new RandState();
-        var a = MPZ.urandomb(s, 2);
+        var rs = new RandState();
+        var a = MPZ.urandomb(rs, 2);
         assertTrue(a.cmp(0) >= 0);
         assertTrue(a.cmp(3) <= 0);
-        var b = MPZ.urandomm(s, new MPZ(10));
+        var b = MPZ.urandomm(rs, new MPZ(10));
         assertTrue(b.cmp(0) >= 0);
         assertTrue(b.cmp(10) <= 0);
-        var c = MPZ.rrandomb(s, 2);
+        var c = MPZ.rrandomb(rs, 2);
         assertTrue(c.cmp(0) >= 0);
         assertTrue(c.cmp(3) <= 0);
         MPZ.random(10);
@@ -288,16 +464,16 @@ public class MpzTest {
 
     @Test
     void testSerialization() throws IOException, ClassNotFoundException {
-        var n = new MPZ(1524132);
+        var a = new MPZ(1524132);
         var baos = new ByteArrayOutputStream();
         var oos = new ObjectOutputStream(baos);
-        oos.writeObject(n);
+        oos.writeObject(a);
         var arr = baos.toByteArray();
         oos.close();
 
         var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
-        var n2 = ois.readObject();
-        assertEquals(n, n2);
+        var b = ois.readObject();
+        assertEquals(a, b);
     }
 
 }
