@@ -40,7 +40,7 @@ public class MpzT extends PointerType {
     }
 
     /**
-     * Creates a ne {@code MPZPointer} corresponding to the pointer {@code p}.
+     * Creates a new {@code MPZPointer} corresponding to the pointer {@code p}.
      */
     public MpzT(Pointer p) {
         super(p);
