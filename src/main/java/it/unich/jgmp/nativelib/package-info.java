@@ -5,7 +5,7 @@
  * In case one wants to replace JNA with another library, the changes to the
  * JGMP would be almost entirely limited to this package.
  * <p>
- * The most important class is {@link LibGmp}, which containts the Java bindings
+ * The most important class is {@link LibGmp}, which contains the Java bindings
  * for the functions in the GMP C library. Other classes are Java proxies for the
  * parameter and return types used by these functions.
  */
