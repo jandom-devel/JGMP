@@ -35,7 +35,7 @@
  * Given a GMP function, the following rules dictate how to derive name and
  * signature for the corrisponding method in JGMP. Let
  * <code><em>mptype</em></code> be the family of the function, which may be
- * either {@code mpf}, {@code mpq} or {@code mpz}. The function becomes a class
+ * either {@code mpf}, {@code mpq} or {@code mpz}. The function becomes a method
  * of the corresponding {@link MPF}, {@link MPQ} or {@link MPZ} class. In
  * particular:
  * <ul>
