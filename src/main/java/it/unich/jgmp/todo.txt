@@ -1,2 +1,0 @@
-* aggiungere nuovi metodi Assign
-* provare sqrt per numeri negativi
