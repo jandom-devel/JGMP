@@ -1,5 +1,6 @@
 /**
 * Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+*        and Francesca Scozzari <francesca.scozzari@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
@@ -706,7 +707,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Sets this {@code MPQ} to {@code op}.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(MPQ op) {
         return set(op);
@@ -715,7 +716,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     /**
      * Sets this {@code MPQ} to {@code op}.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(long op) {
         return set(op);
@@ -728,7 +729,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @throws ArithmeticException if {@code op} is not a finite number. In this
      *                             case, {@code this} is not altered.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(double op) {
         return set(op);
@@ -738,7 +739,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
      * exact.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(MPF op) {
         return set(op);
@@ -755,7 +756,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      *                               representation in the specified base. In this
      *                               case, {@code this} is not altered.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(String str, int base) {
         var result = set(str, base);
@@ -773,7 +774,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * @throws NumberFormatException if {@code str} is not a valid number
      *                               representation in decimal base.
      *
-     * @return this {@code MPF}.
+     * @return this {@code MPQ}.
      */
     public MPQ setValue(String str) {
         var result = set(str, 10);
