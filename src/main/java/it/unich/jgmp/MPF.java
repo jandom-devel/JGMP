@@ -46,7 +46,7 @@ import it.unich.jgmp.nativelib.NativeUnsignedLong;
  * the rules described in the documentation of the {@link it.unich.jgmp}
  * package, enriched with the following ones:
  * <ul>
- * <li>the function {@code mpq_set_prec_raw} is not exposed by the {@code MPF}
+ * <li>the function {@code mpf_set_prec_raw} is not exposed by the {@code MPF}
  * class;
  * <li>the functions in the "<em>I/O of Floats</em>" category are not exposed by
  * the {@code MPF} class.
