@@ -1,5 +1,6 @@
 /**
 * Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+*        and Francesca Scozzari <francesca.scozzari@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
@@ -328,7 +329,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * {@code str} in the specified {@code base}, possibly truncated to the default
      * precision. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
-     * target="_blank">{@code mpq_init_set_str}</a>. The decimal point character is
+     * target="_blank">{@code mpf_init_set_str}</a>. The decimal point character is
      * taken from the current system locale, which may be different from the Java
      * locale.
      *
