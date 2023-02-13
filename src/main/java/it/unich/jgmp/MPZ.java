@@ -1,5 +1,6 @@
 /**
 * Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+*        and Francesca Scozzari <francesca.scozzari@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
@@ -393,9 +394,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this + op)}
+     * Sets this {@code MPZ} to {@code (this + op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      */
     public MPZ addAssign(MPZ op) {
         return addAssign(this, op);
@@ -421,9 +422,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this + op)}
+     * Sets this {@code MPZ} to {@code (this + op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -451,9 +452,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this - op)}
+     * Sets this {@code MPZ} to {@code (this - op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      */
     public MPZ subAssign(MPZ op) {
         return subAssign(this, op);
@@ -479,9 +480,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this - op)}
+     * Sets this {@code MPZ} to {@code (this - op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -511,9 +512,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (op - this)}
+     * Sets this {@code MPZ} to {@code (op - this)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -541,9 +542,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this * op)}
+     * Sets this {@code MPZ} to {@code (this * op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      */
     public MPZ mulAssign(MPZ op) {
         return mulAssign(this, op);
@@ -569,9 +570,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this * op)}
+     * Sets this {@code MPZ} to {@code (this * op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -599,9 +600,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this * op)}
+     * Sets this {@code MPZ} to {@code (this * op)}
      *
-     * @return this {@code MPQ}
+     * @return this {@code MPZ}
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
