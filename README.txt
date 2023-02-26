@@ -9,6 +9,8 @@ PHP, Python, R, Ruby, and Rust, with the notable exception of Java.
 The JGMP library provides Java bindings and wrappers for using GMP from
 within any JVM-based language.
 
+The documentation is available in https://javadoc.io/doc/it.unich.jgmp/jgmp/latest/index.html
+
 A set of benchmarks and examples is available in JGMPBenchmarks
 https://github.com/jandom-devel/JGMPBenchmarks
 
