@@ -28,5 +28,5 @@ public interface FreeFunc extends Callback {
      * De-allocate the space pointed to by {@code ptr}. {@code ptr} is never null,
      * it’s always a previously allocated block of size bytes.
      */
-    public Pointer invoke(Pointer ptr, SizeT alloc_size);
+    public void invoke(Pointer ptr, SizeT alloc_size);
 }
