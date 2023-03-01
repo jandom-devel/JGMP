@@ -162,9 +162,9 @@ public class GMP {
      * the C {@code printf} function and the Java
      * {@link java.io.PrintStream#printf(String, Object...)} method. If the format
      * string is invalid, or the arguments don't match what the format specifies,
-     * then the behaviour of this function will be unpredictable. It will
-     * return -1 to indicate a write error. Output is not "atomic", so partial
-     * output may be produced if a write error occurs.
+     * then the behaviour of this function will be unpredictable. It will return -1
+     * to indicate a write error. Output is not "atomic", so partial output may be
+     * produced if a write error occurs.
      * <p>
      * This method bypasses the standard I/O procedures of the JVM. It is generally
      * better to use the {@link GMP#sprintf(String, Object...)} method.
@@ -205,8 +205,8 @@ public class GMP {
      * Parses the standard input according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code scanf} function. If the format string is invalid, or the arguments
-     * don't match what the format specifies, then the behaviour of this
-     * function will be unpredictable.
+     * don't match what the format specifies, then the behaviour of this function
+     * will be unpredictable.
      * <p>
      * This method bypasses the standard I/O procedures of the JVM. It is generally
      * better to use the {@link GMP#sscanf(String, String, Object...)} method.
@@ -227,8 +227,8 @@ public class GMP {
      * Parses the string {@code s} according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code sscanf} function. If the format string is invalid, or the arguments
-     * don't match what the format specifies, then the behaviour of this
-     * function will be unpredictable.
+     * don't match what the format specifies, then the behaviour of this function
+     * will be unpredictable.
      * <p>
      * See also the pages
      * <a href="https://gmplib.org/manual/Formatted-Input-Strings" target=
