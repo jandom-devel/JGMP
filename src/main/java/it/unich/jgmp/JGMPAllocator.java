@@ -165,6 +165,12 @@ public class JGMPAllocator {
     private static Object gcMonitor = new Object();
 
     /**
+     * Is true if System.gc() has been already called, but at the moment has not
+     * obtained any success.
+     */
+    private static boolean gcCalled = false;
+
+    /**
      * Check if the garbage collector needs to be invoke and update the call and
      * allocation thresholds.
      */
@@ -180,8 +186,12 @@ public class JGMPAllocator {
                     callThreshold = Math.min(2 * callThreshold, Short.MAX_VALUE);
                 }
             }
-            System.gc();
-        }
+            if (! gcCalled) {
+                gcCalled = true;
+                System.gc();
+            }
+        } else
+            gcCalled = false;
     }
 
     /** The custom allocator. */
