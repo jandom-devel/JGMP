@@ -31,44 +31,68 @@ import it.unich.jgmp.nativelib.ReallocFuncByReference;
 import it.unich.jgmp.nativelib.SizeT;
 
 /**
- * Custom allocator functions which keeps track of the amount of memory
- * allocated by GMP.
+ * The allocation monitor keeps track of the amount of native memory allocated
+ * by GMP, and calls the Java garbage collector when it finds that too much
+ * native memory is being used. The hope is that, by destroying JGMP objects,
+ * the pressure on native memory is reduced.
+ *
+ * In order to keep track of allocated native memory, this class uses the GMP
+ * fuctions {@code mp_set_memory_functions} and {@code mp_get_memory_functions}
+ * ( see the *
+ * <a href="https://gmplib.org/manual/Floating_002dpoint-Functions" target=
+ * "_blank">Custom Allocation</a> page of the GMP manual). Since this slow downs
+ * allocation, the feature is normally disabled and may be enable by calling the
+ * {@code enable()} static method.
+ *
+ * It is important to enable allocation monitor when the a program builds many
+ * big JGMP objects. In this case, since the size occupied by a JGMP object in
+ * the Java heap is only a fraction of the size occupied in native memory, the
+ * program may consume all the native memory without the JVM feeling the need to
+ * call the garbage collector to reclaim heap space. This may happen, in
+ * particular, when making use of the immutable API.
  */
-public class JGMPAllocator {
+public class AllocationMonitor {
     /**
-     * A private constructor since this class should never be instantiated.
+     * A private constructor, since this class should never be instantiated.
      */
-    private JGMPAllocator() {
+    private AllocationMonitor() {
     }
 
     /**
-     * The debug level of the JGMP allocator. We do not think it is important to
-     * declare it to be volatile, since it is only used for debugging purposes.
+     * The debug level of the allocation monitor. We do not think it is important to
+     * declare this variabi as volatile, since it is only used for debugging
+     * purposes.
      */
     private static int debugLevel = 0;
 
     /**
-     * Set the debug level of the JGMP allocator.
+     * Set the debug level of the allocation monitor. The greater the value, the
+     * more debug messages are sent to the standard error. Zero and negative numbers
+     * mean that no debug messages is generated.
      */
     public static void setDebugLevel(int debugLevel) {
-        JGMPAllocator.debugLevel = debugLevel;
+        AllocationMonitor.debugLevel = debugLevel;
     }
 
     /**
-     * Return the current debug level of the JGMP allocator.
+     * Return the current debug level of the allocation monitor.
+     *
+     * @see setDebugLevel
      */
     public static int getDebugLevel() {
         return debugLevel;
     }
 
     /**
-     * The amount of memory allocated by the JGMP allocator. It is an `AtomicLong`
-     * since it might be increased concurretly by multple threads.
+     * The amount of native memory allocate by GMP, as computed by the allocation
+     * monitor. It is an `AtomicLong` since it might be increased concurretly by
+     * multple threads.
      */
     private static AtomicLong allocatedSize = new AtomicLong();
 
     /**
-     * Returns the amount of memory allocated by the JGMP allocator.
+     * Returns the amount of native memory allocated by JGMP, as computed by the
+     * allocation monitor
      */
     public static long getAllocatedSize() {
         return allocatedSize.get();
@@ -92,7 +116,7 @@ public class JGMPAllocator {
      * maximum size of the heap returned by `Runtime.getRuntime().maxMemory()`.
      */
     public static synchronized void setMaxAllocationThreshold(long maxAllocationThreshold) {
-        JGMPAllocator.maxAllocationThreshold = maxAllocationThreshold;
+        AllocationMonitor.maxAllocationThreshold = maxAllocationThreshold;
         allocationThreshold = Math.min(allocationThreshold, maxAllocationThreshold);
     }
 
@@ -109,7 +133,7 @@ public class JGMPAllocator {
      * `Runtime.getRuntime().maxMemory()`.
      */
     public static void setAllocationThreshold(long allocationThreshold) {
-        JGMPAllocator.allocationThreshold = Math.min(allocationThreshold, maxAllocationThreshold);
+        AllocationMonitor.allocationThreshold = Math.min(allocationThreshold, maxAllocationThreshold);
     }
 
     /**
@@ -119,7 +143,7 @@ public class JGMPAllocator {
         return allocationThreshold;
     }
 
-    // Keep reference to custom allocators to avoid them being garbage collected.
+    // Keep reference to the custom allocators, in order to avoid them being garbage collected.
     private static AllocFunc af;
     private static ReallocFunc rf;
     private static FreeFunc ff;
@@ -149,7 +173,7 @@ public class JGMPAllocator {
      * Set the current call threshold.
      */
     public static void setCallThreshold(int callThreshold) {
-        JGMPAllocator.callThreshold = callThreshold;
+        AllocationMonitor.callThreshold = callThreshold;
     }
 
     /**
@@ -160,7 +184,7 @@ public class JGMPAllocator {
     }
 
     /**
-     * Objecy used only for synchronizing the checkGC method.
+     * Object used solely for synchronizing the checkGC method.
      */
     private static Object gcMonitor = new Object();
 
@@ -179,14 +203,14 @@ public class JGMPAllocator {
             synchronized (gcMonitor) {
                 called += 1;
                 if (debugLevel >= 1)
-                    System.out.println("Calling GC: called " + called + " times with threshold "
+                    System.err.println("Calling GC: called " + called + " times with threshold "
                             + String.format("%,d", allocationThreshold) + "bytes");
                 if (called >= callThreshold) {
                     allocationThreshold = Math.min(2 * allocationThreshold, maxAllocationThreshold);
                     callThreshold = Math.min(2 * callThreshold, Short.MAX_VALUE);
                 }
             }
-            if (! gcCalled) {
+            if (!gcCalled) {
                 gcCalled = true;
                 System.gc();
             }
@@ -194,7 +218,9 @@ public class JGMPAllocator {
             gcCalled = false;
     }
 
-    /** The custom allocator. */
+    /**
+     * The custom allocator function.
+     */
     private static class JGMPAlloc implements AllocFunc {
 
         AllocFuncByReference afp;
@@ -206,9 +232,9 @@ public class JGMPAllocator {
         @Override
         public Pointer invoke(SizeT alloc_size) {
             if (debugLevel >= 2) {
-                System.out.println("Allocate " + alloc_size.longValue() + "  bytes starting from "
+                System.err.println("Allocate " + alloc_size.longValue() + "  bytes starting from "
                         + String.format("%,d", allocatedSize.get()) + " bytes already allocated");
-                System.out.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + called + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             checkGC(allocatedSize.addAndGet(alloc_size.longValue()));
@@ -216,7 +242,9 @@ public class JGMPAllocator {
         }
     }
 
-    /** The custom reallocator. */
+    /**
+     * The custom reallocator.
+     */
     private static class JGMPRealloc implements ReallocFunc {
         ReallocFuncByReference rfp;
 
@@ -227,10 +255,10 @@ public class JGMPAllocator {
         @Override
         public Pointer invoke(Pointer ptr, SizeT old_size, SizeT new_size) {
             if (debugLevel >= 2) {
-                System.out.println("Reallocate " + old_size.longValue() + "  bytes to " + new_size.longValue()
+                System.err.println("Reallocate " + old_size.longValue() + "  bytes to " + new_size.longValue()
                         + " bytes starting from " + String.format("%,d", allocatedSize.get())
                         + " bytes already allocated");
-                System.out.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + called + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             long increase = new_size.longValue() - old_size.longValue();
@@ -241,7 +269,9 @@ public class JGMPAllocator {
         }
     }
 
-    /** The custom deallocator. */
+    /**
+     * The custom deallocator.
+     */
     private static class JGMPFree implements FreeFunc {
         FreeFuncByReference ffp;
 
@@ -252,9 +282,9 @@ public class JGMPAllocator {
         @Override
         public void invoke(Pointer ptr, SizeT alloc_size) {
             if (debugLevel >= 2) {
-                System.out.println("Free " + called + " " + alloc_size.longValue() + " bytes starting from "
+                System.err.println("Free " + called + " " + alloc_size.longValue() + " bytes starting from "
                         + String.format("%,d", allocatedSize.get()) + " bytes already allocated");
-                System.out.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + called + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             allocatedSize.addAndGet(-alloc_size.longValue());
@@ -263,7 +293,8 @@ public class JGMPAllocator {
     }
 
     /**
-     * Enable the custom allocator.
+     * Enable the allocation monitor. Nothing happens if the monitor is already
+     * enable.
      */
     public static synchronized void enable() {
         if (afpOld == null) {
@@ -279,7 +310,8 @@ public class JGMPAllocator {
     }
 
     /**
-     * Disable the custom allocator.
+     * Disable the allocation monitor. Nothing happens if the monitor is already
+     * disabled.
      */
     public static synchronized void disable() {
         if (afpOld != null) {
