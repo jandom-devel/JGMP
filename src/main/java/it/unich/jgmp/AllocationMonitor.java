@@ -154,33 +154,37 @@ public class AllocationMonitor {
     private static FreeFuncByReference ffpOld;
 
     /**
-     * Count number of times the garbage collector has been called from within the
-     * custom allocator.
+     * Count the number of times that the allocation threshold has been crossed.
      */
-    private static volatile int called = 0;
+    private static volatile int numCrossed = 0;
 
     /**
-     * Count number of times the garbage collector has been called from within the
-     * custom allocator.
+     * Return the number of times that the allocation threshold has been crossed.
      */
-    public static int getCalled() {
-        return called;
-    }
-
-    private static volatile int callThreshold = 1;
-
-    /**
-     * Set the current call threshold.
-     */
-    public static void setCallThreshold(int callThreshold) {
-        AllocationMonitor.callThreshold = callThreshold;
+    public static int getNumCrossed() {
+        return numCrossed;
     }
 
     /**
-     * Returns the current value of the call threshold.
+     * A threshold for `numCrossed`. When `numCrossed` reach this value, the
+     * allocation threshold size is double (up to a maximum of
+     * `maxAllocationThreshold`) and `numCrossThreshold` itself is doubled (up to a
+     * maximum of Short.MAX_VALUE).
      */
-    public static int getCallThreshold() {
-        return callThreshold;
+    private static volatile int numCrossThreshold = 1;
+
+    /**
+     * Set the current threshold for `numCrossed`.
+     */
+    public static void setNumCrossThreshold(int callThreshold) {
+        AllocationMonitor.numCrossThreshold = callThreshold;
+    }
+
+    /**
+     * Return the current threshold for `numCrossed`.
+     */
+    public static int getNumCrossThreshold() {
+        return numCrossThreshold;
     }
 
     /**
@@ -189,33 +193,42 @@ public class AllocationMonitor {
     private static Object gcMonitor = new Object();
 
     /**
-     * Is true if System.gc() has been already called, but at the moment has not
-     * obtained any success.
+     * When true, garbage collector is called when the allocated native memory is
+     * larger then the allocation threshold. If it is false, the garbage collector
+     * is not called, since we think the previous call has not completely shown its
+     * effect.
      */
-    private static boolean gcCalled = false;
+    private static boolean gcAllowed = true;
 
     /**
-     * Check if the garbage collector needs to be invoke and update the call and
+     * Check if the garbage collector needs to be invoked, and update the numCrossed and
      * allocation thresholds.
      */
     static void checkGC(long newSize) {
         if (newSize >= allocationThreshold) {
+            if (debugLevel >= 1)
+                System.err
+                        .println("checkGC: num crossed: " + numCrossed + " allocated: " + String.format("%,d", newSize)
+                                + " allocated threshold: " + String.format("%,d", allocationThreshold));
             synchronized (gcMonitor) {
-                called += 1;
-                if (debugLevel >= 1)
-                    System.err.println("Calling GC: called " + called + " times with threshold "
-                            + String.format("%,d", allocationThreshold) + "bytes");
-                if (called >= callThreshold) {
-                    allocationThreshold = Math.min(2 * allocationThreshold, maxAllocationThreshold);
-                    callThreshold = Math.min(2 * callThreshold, Short.MAX_VALUE);
-                }
+                numCrossed += 1;
+                if (gcAllowed || newSize >= 2 * allocationThreshold) {
+                    if (debugLevel >= 1)
+                        System.err.println("checkGC: GC allowed");
+                    if (numCrossed >= numCrossThreshold) {
+                        allocationThreshold = Math.min(2 * allocationThreshold, maxAllocationThreshold);
+                        numCrossThreshold = Math.min(2 * numCrossThreshold, Short.MAX_VALUE);
+                    }
+                    gcAllowed = false;
+                    System.gc();
+                } else if (debugLevel >= 1)
+                    System.err.println("checkGC: GC not called");
             }
-            if (!gcCalled) {
-                gcCalled = true;
-                System.gc();
-            }
-        } else
-            gcCalled = false;
+        } else {
+            if (!gcAllowed && debugLevel >= 1)
+                System.err.println("checkGC: GC enabled");
+            gcAllowed = true;
+        }
     }
 
     /**
@@ -234,7 +247,7 @@ public class AllocationMonitor {
             if (debugLevel >= 2) {
                 System.err.println("Allocate " + alloc_size.longValue() + "  bytes starting from "
                         + String.format("%,d", allocatedSize.get()) + " bytes already allocated");
-                System.err.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + numCrossed + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             checkGC(allocatedSize.addAndGet(alloc_size.longValue()));
@@ -258,7 +271,7 @@ public class AllocationMonitor {
                 System.err.println("Reallocate " + old_size.longValue() + "  bytes to " + new_size.longValue()
                         + " bytes starting from " + String.format("%,d", allocatedSize.get())
                         + " bytes already allocated");
-                System.err.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + numCrossed + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             long increase = new_size.longValue() - old_size.longValue();
@@ -282,14 +295,15 @@ public class AllocationMonitor {
         @Override
         public void invoke(Pointer ptr, SizeT alloc_size) {
             if (debugLevel >= 2) {
-                System.err.println("Free " + called + " " + alloc_size.longValue() + " bytes starting from "
+                System.err.println("Free " + numCrossed + " " + alloc_size.longValue() + " bytes starting from "
                         + String.format("%,d", allocatedSize.get()) + " bytes already allocated");
-                System.err.println("GC called " + called + " times with threshold "
+                System.err.println("GC called " + numCrossed + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
             allocatedSize.addAndGet(-alloc_size.longValue());
             ffp.value.invoke(ptr, alloc_size);
         }
+
     }
 
     /**
