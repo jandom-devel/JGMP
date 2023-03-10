@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
+import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
@@ -250,6 +251,19 @@ public class MPZ extends Number implements Comparable<MPZ> {
     }
 
     /**
+     * Sets this {@code MPZ} to {@code op}.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ set(BigInteger op) {
+        ByteBuffer buffer = ByteBuffer.wrap(op.abs().toByteArray());
+        mpz_import(mpzNative, new SizeT(buffer.capacity()), 1, new SizeT(1), 0, new SizeT(0), buffer);
+        if (op.signum() < 0)
+            negAssign();
+        return this;
+    }
+
+    /**
      * Swap the value of this {@code MPZ} with the value of {@code op}.
      *
      * @return this {@code MPZ}.
@@ -379,6 +393,16 @@ public class MPZ extends Number implements Comparable<MPZ> {
         var s = ps.getString(0);
         Native.free(Pointer.nativeValue(ps));
         return s;
+    }
+
+    /**
+     * Converts this {@code MPZ} to BigInteger.
+     */
+    public BigInteger getBigInteger() {
+        ByteBuffer buffer = bufferExport(1, 1, 0, 0);
+        byte[] bytes = new byte[buffer.remaining()];
+        buffer.get(bytes);
+        return new BigInteger(this.sgn(), bytes);
     }
 
     // Integer Arithmetic
@@ -3533,6 +3557,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
         this(str, 10);
     }
 
+    /**
+     * Builds an {@code MPZ} whose value is the same as {@code op}.
+     */
+    public MPZ(BigInteger op) {
+        this();
+        set(op);
+    }
+
     // setValue functions
 
     /**
@@ -3611,6 +3643,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     public MPZ setValue(String str) {
         return setValue(str, 10);
+    }
+
+    /**
+     * Sets this {@code MPZ} to {@code op}.
+     *
+     * @return this {@code MPZ}.
+     */
+    public MPZ setValue(BigInteger op) {
+        return set(op);
     }
 
     // Interface methods

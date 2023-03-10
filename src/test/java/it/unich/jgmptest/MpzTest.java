@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigInteger;
 import java.util.Optional;
 
 import org.javatuples.Pair;
@@ -474,6 +475,27 @@ public class MpzTest {
         var ois = new ObjectInputStream(new ByteArrayInputStream(arr));
         var b = ois.readObject();
         assertEquals(a, b);
+    }
+
+    @Test
+    void testBigintegerConversion() {
+        var s = "29329328922232322032";
+        var z = new MPZ(s);
+        var zneg = z.neg();
+        var bi = new BigInteger(s);
+        var bineg = bi.negate();
+
+        assertEquals(z, new MPZ(bi));
+        assertEquals(zneg, new MPZ(bineg));
+
+        var tmp = new MPZ(0);
+        tmp.set(bi);
+        assertEquals(z, tmp);
+        tmp.set(bineg);
+        assertEquals(zneg, tmp);
+
+        assertEquals(bi, z.getBigInteger());
+        assertEquals(bineg, zneg.getBigInteger());
     }
 
 }
