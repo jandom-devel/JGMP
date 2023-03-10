@@ -1,5 +1,6 @@
 /**
 * Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+*        and Francesca Scozzari <francesca.scozzari@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
@@ -112,7 +113,7 @@ public class AllocationMonitor {
     private static volatile long maxAllocationThreshold = Runtime.getRuntime().maxMemory();
 
     /**
-     * Set the maximum allocation threadshold. The default value is equal to the
+     * Set the maximum allocation threshold. The default value is equal to the
      * maximum size of the heap returned by `Runtime.getRuntime().maxMemory()`.
      */
     public static synchronized void setMaxAllocationThreshold(long maxAllocationThreshold) {
