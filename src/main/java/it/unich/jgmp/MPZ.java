@@ -2015,13 +2015,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * odd. This function is intended for cryptographic purposes, where resilience
      * to side-channel attacks is desired.
      *
-     * @throws ArithmeticException if {@code mod} is zero.
+     * @throws ArithmeticException if {@code mod} is even or {@code exp} is negative.
      *
      * @return this {@code MPZ}.
      */
     public MPZ powmSecAssign(MPZ base, MPZ exp, MPZ mod) {
-        if (mod.isZero())
-            throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
+        if (mod.isEven())
+            throw new ArithmeticException(GMP.MSG_EVEN_MODULUS);
+        if (exp.sgn() < 0)
+            throw new ArithmeticException(GMP.MSG_NEGATIVE_EXPONENT);
         mpz_powm_sec(mpzNative, base.mpzNative, exp.mpzNative, mod.mpzNative);
         return this;
     }

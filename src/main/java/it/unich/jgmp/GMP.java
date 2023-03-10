@@ -99,6 +99,17 @@ public class GMP {
     static final String MSG_SIZE_TOO_BIG = "size is too big";
 
     /**
+     * Error message for even modulus in @code{powmSec} functions.
+     */
+    static final String MSG_EVEN_MODULUS = "modulus cannot be even";
+
+    /**
+     * Error message for negative exponent in @code{powmSec} functions.
+     */
+    static final String MSG_NEGATIVE_EXPONENT = "exponent cannot be negative";
+
+
+    /**
      * Cleaner used by the JGMP library.
      */
     static final Cleaner cleaner = Cleaner.create();
