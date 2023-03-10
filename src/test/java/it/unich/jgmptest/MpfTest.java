@@ -303,6 +303,8 @@ public class MpfTest {
         assertEquals("0.0078125", new MPF(0.0078125).toString());
         assertEquals("-0.0078125", new MPF(-0.0078125).toString());
         assertEquals("-0.0000001", new MPF(-0.0078125).toString(2));
+        assertEquals("2450", new MPF(2450).toString());
+        assertEquals("-2450", new MPF(-2450).toString());
         assertEquals("-0.0078", new MPF(-0.0078125).toString(10, 2));
         assertEquals("0", new MPF().toString());
     }

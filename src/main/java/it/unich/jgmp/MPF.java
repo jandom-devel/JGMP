@@ -346,7 +346,7 @@ public class MPF extends Number implements Comparable<MPF> {
         return new Pair<>(result, new MPF(mpfNative));
     }
 
-    // Converting Integers
+    // Converting floats
 
     /**
      * Convert this {@code MPF} to a double, truncating if necessary. If the
@@ -1117,8 +1117,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Return {@code true} if and only if this {@code MPF} fits into a native
-     * signed long.
+     * Return {@code true} if and only if this {@code MPF} fits into a native signed
+     * long.
      */
     public boolean fitsSlong() {
         return mpf_fits_slong_p(mpfNative);
@@ -1133,8 +1133,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Return {@code true} if and only if this {@code MPF} fits into a native
-     * signed int.
+     * Return {@code true} if and only if this {@code MPF} fits into a native signed
+     * int.
      */
     public boolean fitsSint() {
         return mpf_fits_sint_p(mpfNative);
@@ -1149,8 +1149,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Return {@code true} if and only if this {@code MPF} fits into a native
-     * signed short.
+     * Return {@code true} if and only if this {@code MPF} fits into a native signed
+     * short.
      */
     public boolean fitsSshort() {
         return mpf_fits_sshort_p(mpfNative);
@@ -1177,8 +1177,8 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Return an {@code MPF} whose value is an uniformly distributed random float
-     * in the range from {@code 0} included to {@code 1} excluded. The result has
+     * Return an {@code MPF} whose value is an uniformly distributed random float in
+     * the range from {@code 0} included to {@code 1} excluded. The result has
      * {@code nbits} significant bits in the mantissa, or less if the default
      * precision is smaller.
      *
@@ -1517,7 +1517,10 @@ public class MPF extends Number implements Comparable<MPF> {
         if (position >= 0) {
             if (isNegative)
                 position += 1;
-            return mantissa.substring(0, position) + "." + mantissa.substring(position);
+            if (position >= mantissa.length())
+                return mantissa + "0".repeat(position-mantissa.length());
+            else
+                return mantissa.substring(0, position) + "." + mantissa.substring(position);
         } else if (isNegative)
             return "-0." + "0".repeat(-position) + mantissa.substring(1);
         else
