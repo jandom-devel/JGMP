@@ -235,8 +235,14 @@ public class MpzTest {
     @Test
     void testExponentiation1() {
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(3)));
+        assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(-3)));
+        assertEquals(new MPZ(2), new MPZ(2).powm(new MPZ(-1), new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(3)));
+        assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(-3)));
         assertEquals(new MPZ(1), new MPZ(2).powmSec(new MPZ(4), new MPZ(3)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(2).powmSec(new MPZ(4), new MPZ(4)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(2).powmSec(new MPZ(4), new MPZ(-4)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(2).powmSec(new MPZ(-4), new MPZ(3)));
         assertEquals(new MPZ(16), new MPZ(2).powUi(4));
         assertEquals(new MPZ(16), MPZ.powUi(2, 4));
     }
@@ -245,8 +251,14 @@ public class MpzTest {
     void testExponentiation2() {
         var a = new MPZ(2);
         assertEquals(new MPZ(3), a.powmAssign(new MPZ(4), new MPZ(13)));
+        assertEquals(new MPZ(3), a.powmAssign(new MPZ(4), new MPZ(-13)));
         assertEquals(new MPZ(2), a.powmUiAssign(3, new MPZ(5)));
+        assertEquals(new MPZ(3), a.powmUiAssign(3, new MPZ(-5)));
         assertEquals(new MPZ(3), a.powmSecAssign(new MPZ(4), new MPZ(13)));
+        assertEquals(new MPZ(3), a.powmSecAssign(new MPZ(4), new MPZ(-13)));
+        assertThrows(ArithmeticException.class, () -> a.powmSecAssign(new MPZ(4), new MPZ(14)));
+        assertThrows(ArithmeticException.class, () -> a.powmSecAssign(new MPZ(4), new MPZ(-14)));
+        assertThrows(ArithmeticException.class, () -> a.powmSecAssign(new MPZ(-4), new MPZ(13)));
         assertEquals(new MPZ(27), a.powUiAssign(3));
     }
 
