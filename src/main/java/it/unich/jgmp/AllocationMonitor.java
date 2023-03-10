@@ -40,11 +40,11 @@ import it.unich.jgmp.nativelib.SizeT;
  * fuctions {@code mp_set_memory_functions} and {@code mp_get_memory_functions}
  * ( see the *
  * <a href="https://gmplib.org/manual/Floating_002dpoint-Functions" target=
- * "_blank">Custom Allocation</a> page of the GMP manual). Since this slow downs
+ * "_blank">Custom Allocation</a> page of the GMP manual). Since this slows downs
  * allocation, the feature is normally disabled and may be enable by calling the
  * {@code enable()} static method.
  *
- * It is important to enable allocation monitor when the a program builds many
+ * It is important to enable allocation monitor when a program builds many
  * big JGMP objects. In this case, since the size occupied by a JGMP object in
  * the Java heap is only a fraction of the size occupied in native memory, the
  * program may consume all the native memory without the JVM feeling the need to
@@ -60,7 +60,7 @@ public class AllocationMonitor {
 
     /**
      * The debug level of the allocation monitor. We do not think it is important to
-     * declare this variabi as volatile, since it is only used for debugging
+     * declare this variable as volatile, since it is only used for debugging
      * purposes.
      */
     private static int debugLevel = 0;
@@ -68,7 +68,7 @@ public class AllocationMonitor {
     /**
      * Set the debug level of the allocation monitor. The greater the value, the
      * more debug messages are sent to the standard error. Zero and negative numbers
-     * mean that no debug messages is generated.
+     * mean that no debug messages are generated.
      */
     public static void setDebugLevel(int debugLevel) {
         AllocationMonitor.debugLevel = debugLevel;
@@ -85,14 +85,14 @@ public class AllocationMonitor {
 
     /**
      * The amount of native memory allocate by GMP, as computed by the allocation
-     * monitor. It is an `AtomicLong` since it might be increased concurretly by
+     * monitor. It is an `AtomicLong` since it might be increased concurrently by
      * multple threads.
      */
     private static AtomicLong allocatedSize = new AtomicLong();
 
     /**
      * Returns the amount of native memory allocated by JGMP, as computed by the
-     * allocation monitor
+     * allocation monitor.
      */
     public static long getAllocatedSize() {
         return allocatedSize.get();
@@ -128,7 +128,7 @@ public class AllocationMonitor {
     }
 
     /**
-     * Set the current allocation threadshold. The initial value is equal to 1/16th
+     * Set the current allocation threshold. The initial value is equal to 1/16th
      * of the maximum size of the heap returned by
      * `Runtime.getRuntime().maxMemory()`.
      */
@@ -214,7 +214,7 @@ public class AllocationMonitor {
                 numCrossed += 1;
                 if (gcAllowed || newSize >= 2 * allocationThreshold) {
                     if (debugLevel >= 1)
-                        System.err.println("checkGC: GC allowed");
+                        System.err.println("checkGC: GC called and disabled");
                     if (numCrossed >= numCrossThreshold) {
                         allocationThreshold = Math.min(2 * allocationThreshold, maxAllocationThreshold);
                         numCrossThreshold = Math.min(2 * numCrossThreshold, Short.MAX_VALUE);
@@ -308,7 +308,7 @@ public class AllocationMonitor {
 
     /**
      * Enable the allocation monitor. Nothing happens if the monitor is already
-     * enable.
+     * enabled.
      */
     public static synchronized void enable() {
         if (afpOld == null) {
