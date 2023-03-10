@@ -3304,6 +3304,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * of {@code mpz_import} is automatically computed by the capacity of the buffer
      * {@code op}.
      *
+     * The {@code size} parameter is declared as {@code int} instead of {@code long}
+     * since Java does not allow byte buffers to be longer than 4GB.
+     *
      * @apiNote {@code nails} should be treated as an unsigned long.
      */
     public MPZ bufferImportAssign(int order, int size, int endian, long nails, ByteBuffer op) {
@@ -3315,6 +3318,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     /**
      * Return an {@code MPZ} whose value is determined from the buffer of word data
      * at {@code op}.
+     *
+     * The {@code size} parameter is declared as {@code int} instead of {@code long}
+     * since Java does not allow byte buffers to be longer than 4GB.
      *
      * @see bufferImportAssign
      *
@@ -3333,12 +3339,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * function is not needed, since it corresponds to the capacity of the resulting
      * {@link ByteBuffer}.
      *
+     * The {@code size} parameter is declared as {@code int} instead of {@code long}
+     * since Java does not allow byte buffers to be longer than 4GB.
+     *
      * @apiNote {@code nails} should be treated as an unsigned long.
      */
     public ByteBuffer bufferExport(int order, int size, int endian, long nails) {
         var count = new SizeTByReference();
         var p = mpz_export(null, count, order, new SizeT(size), endian, new SizeT(nails), mpzNative);
-        return p.getPointer().getByteBuffer(0, count.getValue().longValue());
+        return p.getByteBuffer(0, count.getValue().longValue());
     }
 
     // Miscellaneous Integer Functions

@@ -511,7 +511,7 @@ public class LibGmp {
     public static native void mpz_import(MpzT rop, SizeT count, int order, SizeT size, int endian, SizeT nails,
             ByteBuffer op);
 
-    public static native MpzT mpz_export(ByteBuffer rop, SizeTByReference count, int order, SizeT size, int endian,
+    public static native Pointer mpz_export(ByteBuffer rop, SizeTByReference count, int order, SizeT size, int endian,
             SizeT nails, MpzT op);
 
     public static native boolean mpz_fits_ulong_p(MpzT op);
