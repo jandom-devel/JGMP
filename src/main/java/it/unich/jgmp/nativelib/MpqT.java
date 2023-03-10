@@ -34,6 +34,6 @@ public class MpqT extends PointerType {
      * pointer to it.
      */
     public MpqT() {
-        setPointer(new Memory(MPQ_SIZE));
+        super(new Memory(MPQ_SIZE));
     }
 }

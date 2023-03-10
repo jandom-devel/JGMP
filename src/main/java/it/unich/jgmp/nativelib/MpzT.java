@@ -36,7 +36,7 @@ public class MpzT extends PointerType {
      * pointer to it.
      */
     public MpzT() {
-        setPointer(new Memory(MPZ_SIZE));
+        super(new Memory(MPZ_SIZE));
     }
 
     /**

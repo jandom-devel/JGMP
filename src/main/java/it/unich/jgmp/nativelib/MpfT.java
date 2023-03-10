@@ -35,6 +35,6 @@ public class MpfT extends PointerType {
      * pointer to it.
      */
     public MpfT() {
-        setPointer(new Memory(MPF_SIZE));
+        super(new Memory(MPF_SIZE));
     }
 }
