@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
+import java.math.BigDecimal;
 
 import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
@@ -262,6 +263,25 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
+     * Set this {@code MPF} to the big decimal {@code op}. Note that, since
+     * {@code BigDecimal} represents number in thedecimal base while {@code MPF} use
+     * the binary base, rounding is possible.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF set(BigDecimal op) {
+        var z = new MPZ(op.unscaledValue());
+        set(z);
+        var opScale = op.scale();
+        var scale = new MPF(10).powUi(Math.abs(opScale));
+        if (opScale >= 0)
+            divAssign(scale);
+        else
+            mulAssign(scale);
+        return this;
+    }
+
+    /**
      * Swap the value of this {@code MPF} with the value of {@code op}. Both the
      * value and the precision of the two objects are swapped.
      *
@@ -403,6 +423,18 @@ public class MPF extends Number implements Comparable<MPF> {
         var s = ps.getString(0);
         Native.free(Pointer.nativeValue(ps));
         return new Pair<>(s, expR.getValue().longValue());
+    }
+
+    /**
+     * Convert {@code this} to a {@code BigDecimal}.
+     */
+    public BigDecimal getBigDecimal() {
+        var strPair = getStr(10, 0);
+        var exp = strPair.getValue1();
+        var str = strPair.getValue0();
+        exp -= str.charAt(0) == '-' ? str.length() - 1 : str.length();
+        str += "E" + exp;
+        return new BigDecimal(str);
     }
 
     // Integer Arithmetic
@@ -1326,6 +1358,16 @@ public class MPF extends Number implements Comparable<MPF> {
         this(str, 10);
     }
 
+    /**
+     * Builds an {@code MPF} whose value is the same as {@code op}. Note that, since
+     * {@code BigDecimal} represents number in thedecimal base while {@code MPF} use
+     * the binary base, rounding is possible.
+     */
+    public MPF(BigDecimal op) {
+        this();
+        set(op);
+    }
+
     // setValue functions
 
     /**
@@ -1416,6 +1458,17 @@ public class MPF extends Number implements Comparable<MPF> {
         if (result == -1)
             throw new ArithmeticException(GMP.MSG_INVALID_STRING_CONVERSION);
         return this;
+    }
+
+    /**
+     * Set this {@code MPF} to the big decimal {@code op}. Note that, since
+     * {@code BigDecimal} represents number in thedecimal base while {@code MPF} use
+     * the binary base, rounding is possible.
+     *
+     * @return this {@code MPF}.
+     */
+    public MPF setValue(BigDecimal op) {
+        return set(op);
     }
 
     // Interface methods

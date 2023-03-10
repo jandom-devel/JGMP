@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.math.BigDecimal;
 
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
@@ -318,4 +319,24 @@ public class MpfTest {
         assertEquals(-4.25f, a.floatValue());
     }
 
+    @Test
+    void testBigDecimalConversion() {
+        var str1 = "-2.45";
+        var bd1 = new BigDecimal(str1);
+        var f1 = new MPF(str1);
+        var str2 = "2450";
+        var bd2 = new BigDecimal(str2);
+        var f2 = new MPF(str2);
+        assertEquals(f1, new MPF(bd1));
+        assertEquals(f2, new MPF(bd2));
+
+        var f = new MPF();
+        f.set(bd1);
+        assertEquals(f1, f);
+        f.set(bd2);
+        assertEquals(f2, f);
+
+        assertEquals(bd1, f1.getBigDecimal());
+        assertTrue(bd2.compareTo(f2.getBigDecimal()) == 0);
+    }
 }
