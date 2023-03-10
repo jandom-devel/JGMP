@@ -25,7 +25,7 @@ import com.sun.jna.Pointer;
  */
 public interface AllocFunc extends Callback {
     /**
-     * Returns a pointer to newly allocated space with at least {@code alloc_size} bytes.
+     * Return a pointer to newly allocated space with at least {@code alloc_size} bytes.
      */
     public Pointer invoke(SizeT alloc_size);
 

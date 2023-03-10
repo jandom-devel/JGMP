@@ -100,7 +100,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns the native pointer to the GMP object.
+     * Return the native pointer to the GMP object.
      */
     public MpfT getNative() {
         return mpfNative;
@@ -119,7 +119,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns the default precision actually used.
+     * Return the default precision actually used.
      *
      * @apiNote the return value should be treated as an unsigned long.
      */
@@ -128,7 +128,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is zero. The precision of the result will
+     * Return an {@code MPF} whose value is zero. The precision of the result will
      * be taken from the active default precision, as set by {@link setDefaultPrec}.
      */
     static public MPF init() {
@@ -138,7 +138,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is zero, and set its precision to be at
+     * Return an {@code MPF} whose value is zero, and set its precision to be at
      * least {@code prec} bits.
      *
      * @apiNote {@code prec} should be treated as an unsigned long
@@ -150,7 +150,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns the current precision of this {@code MPF}, in bits.
+     * Return the current precision of this {@code MPF}, in bits.
      *
      * @apiNote the return value should be treated as an unsigned long.
      */
@@ -159,7 +159,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets the precision of this {@code MPF} to be at least {@code prec} bits. The
+     * Set the precision of this {@code MPF} to be at least {@code prec} bits. The
      * value will be truncated to the new precision. This function requires a
      * reallocation, and should not be used in a tight loop.
      *
@@ -175,7 +175,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Assigning Integers
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -186,7 +186,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -197,7 +197,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -210,7 +210,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
@@ -225,7 +225,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -236,7 +236,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -247,7 +247,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the number represented by the string {@code str} in
+     * Set this {@code MPF} to the number represented by the string {@code str} in
      * the specified {@code base}, possibly truncated according to precision. See
      * the GMP function
      * <a href="https://gmplib.org/manual/Assigning-Floats" target="
@@ -275,7 +275,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Simultaneous Integer Init & Assign
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Return an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
@@ -289,7 +289,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Return an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
@@ -301,7 +301,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Return an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      */
     public static MPF initSet(long op) {
@@ -311,7 +311,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Return an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number.
@@ -325,7 +325,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the number represented by the string
+     * Return an {@code MPF} whose value is the number represented by the string
      * {@code str} in the specified {@code base}, possibly truncated to the default
      * precision. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
@@ -349,7 +349,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Converting Integers
 
     /**
-     * Converts this {@code MPF} to a double, truncating if necessary. If the
+     * Convert this {@code MPF} to a double, truncating if necessary. If the
      * exponent from the conversion is too big or too small, the result is system
      * dependent. For too big an infinity is returned when available. For too small
      * 0.0 is normally returned. Hardware overflow, underflow and denorm traps may
@@ -360,7 +360,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a pair made of mantissa and exponent, truncating
+     * Convert this {@code MPF} to a pair made of mantissa and exponent, truncating
      * if necessary. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Floats" target=
      * "_blank">{@code mpf_get_d_2exp}</a>.
@@ -372,7 +372,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to an unsigned long, truncating any fraction part.
+     * Convert this {@code MPF} to an unsigned long, truncating any fraction part.
      * If this number is too big to fit an unsigned long, the result is undefined.
      *
      * @apiNote the return value should be treated as an unsigned long.
@@ -382,7 +382,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a long, truncating any fraction part. If this
+     * Convert this {@code MPF} to a long, truncating any fraction part. If this
      * number is too big to fit a long, the result is undefined.
      */
     public long getSi() {
@@ -390,7 +390,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns the String representation of this {@code MPF} in the specified
+     * Return the String representation of this {@code MPF} in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Floats" target=
      * "_blank">{@code mpf_get_str}</a>.
@@ -408,7 +408,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Integer Arithmetic
 
     /**
-     * Sets this {@code MPF} to {@code (op1 + op2)}.
+     * Set this {@code MPF} to {@code (op1 + op2)}.
      *
      * @return this {@code MPF}.
      */
@@ -418,7 +418,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this + op)}
+     * Set this {@code MPF} to {@code (this + op)}
      *
      * @return this {@code MPF}
      */
@@ -427,14 +427,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this + op)}.
+     * Return an {@code MPF} whose value is {@code (this + op)}.
      */
     public MPF add(MPF op) {
         return new MPF().addAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 + op2)}.
+     * Set this {@code MPF} to {@code (op1 + op2)}.
      *
      * @return this {@code MPF}.
      *
@@ -446,7 +446,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this + op)}
+     * Set this {@code MPF} to {@code (this + op)}
      *
      * @return this {@code MPF}
      *
@@ -457,7 +457,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this + op)}.
+     * Return an {@code MPF} whose value is {@code (this + op)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -466,7 +466,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 - op2)}.
+     * Set this {@code MPF} to {@code (op1 - op2)}.
      *
      * @return this {@code MPF}.
      */
@@ -476,7 +476,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this - op)}
+     * Set this {@code MPF} to {@code (this - op)}
      *
      * @return this {@code MPF}
      */
@@ -485,14 +485,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this - op)}.
+     * Return an {@code MPF} whose value is {@code (this - op)}.
      */
     public MPF sub(MPF op) {
         return new MPF().subAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 - op2)}.
+     * Set this {@code MPF} to {@code (op1 - op2)}.
      *
      * @return this {@code MPF}.
      *
@@ -504,7 +504,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this - op)}
+     * Set this {@code MPF} to {@code (this - op)}
      *
      * @return this {@code MPF}
      *
@@ -515,7 +515,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this - op)}.
+     * Return an {@code MPF} whose value is {@code (this - op)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -524,7 +524,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 - op2)}.
+     * Set this {@code MPF} to {@code (op1 - op2)}.
      *
      * @return this {@code MPF}.
      *
@@ -536,7 +536,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op - this)}
+     * Set this {@code MPF} to {@code (op - this)}
      *
      * @return this {@code MPF}
      *
@@ -547,7 +547,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (op - this)}.
+     * Return an {@code MPF} whose value is {@code (op - this)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -556,7 +556,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 * op2)}.
+     * Set this {@code MPF} to {@code (op1 * op2)}.
      *
      * @return this {@code MPF}.
      */
@@ -566,7 +566,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this * op)}
+     * Set this {@code MPF} to {@code (this * op)}
      *
      * @return this {@code MPF}
      */
@@ -575,14 +575,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this * op)}.
+     * Return an {@code MPF} whose value is {@code (this * op)}.
      */
     public MPF mul(MPF op) {
         return new MPF().mulAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 * op2)}.
+     * Set this {@code MPF} to {@code (op1 * op2)}.
      *
      * @return this {@code MPF}.
      *
@@ -594,7 +594,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this * op)}
+     * Set this {@code MPF} to {@code (this * op)}
      *
      * @return this {@code MPF}
      *
@@ -605,7 +605,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this * op)}.
+     * Return an {@code MPF} whose value is {@code (this * op)}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -614,7 +614,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 / op2)}.
+     * Set this {@code MPF} to {@code (op1 / op2)}.
      *
      * @throws ArithmeticException if {@code op2} is zero.
      *
@@ -628,7 +628,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this / op)}
+     * Set this {@code MPF} to {@code (this / op)}
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -639,7 +639,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this / op)}.
+     * Return an {@code MPF} whose value is {@code (this / op)}.
      *
      * @throws ArithmeticException if {@code op} is zero.
      */
@@ -648,7 +648,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 / op2)}.
+     * Set this {@code MPF} to {@code (op1 / op2)}.
      *
      * @throws ArithmeticException if {@code op2} is zero.
      *
@@ -664,7 +664,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (this / op)}
+     * Set this {@code MPF} to {@code (this / op)}
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -677,7 +677,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (this / op)}.
+     * Return an {@code MPF} whose value is {@code (this / op)}.
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -688,7 +688,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op1 / op2)}.
+     * Set this {@code MPF} to {@code (op1 / op2)}.
      *
      * @throws ArithmeticException if {@code op2} is zero.
      *
@@ -704,7 +704,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (op / this)}
+     * Set this {@code MPF} to {@code (op / this)}
      *
      * @throws ArithmeticException if {@code this} is zero.
      *
@@ -717,7 +717,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (op / this)}.
+     * Return an {@code MPF} whose value is {@code (op / this)}.
      *
      * @throws ArithmeticException if {@code this} is zero.
      *
@@ -728,7 +728,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the the square root of {@code op}.
+     * Set this {@code MPF} to the the square root of {@code op}.
      *
      * @return this {@code MPF}.
      */
@@ -738,7 +738,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its square root.
+     * Set this {@code MPF} to its square root.
      *
      * @return this {@code MPF}.
      */
@@ -747,14 +747,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the square root of {@code this}.
+     * Return an {@code MPF} whose value is the square root of {@code this}.
      */
     public MPF sqrt() {
         return new MPF().sqrtAssign(this);
     }
 
     /**
-     * Sets this {@code MPF} to the the square root of {@code op}.
+     * Set this {@code MPF} to the the square root of {@code op}.
      *
      * @return this {@code MPF}.
      *
@@ -766,7 +766,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the square root of {@code this}.
+     * Return an {@code MPF} whose value is the square root of {@code this}.
      *
      * @apiNote {@code op} should be treated as an unsigned long.
      */
@@ -775,7 +775,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to <code>(base<sup>exp</sup>)</code>. The case
+     * Set this {@code MPF} to <code>(base<sup>exp</sup>)</code>. The case
      * <code>0<sup>0</sup></code> yields {@code 1}.
      *
      * @return this {@code MPF}.
@@ -788,7 +788,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to <code>(this<sup>exp</sup>)</code>. The case
+     * Set this {@code MPF} to <code>(this<sup>exp</sup>)</code>. The case
      * <code>0<sup>0</sup></code> yields {@code 1}.
      *
      * @return this {@code MPF}.
@@ -800,7 +800,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is <code>(this<sup>exp</sup>)</code>. The
+     * Return an {@code MPF} whose value is <code>(this<sup>exp</sup>)</code>. The
      * case <code>0<sup>0</sup></code> yields {@code 1}.
      *
      * @apiNote {@code exp} should be treated as an unsigned long.
@@ -810,7 +810,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code (- op)}.
+     * Set this {@code MPF} to {@code (- op)}.
      *
      * @return this {@code MPF}.
      */
@@ -820,7 +820,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its opposite.
+     * Set this {@code MPF} to its opposite.
      *
      * @return this {@code MPF}.
      */
@@ -829,14 +829,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code (- this)}.
+     * Return an {@code MPF} whose value is {@code (- this)}.
      */
     public MPF neg() {
         return new MPF().negAssign(this);
     }
 
     /**
-     * Sets this {@code MPF} to the absolute value of {@code op}.
+     * Set this {@code MPF} to the absolute value of {@code op}.
      *
      * @return this {@code MPF}.
      */
@@ -846,7 +846,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its absolute value.
+     * Set this {@code MPF} to its absolute value.
      *
      * @return this {@code MPF}.
      */
@@ -855,14 +855,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is the absolute value of {@code this}.
+     * Return an {@code MPF} whose value is the absolute value of {@code this}.
      */
     public MPF abs() {
         return new MPF().absAssign(this);
     }
 
     /**
-     * Sets this {@code MPF} to <code>(op * 2<sup>b</sup>)</code>.
+     * Set this {@code MPF} to <code>(op * 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPF}.
      *
@@ -874,7 +874,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to <code>(this * 2<sup>b</sup>)</code>.
+     * Set this {@code MPF} to <code>(this * 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPF}.
      *
@@ -885,7 +885,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is <code>(this * 2<sup>b</sup>)</code>.
+     * Return an {@code MPF} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -894,7 +894,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to <code>(op / 2<sup>b</sup>)</code>.
+     * Set this {@code MPF} to <code>(op / 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPF}.
      *
@@ -906,7 +906,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to <code>(this / 2<sup>b</sup>)</code>.
+     * Set this {@code MPF} to <code>(this / 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPF}.
      *
@@ -917,7 +917,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is <code>(this * 2<sup>b</sup>)</code>.
+     * Return an {@code MPF} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -928,7 +928,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Comparison Functions
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}.
      */
@@ -937,7 +937,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}. The value of {@code op} may be infinite, but the result
      * is undefined on NaNs.
@@ -947,7 +947,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}. The value of {@code op} may be infinite, but the result
      * is undefined on NaNs.
@@ -961,7 +961,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}.
      */
@@ -970,7 +970,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}.
      *
@@ -981,7 +981,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the relative difference between {@code op1} and
+     * Set this {@code MPF} to the relative difference between {@code op1} and
      * {@code op2}, i.e., {@code (abs(op1-op2)/op1)}.
      *
      * @return this {@code MPF}.
@@ -992,7 +992,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the relative difference between {@code this} and
+     * Set this {@code MPF} to the relative difference between {@code this} and
      * {@code op}, i.e., {@code (abs(this-op)/this)}.
      *
      * @return this {@code MPF}.
@@ -1010,7 +1010,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
+     * Return {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
      * {@code -1} if {@code (this < 0)}.
      */
     public int sgn() {
@@ -1020,7 +1020,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Miscellaneous Functions Functions
 
     /**
-     * Sets this {@code MPF} to the value of {@code op} rounded to the next higher
+     * Set this {@code MPF} to the value of {@code op} rounded to the next higher
      * integer.
      *
      * @return this {@code MPF}.
@@ -1031,7 +1031,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its value rounded to the next higher integer.
+     * Set this {@code MPF} to its value rounded to the next higher integer.
      *
      * @return this {@code MPF}.
      */
@@ -1040,7 +1040,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code this} rounded to the next higher
+     * Return an {@code MPF} whose value is {@code this} rounded to the next higher
      * integer.
      */
     public MPF ceil() {
@@ -1048,7 +1048,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the value of {@code op} rounded to the next lower
+     * Set this {@code MPF} to the value of {@code op} rounded to the next lower
      * integer.
      *
      * @return this {@code MPF}.
@@ -1059,7 +1059,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its value rounded to the next lower integer.
+     * Set this {@code MPF} to its value rounded to the next lower integer.
      *
      * @return this {@code MPF}.
      */
@@ -1068,7 +1068,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code this} rounded to the next lower
+     * Return an {@code MPF} whose value is {@code this} rounded to the next lower
      * integer.
      */
     public MPF floor() {
@@ -1076,7 +1076,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to the value of {@code op} rounded towards zero.
+     * Set this {@code MPF} to the value of {@code op} rounded towards zero.
      *
      * @return this {@code MPF}.
      */
@@ -1086,7 +1086,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to its value rounded towards zero.
+     * Set this {@code MPF} to its value rounded towards zero.
      *
      * @return this {@code MPF}.
      */
@@ -1095,21 +1095,21 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is {@code this} rounded towards zero.
+     * Return an {@code MPF} whose value is {@code this} rounded towards zero.
      */
     public MPF trunc() {
         return new MPF().truncAssign(this);
     }
 
     /**
-     * Returns whether this {@code MPF} is an integer.
+     * Return whether this {@code MPF} is an integer.
      */
     public boolean isInteger() {
         return mpf_integer_p(mpfNative);
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * unsigned long.
      */
     public boolean fitsUlong() {
@@ -1117,7 +1117,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * signed long.
      */
     public boolean fitsSlong() {
@@ -1125,7 +1125,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * unsigned int.
      */
     public boolean fitsUint() {
@@ -1133,7 +1133,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * signed int.
      */
     public boolean fitsSint() {
@@ -1141,7 +1141,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * unsigned short.
      */
     public boolean fitsUshort() {
@@ -1149,7 +1149,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns {@code true} if and only if this {@code MPF} fits into a native
+     * Return {@code true} if and only if this {@code MPF} fits into a native
      * signed short.
      */
     public boolean fitsSshort() {
@@ -1157,14 +1157,14 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns true if and only if this {@code this} MPF is zero.
+     * Return true if and only if this {@code this} MPF is zero.
      */
     public boolean isZero() {
         return mpf_cmp(mpfNative, zero.mpfNative) == 0;
     }
 
     /**
-     * Sets this {@code MPF} to a uniformly distributed random float in the range
+     * Set this {@code MPF} to a uniformly distributed random float in the range
      * from {@code 0} included to {@code 1} excluded. The result has {@code nbits}
      * significant bits in the mantissa, or less if the precision of this
      * {@code MPF} is smaller.
@@ -1177,7 +1177,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is an uniformly distributed random float
+     * Return an {@code MPF} whose value is an uniformly distributed random float
      * in the range from {@code 0} included to {@code 1} excluded. The result has
      * {@code nbits} significant bits in the mantissa, or less if the default
      * precision is smaller.
@@ -1189,7 +1189,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to a random integer of at most {@code maxSize} limbs,
+     * Set this {@code MPF} to a random integer of at most {@code maxSize} limbs,
      * with long strings of zeros and ones in the binary representation. The
      * exponent of the number is in the interval {@code -exp} to {@code exp} (in
      * limbs). This function is useful for testing functions and algorithms, since
@@ -1205,7 +1205,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Returns an {@code MPF} whose value is a random integer of at most
+     * Return an {@code MPF} whose value is a random integer of at most
      * {@code maxSize} limbs, with long strings of zeros and ones in the binary
      * representation. The exponent of the number is in the interval {@code -exp} to
      * {@code exp} (in limbs). This function is useful for testing functions and
@@ -1220,7 +1220,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Constructors
 
     /**
-     * Builds an {@code MPF} whose value is zero.
+     * Build an {@code MPF} whose value is zero.
      */
     public MPF() {
         mpfNative = new MpfT();
@@ -1229,7 +1229,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Build an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      */
     public MPF(MPF op) {
@@ -1239,7 +1239,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Build an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      */
     public MPF(long op) {
@@ -1249,7 +1249,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Build an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number.
@@ -1263,7 +1263,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Build an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      */
     public MPF(MPQ op) {
@@ -1274,7 +1274,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is {@code op}, possibly truncated to the
+     * Build an {@code MPF} whose value is {@code op}, possibly truncated to the
      * default precision.
      */
     public MPF(MPZ op) {
@@ -1285,7 +1285,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is the number represented by the string
+     * Build an {@code MPF} whose value is the number represented by the string
      * {@code str} in the specified {@code base}, possibly truncated to the default
      * precision. See the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
@@ -1313,7 +1313,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Builds an {@code MPF} whose value is the number represented by the string
+     * Build an {@code MPF} whose value is the number represented by the string
      * {@code str} in decimal base, possibly truncated to the default precision. See
      * the GMP function
      * <a href="https://gmplib.org/manual/Simultaneous-Float-Init-_0026-Assign"
@@ -1329,7 +1329,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // setValue functions
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -1339,7 +1339,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -1349,7 +1349,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
@@ -1362,7 +1362,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -1372,7 +1372,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Sets this {@code MPF} to {@code op}, possibly truncated according to
+     * Set this {@code MPF} to {@code op}, possibly truncated according to
      * precision.
      *
      * @return this {@code MPF}.
@@ -1421,7 +1421,7 @@ public class MPF extends Number implements Comparable<MPF> {
     // Interface methods
 
     /**
-     * Compares this {@code MPF} with {@code op}. Returns a positive value if
+     * Compare this {@code MPF} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}. This order is compatible with equality.
      */
@@ -1431,7 +1431,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Compares this {@code MPF} with the object {@code op} for equality. It returns
+     * Compare this {@code MPF} with the object {@code op} for equality. It returns
      * {@code true} if and only if {@code op} is an {@code MPF} with the same value
      * of {@code this}.
      */
@@ -1447,9 +1447,9 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /***
-     * Returns a hash code value for this {@code MPF}.
+     * Return a hash code value for this {@code MPF}.
      *
-     * @implNote Returns its {@link intValue}.
+     * @implNote Return its {@link intValue}.
      */
     @Override
     public int hashCode() {
@@ -1457,7 +1457,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a {@code long}, truncating any fraction part. If
+     * Convert this {@code MPF} to a {@code long}, truncating any fraction part. If
      * this number is too big to fit a {@code long}, the result is undefined.
      */
     @Override
@@ -1466,9 +1466,9 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to an {@code int}.
+     * Convert this {@code MPF} to an {@code int}.
      *
-     * @implNote Returns the result of {@link longValue} cast to an {@code int}.
+     * @implNote Return the result of {@link longValue} cast to an {@code int}.
      */
     @Override
     public int intValue() {
@@ -1476,7 +1476,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a double, truncating if necessary. If the
+     * Convert this {@code MPF} to a double, truncating if necessary. If the
      * exponent from the conversion is too big or too small to fit a double then the
      * result is system dependent. For too big an infinity is returned when
      * available. For too small 0.0 is normally returned. Hardware overflow,
@@ -1488,9 +1488,9 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to a float, truncating if necessary.
+     * Convert this {@code MPF} to a float, truncating if necessary.
      *
-     * @implNote Returns the result of {@link doubleValue} cast to a {@code float}.
+     * @implNote Return the result of {@link doubleValue} cast to a {@code float}.
      */
     @Override
     public float floatValue() {
@@ -1498,7 +1498,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to its string representation in the specified
+     * Convert this {@code MPF} to its string representation in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Floats" target=
      * "_blank">{@code mpf_get_str}</a>.
@@ -1525,7 +1525,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to its string representation in the specified
+     * Convert this {@code MPF} to its string representation in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Converting-Floats" target=
      * "_blank">{@code mpf_get_str}</a>.
@@ -1535,7 +1535,7 @@ public class MPF extends Number implements Comparable<MPF> {
     }
 
     /**
-     * Converts this {@code MPF} to its decimal string representation.
+     * Convert this {@code MPF} to its decimal string representation.
      */
     @Override
     public String toString() {

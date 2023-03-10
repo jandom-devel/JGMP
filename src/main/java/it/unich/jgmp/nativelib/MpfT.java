@@ -31,7 +31,7 @@ public class MpfT extends PointerType {
     static final int MPF_SIZE = 4 + 4 + MpExpT.SIZE + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code mpf_t} native type and returns the
+     * Allocate the memory needed for an {@code mpf_t} native type and return the
      * pointer to it.
      */
     public MpfT() {

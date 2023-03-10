@@ -32,7 +32,7 @@ public class MpzT extends PointerType {
     static final int MPZ_SIZE = 4 + 4 + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code mpz_t} native type and returns the
+     * Allocate the memory needed for an {@code mpz_t} native type and return the
      * pointer to it.
      */
     public MpzT() {

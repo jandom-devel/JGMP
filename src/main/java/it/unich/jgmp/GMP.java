@@ -1,5 +1,5 @@
 /**
-* Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+* Copyright 2022, 2023 Gianluca Amato <gianluca.amato@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
@@ -103,42 +103,42 @@ public class GMP {
     static final Cleaner cleaner = Cleaner.create();
 
     /**
-     * Returns the version of the native GMP library.
+     * Return the version of the native GMP library.
      */
     public static String getVersion() {
         return LibGmp.gmp_version;
     }
 
     /**
-     * Returns the JGMP library version.
+     * Return the JGMP library version.
      */
     public static String getJGmpVersion() {
         return properties.getProperty("jgmp.version");
     }
 
     /**
-     * Returns the major version of the native GMP library.
+     * Return the major version of the native GMP library.
      */
     public static int getMajorVersion() {
         return LibGmp.__GNU_MP_VERSION;
     }
 
     /**
-     * Returns the minor version of the native GMP library.
+     * Return the minor version of the native GMP library.
      */
     public static int getMinorVersion() {
         return LibGmp.__GNU_MP_VERSION_MINOR;
     }
 
     /**
-     * Returns the patch level of the native GMP library.
+     * Return the patch level of the native GMP library.
      */
     public static int getPatchLevel() {
         return LibGmp.__GNU_MP_VERSION_PATCHLEVEL;
     }
 
     /**
-     * Returns the number of bits per limb. A limb means the part of a
+     * Return the number of bits per limb. A limb means the part of a
      * multi-precision number that fits in a single machine word.
      */
     public static int getBitsPerLimb() {
@@ -146,7 +146,7 @@ public class GMP {
     }
 
     /**
-     * Returns the system decimal separator, as used by the
+     * Return the system decimal separator, as used by the
      * {@link GMP#sscanf(String, String, Object...)} and
      * {@link GMP#sprintf(String, Object...)} methods. This might not correspond to
      * the decimal separator of the current Java locale, since native locales are
@@ -157,7 +157,7 @@ public class GMP {
     }
 
     /**
-     * Prints to the standard output according to the format specification in
+     * Print to the standard output according to the format specification in
      * {@code fmt} and the additional arguments in {@code args}. This is similar to
      * the C {@code printf} function and the Java
      * {@link java.io.PrintStream#printf(String, Object...)} method. If the format
@@ -180,7 +180,7 @@ public class GMP {
     }
 
     /**
-     * Returns a string according to the format specification in {@code fmt} and the
+     * Return a string according to the format specification in {@code fmt} and the
      * additional arguments in {@code args}. This is similar to the C
      * {@code asprintf} function and the Java
      * {@link String#format(String, Object...)} method. If the format string is
@@ -202,7 +202,7 @@ public class GMP {
     }
 
     /**
-     * Parses the standard input according to the format specification in
+     * Parse the standard input according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code scanf} function. If the format string is invalid, or the arguments
      * don't match what the format specifies, then the behaviour of this function
@@ -224,7 +224,7 @@ public class GMP {
     }
 
     /**
-     * Parses the string {@code s} according to the format specification in
+     * Parse the string {@code s} according to the format specification in
      * {@code fmt}, filling the variables in {@code args}. This is similar to the C
      * {@code sscanf} function. If the format string is invalid, or the arguments
      * don't match what the format specifies, then the behaviour of this function

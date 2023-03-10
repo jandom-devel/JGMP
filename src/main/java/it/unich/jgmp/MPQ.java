@@ -90,7 +90,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns the native pointer to the GMP object.
+     * Return the native pointer to the GMP object.
      */
     public MpqT getNative() {
         return mpqNative;
@@ -99,7 +99,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Initialization and Assignment Functions
 
     /**
-     * Returns an {@code MPQ} whose value is zero.
+     * Return an {@code MPQ} whose value is zero.
      */
     static public MPQ init() {
         var mpqNative = new MpqT();
@@ -110,7 +110,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Assigning Integers
 
     /**
-     * Sets this {@code MPQ} to {@code op}.
+     * Set this {@code MPQ} to {@code op}.
      *
      * @return this {@code MPQ}.
      */
@@ -120,7 +120,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}.
+     * Set this {@code MPQ} to {@code op}.
      *
      * @return this {@code MPQ}.
      */
@@ -130,7 +130,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (<num/>den)}.
+     * Set this {@code MPQ} to {@code (<num/>den)}.
      *
      * @return this {@code MPQ}.
      *
@@ -143,7 +143,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (num/den)}.
+     * Set this {@code MPQ} to {@code (num/den)}.
      *
      * @return this {@code MPQ}.
      *
@@ -156,7 +156,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to the number represented by the string {@code str} in
+     * Set this {@code MPQ} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target="
      * _blank">{@code mpq_set_str}</a>.
@@ -184,7 +184,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Conversion Functions
 
     /**
-     * Converts this {@code MPQ} to a double, truncating if necessary. If the
+     * Convert this {@code MPQ} to a double, truncating if necessary. If the
      * exponent from the conversion is too big or too small to fit a double then the
      * result is system dependent. For too big an infinity is returned when
      * available. For too small 0.0 is normally returned. Hardware overflow,
@@ -195,7 +195,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
+     * Set this {@code MPQ} to {@code op}. There is no rounding, this conversion is
      * exact.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
@@ -210,7 +210,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
+     * Set this {@code MPQ} to {@code op}. There is no rounding, this conversion is
      * exact.
      *
      * @return this {@code MPQ}.
@@ -221,7 +221,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns the String representation of this {@code MPQ} in the specified
+     * Return the String representation of this {@code MPQ} in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Rational-Conversions" target=
      * "_blank">{@code mpq_get_str}</a>.
@@ -238,7 +238,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Rational Arithmetic
 
     /**
-     * Sets this {@code MPQ} to {@code (op1 + op2)}.
+     * Set this {@code MPQ} to {@code (op1 + op2)}.
      *
      * @return this {@code MPQ}.
      */
@@ -248,7 +248,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this + op)}
+     * Set this {@code MPQ} to {@code (this + op)}
      *
      * @return this {@code MPQ}
      */
@@ -257,14 +257,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (this + op)}.
+     * Return an {@code MPQ} whose value is {@code (this + op)}.
      */
     public MPQ add(MPQ op) {
         return new MPQ().addAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (op1 - op2)}.
+     * Set this {@code MPQ} to {@code (op1 - op2)}.
      *
      * @return this {@code MPQ}.
      */
@@ -274,7 +274,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this - op)}
+     * Set this {@code MPQ} to {@code (this - op)}
      *
      * @return this {@code MPQ}
      */
@@ -283,14 +283,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (this - op)}.
+     * Return an {@code MPQ} whose value is {@code (this - op)}.
      */
     public MPQ sub(MPQ op) {
         return new MPQ().subAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (op1 * op2)}.
+     * Set this {@code MPQ} to {@code (op1 * op2)}.
      *
      * @return this {@code MPQ}.
      */
@@ -300,7 +300,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this * op)}
+     * Set this {@code MPQ} to {@code (this * op)}
      *
      * @return this {@code MPQ}
      */
@@ -309,14 +309,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (this * op)}.
+     * Return an {@code MPQ} whose value is {@code (this * op)}.
      */
     public MPQ mul(MPQ op) {
         return new MPQ().mulAssign(this, op);
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (op1 / op2)}.
+     * Set this {@code MPQ} to {@code (op1 / op2)}.
      *
      * @throws ArithmeticException if {@code op2} is zero.
      *
@@ -330,7 +330,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (this / op)}
+     * Set this {@code MPQ} to {@code (this / op)}
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -341,7 +341,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (this / op)}.
+     * Return an {@code MPQ} whose value is {@code (this / op)}.
      *
      * @throws ArithmeticException if {@code op} is zero.
      */
@@ -350,7 +350,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to <code>(op * 2<sup>b</sup>)</code>.
+     * Set this {@code MPQ} to <code>(op * 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPQ}.
      *
@@ -362,7 +362,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to <code>(this * 2<sup>b</sup>)</code>.
+     * Set this {@code MPQ} to <code>(this * 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPQ}.
      *
@@ -373,7 +373,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is <code>(this * 2<sup>b</sup>)</code>.
+     * Return an {@code MPQ} whose value is <code>(this * 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -382,7 +382,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to <code>(op / 2<sup>b</sup>)</code>.
+     * Set this {@code MPQ} to <code>(op / 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPQ}.
      *
@@ -394,7 +394,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to <code>(this / 2<sup>b</sup>)</code>.
+     * Set this {@code MPQ} to <code>(this / 2<sup>b</sup>)</code>.
      *
      * @return this {@code MPQ}.
      *
@@ -405,7 +405,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is <code>(this / 2<sup>b</sup>)</code>.
+     * Return an {@code MPQ} whose value is <code>(this / 2<sup>b</sup>)</code>.
      *
      * @apiNote {@code b} should be treated as an unsigned long.
      */
@@ -414,7 +414,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code (- op)}.
+     * Set this {@code MPQ} to {@code (- op)}.
      *
      * @return this {@code MPQ}.
      */
@@ -424,7 +424,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to its opposite.
+     * Set this {@code MPQ} to its opposite.
      *
      * @return this {@code MPQ}.
      */
@@ -433,14 +433,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is the quotient of {@code (- this)}.
+     * Return an {@code MPQ} whose value is the quotient of {@code (- this)}.
      */
     public MPQ neg() {
         return new MPQ().negAssign(this);
     }
 
     /**
-     * Sets this {@code MPQ} to the absolute value of {@code op}.
+     * Set this {@code MPQ} to the absolute value of {@code op}.
      *
      * @return this {@code MPQ}.
      */
@@ -450,7 +450,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to its absolute value.
+     * Set this {@code MPQ} to its absolute value.
      *
      * @return this {@code MPQ}.
      */
@@ -459,14 +459,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is the absolute value of {@code this}.
+     * Return an {@code MPQ} whose value is the absolute value of {@code this}.
      */
     public MPQ abs() {
         return new MPQ().absAssign(this);
     }
 
     /**
-     * Sets this {@code MPQ} to {@code 1/op}.
+     * Set this {@code MPQ} to {@code 1/op}.
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -480,7 +480,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to its inverse.
+     * Set this {@code MPQ} to its inverse.
      *
      * @throws ArithmeticException if {@code op} is zero.
      *
@@ -491,7 +491,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns an {@code MPQ} whose value is {@code (1/this)}.
+     * Return an {@code MPQ} whose value is {@code (1/this)}.
      *
      * @throws ArithmeticException if {@code op} is zero.
      */
@@ -502,7 +502,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Comparison Functions
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}.
      */
@@ -511,7 +511,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares {@code this} with {@code op}. Returns a positive value if
+     * Compare {@code this} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code this = op}, or a negative value if
      * {@code this < op}.
      */
@@ -520,7 +520,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares {@code this} with {@code (num/dem)}. Returns a positive value if
+     * Compare {@code this} with {@code (num/dem)}. Return a positive value if
      * {@code (this > num/dem)}, zero if {@code (this = num/dem)}, or a negative
      * value if {@code (this < num/dem)}.
      *
@@ -531,7 +531,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares {@code this} with {@code (num/dem)}. Returns a positive value if
+     * Compare {@code this} with {@code (num/dem)}. Return a positive value if
      * {@code (this > num/dem)}, zero if {@code (this = num/dem)}, or a negative
      * value if {@code (this < num/dem)}.
      *
@@ -542,7 +542,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
+     * Return {@code +1} if {@code (this > 0)}, {@code 0} if {@code (this = 0)} and
      * {@code -1} if {@code (this < 0)}.
      */
     public int sgn() {
@@ -550,7 +550,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns true if {@code this} is equal to {@code op}, false otherwise.
+     * Return true if {@code this} is equal to {@code op}, false otherwise.
      * Although {@code cmp} can be used for the same purpose, this method should be
      * faster.
      */
@@ -561,7 +561,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Applying Integer Functions to Rationals
 
     /**
-     * Returns the numerator of {@code this}.
+     * Return the numerator of {@code this}.
      */
     public MPZ getNum() {
         MPZ res = new MPZ();
@@ -570,7 +570,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns the denominator of {@code this}.
+     * Return the denominator of {@code this}.
      */
     public MPZ getDen() {
         MPZ res = new MPZ();
@@ -579,7 +579,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets the numerator of {@code this} to the value {@code num}.
+     * Set the numerator of {@code this} to the value {@code num}.
      */
     public MPQ setNum(MPZ num) {
         mpq_set_num(mpqNative, num.getNative());
@@ -588,7 +588,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets the denominator of {@code this} to the value {@code den}.
+     * Set the denominator of {@code this} to the value {@code den}.
      */
     public MPQ setDen(MPZ den) {
         mpq_set_den(mpqNative, den.getNative());
@@ -597,7 +597,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Returns true if and only if {@code this} MPQ is zero.
+     * Return true if and only if {@code this} MPQ is zero.
      */
     public boolean isZero() {
         return mpq_cmp(mpqNative, zero.mpqNative) == 0;
@@ -606,7 +606,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Constructors
 
     /**
-     * Builds an {@code MPQ} whose value is zero.
+     * Build an {@code MPQ} whose value is zero.
      */
     public MPQ() {
         mpqNative = new MpqT();
@@ -615,7 +615,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code op}.
+     * Build an {@code MPQ} whose value is {@code op}.
      */
     public MPQ(MPQ op) {
         this();
@@ -623,7 +623,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code op}.
+     * Build an {@code MPQ} whose value is {@code op}.
      */
     public MPQ(MPZ op) {
         this();
@@ -631,7 +631,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code (num/dem)}.
+     * Build an {@code MPQ} whose value is {@code (num/dem)}.
      *
      * @apiNote {@code den} should be treated as an unsigned long.
      *
@@ -642,7 +642,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code op}.
+     * Build an {@code MPQ} whose value is {@code op}.
      */
     public MPQ(long num) {
         this();
@@ -650,7 +650,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code op}. There is no rounding, this
+     * Build an {@code MPQ} whose value is {@code op}. There is no rounding, this
      * conversion is exact.
      *
      * @throws ArithmeticException if {@code op} is not a finite number.
@@ -661,7 +661,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is {@code op}. There is no rounding, this
+     * Build an {@code MPQ} whose value is {@code op}. There is no rounding, this
      * conversion is exact.
      */
     public MPQ(MPF op) {
@@ -670,7 +670,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is the number represented by the string
+     * Build an {@code MPQ} whose value is the number represented by the string
      * {@code str} in the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_set_str}</a>.
@@ -688,7 +688,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Builds an {@code MPQ} whose value is the number represented by the string
+     * Build an {@code MPQ} whose value is the number represented by the string
      * {@code str} in decimal base. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_set_str}</a>.
@@ -705,7 +705,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // setValue functions
 
     /**
-     * Sets this {@code MPQ} to {@code op}.
+     * Set this {@code MPQ} to {@code op}.
      *
      * @return this {@code MPQ}.
      */
@@ -714,7 +714,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}.
+     * Set this {@code MPQ} to {@code op}.
      *
      * @return this {@code MPQ}.
      */
@@ -723,7 +723,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to op {@code op}. There is no rounding, this conversion
+     * Set this {@code MPQ} to op {@code op}. There is no rounding, this conversion
      * is exact.
      *
      * @throws ArithmeticException if {@code op} is not a finite number. In this
@@ -736,7 +736,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to {@code op}. There is no rounding, this conversion is
+     * Set this {@code MPQ} to {@code op}. There is no rounding, this conversion is
      * exact.
      *
      * @return this {@code MPQ}.
@@ -746,7 +746,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to the number represented by the string {@code str} in
+     * Set this {@code MPQ} to the number represented by the string {@code str} in
      * the specified {@code base}. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target="
      * _blank">{@code mpq_set_str}</a>.
@@ -766,7 +766,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Sets this {@code MPQ} to the value represented by the string {@code str} in
+     * Set this {@code MPQ} to the value represented by the string {@code str} in
      * decimal base. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target="
      * _blank">{@code mpq_set_str}</a>.
@@ -786,7 +786,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     // Interface methods
 
     /**
-     * Compares this {@code MPQ} with {@code op}. Returns a positive value if
+     * Compare this {@code MPQ} with {@code op}. Return a positive value if
      * {@code (this > op)}, zero if {@code (this = op)}, or a negative value if
      * {@code (this < op)}. This order is compatible with equality.
      */
@@ -796,7 +796,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Compares this {@code MPQ} with the object {@code op} for equality. It returns
+     * Compare this {@code MPQ} with the object {@code op} for equality. It returns
      * {@code true} if and only if {@code op} is an {@code MPQ} with the same value
      * of {@code this}.
      */
@@ -812,7 +812,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /***
-     * Returns a hash code value for this {@code MPQ}.
+     * Return a hash code value for this {@code MPQ}.
      */
     @Override
     public int hashCode() {
@@ -822,25 +822,25 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Converts this {@code MPQ} to an int, truncating if necessary.
+     * Convert this {@code MPQ} to an int, truncating if necessary.
      *
-     * @implNote Returns the result of {@link doubleValue} cast to an {@code int}.
+     * @implNote Return the result of {@link doubleValue} cast to an {@code int}.
      */
     public int intValue() {
         return (int) getD();
     }
 
     /**
-     * Converts this {@code MPQ} to an long, truncating if necessary.
+     * Convert this {@code MPQ} to an long, truncating if necessary.
      *
-     * @implNote Returns the result of {@link doubleValue} cast to a {@code long}.
+     * @implNote Return the result of {@link doubleValue} cast to a {@code long}.
      */
     public long longValue() {
         return (long) getD();
     }
 
     /**
-     * Converts this {@code MPQ} to a double, truncating if necessary. If the
+     * Convert this {@code MPQ} to a double, truncating if necessary. If the
      * exponent from the conversion is too big or too small to fit a double then the
      * result is system dependent. For too big an infinity is returned when
      * available. For too small 0.0 is normally returned. Hardware overflow,
@@ -851,16 +851,16 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Converts this {@code MPQ} to a float, truncating if necessary.
+     * Convert this {@code MPQ} to a float, truncating if necessary.
      *
-     * @implNote Returns the result of {@link doubleValue} cast to a {@code float}.
+     * @implNote Return the result of {@link doubleValue} cast to a {@code float}.
      */
     public float floatValue() {
         return (float) getD();
     }
 
     /**
-     * Converts this {@code MPQ} to its string representation in the specified
+     * Convert this {@code MPQ} to its string representation in the specified
      * {@code base}, or {@code null} if the base is not valid. See the GMP function
      * <a href="https://gmplib.org/manual/Initializing-Rationals" target=
      * "_blank">{@code mpq_get_str}</a>.
@@ -875,7 +875,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Converts this {@code MPQ} to its decimal string representation.
+     * Convert this {@code MPQ} to its decimal string representation.
      */
     @Override
     public String toString() {

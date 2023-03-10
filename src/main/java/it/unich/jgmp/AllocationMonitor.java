@@ -92,7 +92,7 @@ public class AllocationMonitor {
     private static AtomicLong allocatedSize = new AtomicLong();
 
     /**
-     * Returns the amount of native memory allocated by JGMP, as computed by the
+     * Return the amount of native memory allocated by JGMP, as computed by the
      * allocation monitor.
      */
     public static long getAllocatedSize() {

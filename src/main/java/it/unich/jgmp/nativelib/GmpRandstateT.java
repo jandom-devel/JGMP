@@ -31,8 +31,8 @@ public class GmpRandstateT extends PointerType {
     static final int RANDSTATE_SIZE = 2 * MpzT.MPZ_SIZE + 4 + Native.POINTER_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code gmp_randstate_t} structure and
-     * returns the pointer to it.
+     * Allocate the memory needed for an {@code gmp_randstate_t} structure and
+     * return the pointer to it.
      */
     public GmpRandstateT() {
         setPointer(new Memory(RANDSTATE_SIZE));

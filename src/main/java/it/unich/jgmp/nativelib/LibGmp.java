@@ -93,7 +93,7 @@ public class LibGmp {
     private static final Pointer gmp_errno_pointer;
 
     /**
-     * Returns the value of the global error variable, used by obsolete random
+     * Return the value of the global error variable, used by obsolete random
      * number functions. Every bit of this variable has a different meaning, encoded
      * by the {@code GMP_ERROR_xx}
      */
@@ -156,7 +156,7 @@ public class LibGmp {
     }
 
     /**
-     * Returns the system decimal separator. Just called one to initialize the
+     * Return the system decimal separator. Just called one to initialize the
      * {@code decimalSeparator} field.
      */
     private static String getDecimalSeparator() {

@@ -30,7 +30,7 @@ public class MpqT extends PointerType {
     static final int MPQ_SIZE = 2 * MpzT.MPZ_SIZE;
 
     /**
-     * Allocates the memory needed for an {@code mpq_t} native type and returns the
+     * Allocate the memory needed for an {@code mpq_t} native type and return the
      * pointer to it.
      */
     public MpqT() {
