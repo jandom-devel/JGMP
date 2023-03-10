@@ -1,5 +1,5 @@
 /**
-* Copyright 2022 Gianluca Amato <gianluca.amato@unich.it>
+* Copyright 2022, 2023 Gianluca Amato <gianluca.amato@unich.it>
 *
 * This file is part of JGMP. JGMP is free software: you can
 * redistribute it and/or modify it under the terms of the GNU General Public
