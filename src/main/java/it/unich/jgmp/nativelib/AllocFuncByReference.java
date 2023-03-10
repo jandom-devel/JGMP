@@ -28,7 +28,7 @@ import com.sun.jna.Structure.FieldOrder;
 public class AllocFuncByReference extends Structure {
 
     /**
-     * Creates an instance of this structure.
+     * Create an instance of this structure.
      */
     public AllocFuncByReference() {
         super();

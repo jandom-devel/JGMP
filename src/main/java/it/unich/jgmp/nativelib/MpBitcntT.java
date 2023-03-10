@@ -32,14 +32,14 @@ public class MpBitcntT extends IntegerType {
     static final int SIZE = Native.LONG_SIZE;
 
     /**
-     * Creates an {@code mp_bitcnt_t} with value 0
+     * Create an {@code mp_bitcnt_t} with value 0
      */
     public MpBitcntT() {
         this(0);
     }
 
     /**
-     * Creates a {@code mp_bitcnt_t} with the specified {@code value}. The value is
+     * Create a {@code mp_bitcnt_t} with the specified {@code value}. The value is
      * truncated when {@code mp_bitcnt_t} is a 32 bit integer.
      */
     public MpBitcntT(long value) {

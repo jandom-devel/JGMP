@@ -25,14 +25,14 @@ import com.sun.jna.Native;
 public class NativeUnsignedLong extends IntegerType {
 
     /**
-     * Creates a native {@code unsigned long} with value 0
+     * Create a native {@code unsigned long} with value 0
      */
     public NativeUnsignedLong() {
         this(0);
     }
 
     /**
-     * Creates a native {@code unsigned long} with the specified {@code value}. The
+     * Create a native {@code unsigned long} with the specified {@code value}. The
      * value is truncated when the native {@code unsigned long} is a 32 bit integer.
      */
     public NativeUnsignedLong(long value) {

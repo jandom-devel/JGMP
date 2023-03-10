@@ -25,14 +25,14 @@ import com.sun.jna.ptr.ByReference;
  */
 public class SizeTByReference extends ByReference {
     /**
-     * Creates a reference to a newly allocated {@code size_t} object.
+     * Create a reference to a newly allocated {@code size_t} object.
      */
     public SizeTByReference() {
         this(new SizeT());
     }
 
     /**
-     * Creates a reference to a newly allocated {@code size_t} object, which is
+     * Create a reference to a newly allocated {@code size_t} object, which is
      * initialized with {@code value}.
      */
     public SizeTByReference(SizeT value) {

@@ -24,14 +24,14 @@ import com.sun.jna.ptr.ByReference;
  */
 public class MpExpTByReference extends ByReference {
     /**
-     * Creates a reference to a newly allocated {@code mp_exp_t} object.
+     * Create a reference to a newly allocated {@code mp_exp_t} object.
      */
     public MpExpTByReference() {
         this(new MpExpT());
     }
 
     /**
-     * Creates a reference to a newly allocated {@code mp_exp_t} object, which is
+     * Create a reference to a newly allocated {@code mp_exp_t} object, which is
      * initialized with {@code value}.
      */
     public MpExpTByReference(MpExpT value) {

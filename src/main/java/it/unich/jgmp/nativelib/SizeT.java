@@ -25,14 +25,14 @@ import com.sun.jna.Native;
  */
 public class SizeT extends IntegerType {
     /**
-     * Creates a {@code size_t} with value 0
+     * Create a {@code size_t} with value 0
      */
     public SizeT() {
         this(0);
     }
 
     /**
-     * Creates a {@code size_t} with the specified {@code value}. The value is
+     * Create a {@code size_t} with the specified {@code value}. The value is
      * truncated when {@code size_t} is a 32 bit integer.
      */
     public SizeT(long value) {
