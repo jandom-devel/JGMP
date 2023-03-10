@@ -1932,16 +1932,27 @@ public class MPZ extends Number implements Comparable<MPZ> {
     // Integer Exponentiation
 
     /**
-     * Set this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo {@code mod}.
+     * Set this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo
+     * {@code mod}. Negative {@code exp} is supported if the inverse of {@code base}
+     * modulo {@code mod} exists, otherwise an {@code ArithmeticExpection} is
+     * thrown.
      *
-     * @throws ArithmeticException if {@code mod} is zero.
+     * @throws ArithmeticException if {@code mod} is zero or {@code base} has no
+     *                             inverse modulo {@code mod}.
      *
      * @return this {@code MPZ}.
      */
     public MPZ powmAssign(MPZ base, MPZ exp, MPZ mod) {
         if (mod.isZero())
             throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
-        mpz_powm(mpzNative, base.mpzNative, exp.mpzNative, mod.mpzNative);
+        if (exp.sgn() < 0) {
+            var invBase = base.invert(mod);
+            if (invBase.isEmpty())
+                throw new ArithmeticException(GMP.MSG_DIVIDE_BY_ZERO);
+            var posExp = exp.neg();
+            mpz_powm(mpzNative, invBase.get().mpzNative, posExp.mpzNative, mod.mpzNative);
+        } else
+            mpz_powm(mpzNative, base.mpzNative, exp.mpzNative, mod.mpzNative);
         return this;
     }
 

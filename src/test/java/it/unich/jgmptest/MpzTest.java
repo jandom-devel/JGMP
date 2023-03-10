@@ -237,6 +237,8 @@ public class MpzTest {
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powm(new MPZ(4), new MPZ(-3)));
         assertEquals(new MPZ(2), new MPZ(2).powm(new MPZ(-1), new MPZ(3)));
+        assertThrows(ArithmeticException.class, () -> new MPZ(2).powm(new MPZ(-1), new MPZ(4)));
+
         assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(3)));
         assertEquals(new MPZ(1), new MPZ(2).powmUi(4, new MPZ(-3)));
         assertEquals(new MPZ(1), new MPZ(2).powmSec(new MPZ(4), new MPZ(3)));
