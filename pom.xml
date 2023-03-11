@@ -26,6 +26,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+    	    <groupId>org.openjdk.jmh</groupId>
+    	    <artifactId>jmh-core</artifactId>
+            <version>1.35</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.javatuples</groupId>
             <artifactId>javatuples</artifactId>
             <version>1.2</version>
@@ -45,6 +51,7 @@
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
+
             </plugin>
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -124,6 +131,11 @@
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M7</version>
+            </plugin>
+            <plugin>
+                <groupId>pw.krejci</groupId>
+                <artifactId>jmh-maven-plugin</artifactId>
+                <version>0.2.2</version>
             </plugin>
         </plugins>
         <resources>
