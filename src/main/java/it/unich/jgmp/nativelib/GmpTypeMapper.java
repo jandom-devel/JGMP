@@ -29,7 +29,7 @@ import it.unich.jgmp.MPZ;
 /**
  * A {@link com.sun.jna.TypeMapper} for the types {@link MPZ}, {@link MPQ} and
  * {@link MPF}. It is used by the {@code printf} / {@code scanf} functions to
- * correctly handle tese types.
+ * correctly handle these types.
  */
 class GmpTypeMapper implements TypeMapper {
 

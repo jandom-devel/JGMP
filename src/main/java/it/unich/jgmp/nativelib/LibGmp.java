@@ -54,6 +54,9 @@ import com.sun.jna.ptr.PointerByReference;
  */
 public class LibGmp {
 
+    /**
+     * A private constructor, since this class should never be instantiated.
+     */
     private LibGmp() {
     }
 
