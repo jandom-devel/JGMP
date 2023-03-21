@@ -128,6 +128,27 @@ public class LibGmp {
      */
     private static MpfT mpf_zero;
 
+    /**
+     * The native deallocator used by the GMP library.
+     */
+    private static FreeFunc gmp_deallocator;
+
+    /**
+     * The default native deallocator used by the GMP library.
+     */
+    private static FreeFunc gmp_default_deallocator;
+
+    /**
+     * Call the native deallocator used by the GMP library. In general, it is not
+     * possible to deallocate memory allocated by GMP (such as from the
+     * {@code mpz_get_str} function) using {@code Native.free}, since in some
+     * environments (e.g., Windows) GMP runs using a Unix compatibility layer which
+     * uses a non-standard allocation methods.
+     */
+    public static void deallocate(Pointer p, SizeT size) {
+        gmp_deallocator.invoke(p, size);
+    }
+
     static {
         var nativeOptions = Map.of(Library.OPTION_FUNCTION_MAPPER, GmpFunctionMapper.getInstance());
         var library = NativeLibrary.getInstance(LIBNAME, nativeOptions);
@@ -150,6 +171,11 @@ public class LibGmp {
                 ? Integer.parseInt(gmp_version.substring(secondDotPosition + 1))
                 : 0;
 
+        var free = new FreeFuncByReference();
+        mp_get_memory_functions(null, null, free);
+        gmp_deallocator = free.value;
+        gmp_default_deallocator = gmp_deallocator;
+
         mpz_zero = new MpzT();
         mpz_init(mpz_zero);
         mpq_zero = new MpqT();
@@ -164,10 +190,10 @@ public class LibGmp {
      */
     private static String getDecimalSeparator() {
         var pp = new PointerByReference();
-        gmp_asprintf(pp, "%.1Ff", mpf_zero);
+        var len = gmp_asprintf(pp, "%.1Ff", mpf_zero);
         var p = pp.getValue();
         var s = p.getString(0);
-        Native.free(Pointer.nativeValue(p));
+        deallocate(p, new SizeT(len + 1));
         return s.substring(1, s.length() - 1);
     }
 
@@ -847,10 +873,18 @@ public class LibGmp {
 
     // Custom Allocation
 
-    public static native void mp_set_memory_functions(AllocFunc alloc_func_ptr, ReallocFunc realloc_func_ptr,
+    private static native void __gmp_set_memory_functions(AllocFunc alloc_func_ptr, ReallocFunc realloc_func_ptr,
             FreeFunc free_func_ptr);
 
     public static native void mp_get_memory_functions(AllocFuncByReference alloc_func_ptr,
             ReallocFuncByReference realloc_func_ptr, FreeFuncByReference free_func_ptr);
 
+    /*
+     * Wrap the GMP {@code mp_set_memory_functions} in order to keep in {@code gmp_deallocator} up to date.
+     */
+    public static void mp_set_memory_functions(AllocFunc alloc_func_ptr, ReallocFunc realloc_func_ptr,
+            FreeFunc free_func_ptr) {
+        gmp_deallocator = free_func_ptr == null ? gmp_default_deallocator : free_func_ptr;
+        __gmp_set_memory_functions(alloc_func_ptr, realloc_func_ptr, free_func_ptr);
+    }
 }

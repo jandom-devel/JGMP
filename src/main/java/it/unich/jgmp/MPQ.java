@@ -24,13 +24,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 
-import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpqT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
+import it.unich.jgmp.nativelib.SizeT;
 
 /**
  * Multi-precision rational numbers. This class encapsulates the {@code mpq_t}
@@ -227,11 +226,11 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * "_blank">{@code mpq_get_str}</a>.
      */
     public String getStr(int base) {
-        Pointer ps = mpq_get_str(null, base, mpqNative);
+        var ps = mpq_get_str(null, base, mpqNative);
         if (ps == null)
             return null;
         var s = ps.getString(0);
-        Native.free(Pointer.nativeValue(ps));
+        deallocate(ps, new SizeT(s.length() + 1));
         return s;
     }
 

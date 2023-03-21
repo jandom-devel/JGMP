@@ -37,8 +37,15 @@ class GmpFunctionMapper implements com.sun.jna.FunctionMapper {
     @Override
     public String getFunctionName(NativeLibrary library, Method method) {
         var methodName = method.getName();
-        var nativeName = methodName.charAt(0) == 'g' ? "__" + methodName : "__g" + methodName;
-        return nativeName;
+        switch (methodName.charAt(0)) {
+        /* Do not change names beginning with underscore: we want to wrap them. */
+        case '_':
+            return methodName;
+        case 'g':
+            return "__" + methodName;
+        default:
+            return "__g" + methodName;
+        }
     }
 
     public static GmpFunctionMapper getInstance() {

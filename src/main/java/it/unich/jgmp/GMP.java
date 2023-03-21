@@ -17,6 +17,7 @@
 */
 package it.unich.jgmp;
 
+import static it.unich.jgmp.nativelib.LibGmp.deallocate;
 import static it.unich.jgmp.nativelib.LibGmp.gmp_asprintf;
 import static it.unich.jgmp.nativelib.LibGmp.gmp_printf;
 import static it.unich.jgmp.nativelib.LibGmp.gmp_scanf;
@@ -26,11 +27,10 @@ import java.io.IOException;
 import java.lang.ref.Cleaner;
 import java.util.Properties;
 
-import com.sun.jna.Native;
-import com.sun.jna.Pointer;
 import com.sun.jna.ptr.PointerByReference;
 
 import it.unich.jgmp.nativelib.LibGmp;
+import it.unich.jgmp.nativelib.SizeT;
 
 /**
  * Collects global variables and static methods which do no fit in more specific
@@ -107,7 +107,6 @@ public class GMP {
      * Error message for negative exponent in @code{powmSec} functions.
      */
     static final String MSG_NEGATIVE_EXPONENT = "exponent cannot be negative";
-
 
     /**
      * Cleaner used by the JGMP library.
@@ -206,10 +205,10 @@ public class GMP {
      */
     public static String sprintf(String format, Object... args) {
         var pp = new PointerByReference();
-        gmp_asprintf(pp, format, args);
+        var len = gmp_asprintf(pp, format, args);
         var p = pp.getValue();
         var s = p.getString(0);
-        Native.free(Pointer.nativeValue(p));
+        deallocate(p, new SizeT(len + 1));
         return s;
     }
 

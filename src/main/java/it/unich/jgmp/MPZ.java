@@ -27,9 +27,7 @@ import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Optional;
 
-import com.sun.jna.Native;
 import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
 import org.javatuples.Pair;
@@ -387,11 +385,11 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * "_blank">{@code mpz_get_str}</a>.
      */
     public String getStr(int base) {
-        Pointer ps = mpz_get_str(null, base, mpzNative);
+        var ps = mpz_get_str(null, base, mpzNative);
         if (ps == null)
             return null;
         var s = ps.getString(0);
-        Native.free(Pointer.nativeValue(ps));
+        deallocate(ps, new SizeT(s.length() + 1));
         return s;
     }
 

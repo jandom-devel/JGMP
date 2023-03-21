@@ -25,12 +25,10 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.math.BigDecimal;
 
-import com.sun.jna.Native;
-import com.sun.jna.NativeLong;
-import com.sun.jna.Pointer;
-import com.sun.jna.ptr.NativeLongByReference;
-
 import org.javatuples.Pair;
+
+import com.sun.jna.NativeLong;
+import com.sun.jna.ptr.NativeLongByReference;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpExpT;
@@ -38,6 +36,7 @@ import it.unich.jgmp.nativelib.MpExpTByReference;
 import it.unich.jgmp.nativelib.MpSizeT;
 import it.unich.jgmp.nativelib.MpfT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
+import it.unich.jgmp.nativelib.SizeT;
 
 /**
  * Multi-precision floating point numbers. This class encapsulates the
@@ -417,11 +416,11 @@ public class MPF extends Number implements Comparable<MPF> {
      */
     public Pair<String, Long> getStr(int base, long nDigits) {
         var expR = new MpExpTByReference();
-        Pointer ps = mpf_get_str(null, expR, base, new MpSizeT(nDigits), mpfNative);
+        var ps = mpf_get_str(null, expR, base, new MpSizeT(nDigits), mpfNative);
         if (ps == null)
             return null;
         var s = ps.getString(0);
-        Native.free(Pointer.nativeValue(ps));
+        deallocate(ps, new SizeT(s.length() + 1));
         return new Pair<>(s, expR.getValue().longValue());
     }
 

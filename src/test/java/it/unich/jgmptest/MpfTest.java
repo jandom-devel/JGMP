@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import org.javatuples.Pair;
 import org.junit.jupiter.api.Test;
+
+import com.sun.jna.NativeLong;
 
 import it.unich.jgmp.GMP;
 import it.unich.jgmp.MPF;
@@ -24,7 +27,7 @@ import it.unich.jgmp.RandState;
 
 public class MpfTest {
 
-    public static final String MAX_ULONG = "18446744073709551615";
+    public static final String MAX_ULONG = BigInteger.TWO.pow(NativeLong.SIZE * 8).subtract(BigInteger.ONE).toString();
 
     public static final MPF zMaxUlong = new MPF(MAX_ULONG);
 

@@ -18,6 +18,8 @@ import org.javatuples.Pair;
 import org.javatuples.Triplet;
 import org.junit.jupiter.api.Test;
 
+import com.sun.jna.NativeLong;
+
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.MPZ.PrimalityStatus;
@@ -25,7 +27,7 @@ import it.unich.jgmp.RandState;
 
 public class MpzTest {
 
-    public static final String MAX_ULONG = "18446744073709551615";
+    public static final String MAX_ULONG = BigInteger.TWO.pow(NativeLong.SIZE * 8).subtract(BigInteger.ONE).toString();
 
     public static final MPZ zMaxUlong = new MPZ(MAX_ULONG);
 
