@@ -1586,7 +1586,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * "_blank">{@code mpf_get_str}</a>.
      */
     public String toString(int base) {
-        return toString(base, 10);
+        return toString(base, 0);
     }
 
     /**
