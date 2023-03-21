@@ -549,9 +549,8 @@ public class MPQ extends Number implements Comparable<MPQ> {
     }
 
     /**
-     * Return true if {@code this} is equal to {@code op}, false otherwise.
-     * Although {@code cmp} can be used for the same purpose, this method should be
-     * faster.
+     * Return true if {@code this} is equal to {@code op}, false otherwise. Although
+     * {@code cmp} can be used for the same purpose, this method should be faster.
      */
     public boolean equal(MPQ op) {
         return mpq_equal(mpqNative, op.mpqNative);

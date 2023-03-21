@@ -22,10 +22,9 @@ import java.lang.reflect.Method;
 import com.sun.jna.NativeLibrary;
 
 /**
- * A {@link com.sun.jna.FunctionMapper} which converts the official GMP
- * function names (beginning with {@code mpz}, {@code mpq}, {@code mpf} and
- * {@code gmp}) to the names used by the C library (beginning with
- * {@code __gmp}).
+ * A {@link com.sun.jna.FunctionMapper} which converts the official GMP function
+ * names (beginning with {@code mpz}, {@code mpq}, {@code mpf} and {@code gmp})
+ * to the names used by the C library (beginning with {@code __gmp}).
  */
 class GmpFunctionMapper implements com.sun.jna.FunctionMapper {
 

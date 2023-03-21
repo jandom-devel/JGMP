@@ -1930,10 +1930,9 @@ public class MPZ extends Number implements Comparable<MPZ> {
     // Integer Exponentiation
 
     /**
-     * Set this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo
-     * {@code mod}. Negative {@code exp} is supported if the inverse of {@code base}
-     * modulo {@code mod} exists, otherwise an {@code ArithmeticExpection} is
-     * thrown.
+     * Set this {@code MPZ} to <code>(base<sup>exp</sup>)</code> modulo {@code mod}.
+     * Negative {@code exp} is supported if the inverse of {@code base} modulo
+     * {@code mod} exists, otherwise an {@code ArithmeticExpection} is thrown.
      *
      * @throws ArithmeticException if {@code mod} is zero or {@code base} has no
      *                             inverse modulo {@code mod}.

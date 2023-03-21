@@ -1570,7 +1570,7 @@ public class MPF extends Number implements Comparable<MPF> {
             if (isNegative)
                 position += 1;
             if (position >= mantissa.length())
-                return mantissa + "0".repeat(position-mantissa.length());
+                return mantissa + "0".repeat(position - mantissa.length());
             else
                 return mantissa.substring(0, position) + "." + mantissa.substring(position);
         } else if (isNegative)
