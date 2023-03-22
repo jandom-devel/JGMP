@@ -73,7 +73,7 @@ public class GMP {
     /**
      * Exception message for a non-finite double.
      */
-    static final String MSG_FINITE_DOUBLE_REQUIRED = "Non-finite number is not allowed here";
+    static final String MSG_FINITE_DOUBLE_REQUIRED = "non-finite number is not allowed here";
 
     /**
      * Exception message for a NaN double.
@@ -83,7 +83,7 @@ public class GMP {
     /**
      * Error message when arguments this and r cannot be the same object.
      */
-    static final String MSG_SAME_OBJECT = "This and r cannot be the same object";
+    static final String MSG_SAME_OBJECT = "this and r cannot be the same object";
 
     /**
      * Error messages for invalid base.
