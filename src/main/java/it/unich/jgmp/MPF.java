@@ -25,16 +25,17 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.math.BigDecimal;
 
-import org.javatuples.Pair;
-
 import com.sun.jna.NativeLong;
 import com.sun.jna.ptr.NativeLongByReference;
+
+import org.javatuples.Pair;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpExpT;
 import it.unich.jgmp.nativelib.MpExpTByReference;
 import it.unich.jgmp.nativelib.MpSizeT;
 import it.unich.jgmp.nativelib.MpfT;
+import it.unich.jgmp.nativelib.MpzT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 import it.unich.jgmp.nativelib.SizeT;
 
@@ -63,11 +64,6 @@ public class MPF extends Number implements Comparable<MPF> {
      * Version for serializability.
      */
     private static final long serialVersionUID = 1L;
-
-    /**
-     * The zero multi-precision floating point.
-     */
-    private static final MPF zero = new MPF();
 
     /**
      * The pointer to the native {@code mpf_t} object.
@@ -269,14 +265,21 @@ public class MPF extends Number implements Comparable<MPF> {
      * @return this {@code MPF}.
      */
     public MPF set(BigDecimal op) {
-        var z = new MPZ(op.unscaledValue());
-        set(z);
+        var p = new MpzT();
+        mpz_init(p);
+        MPZ.set(p, op.unscaledValue());
+        mpf_set_z(mpfNative, p);
+        mpz_clear(p);
+
         var opScale = op.scale();
-        var scale = new MPF(10).powUi(Math.abs(opScale));
+        var f = new MpfT();
+        mpf_init_set_si(f, new NativeLong(10));
+        mpf_pow_ui(f, f, new NativeUnsignedLong(Math.abs(opScale)));
         if (opScale >= 0)
-            divAssign(scale);
+            mpf_div(mpfNative, mpfNative, f);
         else
-            mulAssign(scale);
+            mpf_mul(mpfNative, mpfNative, f);
+        mpf_clear(f);
         return this;
     }
 
@@ -1191,7 +1194,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * Return true if and only if this {@code this} MPF is zero.
      */
     public boolean isZero() {
-        return mpf_cmp(mpfNative, zero.mpfNative) == 0;
+        return mpf_sgn(mpfNative) == 0;
     }
 
     /**
@@ -1245,7 +1248,7 @@ public class MPF extends Number implements Comparable<MPF> {
      * {@code maxSize} is negative.
      */
     public static MPF random2(long maxSize, long exp) {
-        return (new MPF()).random2Assign(maxSize, exp);
+        return new MPF().random2Assign(maxSize, exp);
     }
 
     // Constructors

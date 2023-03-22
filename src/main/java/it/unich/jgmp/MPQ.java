@@ -54,11 +54,6 @@ public class MPQ extends Number implements Comparable<MPQ> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The zero multi-precision rational.
-     */
-    private static final MPQ zero = new MPQ();
-
-    /**
      * The pointer to the native {@code mpq_t} object.
      */
     private transient MpqT mpqNative;
@@ -598,7 +593,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Return true if and only if {@code this} MPQ is zero.
      */
     public boolean isZero() {
-        return mpq_cmp(mpqNative, zero.mpqNative) == 0;
+        return mpq_sgn(mpqNative) == 0;
     }
 
     // Constructors

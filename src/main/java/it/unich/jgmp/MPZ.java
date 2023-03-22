@@ -62,11 +62,6 @@ public class MPZ extends Number implements Comparable<MPZ> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * The zero multi-precision integer.
-     */
-    private static final MPZ zero = new MPZ();
-
-    /**
      * The pointer to the native {@code mpz_t} object.
      */
     private transient MpzT mpzNative;
@@ -248,16 +243,20 @@ public class MPZ extends Number implements Comparable<MPZ> {
         return mpz_set_str(mpzNative, str, base);
     }
 
+    static void set(MpzT mpzNative, BigInteger op) {
+        ByteBuffer buffer = ByteBuffer.wrap(op.abs().toByteArray());
+        mpz_import(mpzNative, new SizeT(buffer.capacity()), 1, new SizeT(1), 0, new SizeT(0), buffer);
+        if (op.signum() < 0)
+            mpz_neg(mpzNative, mpzNative);
+    }
+
     /**
      * Sets this {@code MPZ} to {@code op}.
      *
      * @return this {@code MPZ}.
      */
     public MPZ set(BigInteger op) {
-        ByteBuffer buffer = ByteBuffer.wrap(op.abs().toByteArray());
-        mpz_import(mpzNative, new SizeT(buffer.capacity()), 1, new SizeT(1), 0, new SizeT(0), buffer);
-        if (op.signum() < 0)
-            negAssign();
+        set(mpzNative, op);
         return this;
     }
 
@@ -2564,9 +2563,17 @@ public class MPZ extends Number implements Comparable<MPZ> {
      *          {@code op} is zero.
      */
     public Optional<MPZ> invert(MPZ op) {
-        var res = new MPZ();
-        var exists = res.invertAssign(this, op);
-        return exists ? Optional.of(res) : Optional.empty();
+        if (op.isZero())
+            return Optional.empty();
+        var p = new MpzT();
+        mpz_init(p);
+        var exists = mpz_invert(p, this.mpzNative, op.mpzNative);
+        if (exists)
+            return Optional.of(new MPZ(p));
+        else {
+            mpz_clear(p);
+            return Optional.empty();
+        }
     }
 
     /**
@@ -3290,7 +3297,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     @Deprecated
     public static MPZ random(long max_size) {
-        return (new MPZ()).randomAssign(max_size);
+        return new MPZ().randomAssign(max_size);
     }
 
     /**
@@ -3322,7 +3329,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      */
     @Deprecated
     public static MPZ random2(long max_size) {
-        return (new MPZ()).random2Assign(max_size);
+        return new MPZ().random2Assign(max_size);
     }
 
     // Integer Import and Export
@@ -3449,7 +3456,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Return {@code true} if and only if this {@code MPZ} is zero.
      */
     public boolean isZero() {
-        return mpz_cmp(mpzNative, zero.mpzNative) == 0;
+        return mpz_sgn(mpzNative) == 0;
     }
 
     /**
