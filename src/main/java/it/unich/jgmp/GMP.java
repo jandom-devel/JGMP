@@ -54,8 +54,10 @@ public class GMP {
             try {
                 properties.load(resource);
             } catch (IOException e) {
+                throw new RuntimeException("Cannot load properties file", e);
             }
-        ;
+        else
+            throw new RuntimeException("Cannot load properties file");
     }
 
     /**
