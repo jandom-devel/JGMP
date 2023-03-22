@@ -801,9 +801,9 @@ public class LibGmp {
 
     public static native void gmp_randinit_mt(GmpRandstateT state);
 
-    public static native void gmp_randinit_lc_2exp(GmpRandstateT state, MpzT a, NativeLong c, NativeLong m2exp);
+    public static native void gmp_randinit_lc_2exp(GmpRandstateT state, MpzT a, NativeUnsignedLong c, MpBitcntT m2exp);
 
-    public static native int gmp_randinit_lc_2exp_size(GmpRandstateT state, NativeLong m2exp);
+    public static native int gmp_randinit_lc_2exp_size(GmpRandstateT state, MpBitcntT m2exp);
 
     public static native void gmp_randinit_set(GmpRandstateT rop, GmpRandstateT op);
 

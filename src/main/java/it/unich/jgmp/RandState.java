@@ -20,9 +20,8 @@ package it.unich.jgmp;
 
 import static it.unich.jgmp.nativelib.LibGmp.*;
 
-import com.sun.jna.NativeLong;
-
 import it.unich.jgmp.nativelib.GmpRandstateT;
+import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
 
 /**
@@ -120,7 +119,7 @@ public class RandState {
      */
     public static RandState randinitLc2Exp(MPZ a, long c, long m2exp) {
         var m = new GmpRandstateT();
-        gmp_randinit_lc_2exp(m, a.getNative(), new NativeLong(c), new NativeLong(m2exp));
+        gmp_randinit_lc_2exp(m, a.getNative(), new NativeUnsignedLong(c), new MpBitcntT(m2exp));
         return new RandState(m);
     }
 
@@ -135,7 +134,7 @@ public class RandState {
      */
     public static RandState randinitLc2ExpSize(long size) {
         var m = new GmpRandstateT();
-        var res = gmp_randinit_lc_2exp_size(m, new NativeLong(size));
+        var res = gmp_randinit_lc_2exp_size(m, new MpBitcntT(size));
         if (res == 0) {
             throw new IllegalArgumentException(GMP.MSG_SIZE_TOO_BIG);
         }
