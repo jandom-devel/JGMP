@@ -18,6 +18,7 @@ package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
@@ -36,5 +37,12 @@ public class GmpRandstateT extends PointerType {
      */
     public GmpRandstateT() {
         setPointer(new Memory(RANDSTATE_SIZE));
+    }
+
+    /**
+     * Create a new {@code GmpRandstateT} corresponding to the pointer {@code p}.
+     */
+    public GmpRandstateT(Pointer p) {
+        super(p);
     }
 }

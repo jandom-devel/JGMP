@@ -20,6 +20,8 @@ package it.unich.jgmp;
 
 import static it.unich.jgmp.nativelib.LibGmp.*;
 
+import com.sun.jna.Pointer;
+
 import it.unich.jgmp.nativelib.GmpRandstateT;
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.NativeUnsignedLong;
@@ -62,15 +64,15 @@ public class RandState {
      * Cleaning action for the {@code RandState} class.
      */
     private static class RandomStateCleaner implements Runnable {
-        private GmpRandstateT randstateNative;
+        private Pointer randstatePointer;
 
         RandomStateCleaner(GmpRandstateT randstateNative) {
-            this.randstateNative = randstateNative;
+            randstatePointer = randstateNative.getPointer();
         }
 
         @Override
         public void run() {
-            gmp_randclear(randstateNative);
+            gmp_randclear(new GmpRandstateT(randstatePointer));
         }
     }
 
@@ -80,7 +82,7 @@ public class RandState {
      */
     private RandState(GmpRandstateT pointer) {
         this.randstateNative = pointer;
-        GMP.cleaner.register(this, new RandomStateCleaner(pointer));
+        GMP.cleaner.register(randstateNative, new RandomStateCleaner(pointer));
     }
 
     /**
@@ -197,7 +199,7 @@ public class RandState {
     public RandState() {
         randstateNative = new GmpRandstateT();
         gmp_randinit_default(randstateNative);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
+        GMP.cleaner.register(randstateNative, new RandomStateCleaner(randstateNative));
     }
 
     /**
@@ -206,6 +208,6 @@ public class RandState {
     public RandState(RandState state) {
         randstateNative = new GmpRandstateT();
         gmp_randinit_set(randstateNative, state.randstateNative);
-        GMP.cleaner.register(this, new RandomStateCleaner(randstateNative));
+        GMP.cleaner.register(randstateNative, new RandomStateCleaner(randstateNative));
     }
 }

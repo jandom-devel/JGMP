@@ -28,6 +28,7 @@ import java.nio.ByteBuffer;
 import java.util.Optional;
 
 import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
 import org.javatuples.Pair;
@@ -88,15 +89,15 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * Cleaning action for the {@code MPZ} class.
      */
     private static class MPZCleaner implements Runnable {
-        private MpzT mpzNative;
+        private Pointer mpzPointer;
 
         MPZCleaner(MpzT mpzNative) {
-            this.mpzNative = mpzNative;
+            mpzPointer = mpzNative.getPointer();
         }
 
         @Override
         public void run() {
-            mpz_clear(mpzNative);
+            mpz_clear(new MpzT(mpzPointer));
         }
     }
 
@@ -105,8 +106,8 @@ public class MPZ extends Number implements Comparable<MPZ> {
      * its native data object. The native object needs to be already initialized.
      */
     private MPZ(MpzT pointer) {
-        this.mpzNative = pointer;
-        GMP.cleaner.register(this, new MPZCleaner(pointer));
+        mpzNative = pointer;
+        GMP.cleaner.register(mpzNative, new MPZCleaner(pointer));
     }
 
     /**
@@ -3483,7 +3484,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ() {
         mpzNative = new MpzT();
         mpz_init(mpzNative);
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3492,7 +3493,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ(MPZ op) {
         mpzNative = new MpzT();
         mpz_init_set(mpzNative, op.mpzNative);
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3501,7 +3502,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public MPZ(long op) {
         mpzNative = new MpzT();
         mpz_init_set_si(mpzNative, new NativeLong(op));
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3514,7 +3515,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         if (!Double.isFinite(op))
             throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
         mpz_init_set_d(mpzNative, op);
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3524,7 +3525,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         mpzNative = new MpzT();
         mpz_init(mpzNative);
         mpz_set_q(mpzNative, op.getNative());
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3534,7 +3535,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
         mpzNative = new MpzT();
         mpz_init(mpzNative);
         mpz_set_f(mpzNative, op.getNative());
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3555,7 +3556,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
             mpz_clear(mpzNative);
             throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         }
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     /**
@@ -3778,14 +3779,14 @@ public class MPZ extends Number implements Comparable<MPZ> {
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         mpzNative = new MpzT();
         mpz_init_set_str(mpzNative, (String) in.readObject(), 62);
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
         mpzNative = new MpzT();
         mpz_init(mpzNative);
-        GMP.cleaner.register(this, new MPZCleaner(mpzNative));
+        GMP.cleaner.register(mpzNative, new MPZCleaner(mpzNative));
     }
 
 }

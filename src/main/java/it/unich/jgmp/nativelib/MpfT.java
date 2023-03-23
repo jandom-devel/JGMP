@@ -18,6 +18,7 @@ package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
 import com.sun.jna.Native;
+import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
@@ -36,5 +37,12 @@ public class MpfT extends PointerType {
      */
     public MpfT() {
         super(new Memory(MPF_SIZE));
+    }
+
+    /**
+     * Create a new {@code MpfT} corresponding to the pointer {@code p}.
+     */
+    public MpfT(Pointer p) {
+        super(p);
     }
 }

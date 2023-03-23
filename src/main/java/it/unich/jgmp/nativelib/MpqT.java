@@ -17,6 +17,7 @@
 package it.unich.jgmp.nativelib;
 
 import com.sun.jna.Memory;
+import com.sun.jna.Pointer;
 import com.sun.jna.PointerType;
 
 /**
@@ -35,5 +36,12 @@ public class MpqT extends PointerType {
      */
     public MpqT() {
         super(new Memory(MPQ_SIZE));
+    }
+
+    /**
+     * Create a new {@code MpqT} corresponding to the pointer {@code p}.
+     */
+    public MpqT(Pointer p) {
+        super(p);
     }
 }

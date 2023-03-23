@@ -26,6 +26,7 @@ import java.io.ObjectStreamException;
 import java.math.BigDecimal;
 
 import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
 import com.sun.jna.ptr.NativeLongByReference;
 
 import org.javatuples.Pair;
@@ -74,15 +75,15 @@ public class MPF extends Number implements Comparable<MPF> {
      * Cleaning action for the {@code MPF} class.
      */
     private static class MPFCleaner implements Runnable {
-        private MpfT mpfNative;
+        private Pointer mpfPointer;
 
         MPFCleaner(MpfT mpfNative) {
-            this.mpfNative = mpfNative;
+            mpfPointer = mpfNative.getPointer();
         }
 
         @Override
         public void run() {
-            mpf_clear(mpfNative);
+            mpf_clear(new MpfT(mpfPointer));
         }
     }
 
@@ -92,7 +93,7 @@ public class MPF extends Number implements Comparable<MPF> {
      */
     private MPF(MpfT pointer) {
         this.mpfNative = pointer;
-        GMP.cleaner.register(this, new MPFCleaner(pointer));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(pointer));
     }
 
     /**
@@ -1259,7 +1260,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF() {
         mpfNative = new MpfT();
         mpf_init(mpfNative);
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1269,7 +1270,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF(MPF op) {
         mpfNative = new MpfT();
         mpf_init_set(mpfNative, op.mpfNative);
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1279,7 +1280,7 @@ public class MPF extends Number implements Comparable<MPF> {
     public MPF(long op) {
         mpfNative = new MpfT();
         mpf_init_set_si(mpfNative, new NativeLong(op));
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1293,7 +1294,7 @@ public class MPF extends Number implements Comparable<MPF> {
             throw new ArithmeticException(GMP.MSG_FINITE_DOUBLE_REQUIRED);
         mpfNative = new MpfT();
         mpf_init_set_d(mpfNative, op);
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1304,7 +1305,7 @@ public class MPF extends Number implements Comparable<MPF> {
         mpfNative = new MpfT();
         mpf_init(mpfNative);
         mpf_set_q(mpfNative, op.getNative());
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1315,7 +1316,7 @@ public class MPF extends Number implements Comparable<MPF> {
         mpfNative = new MpfT();
         mpf_init(mpfNative);
         mpf_set_z(mpfNative, op.getNative());
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1343,7 +1344,7 @@ public class MPF extends Number implements Comparable<MPF> {
             mpf_clear(mpfNative);
             throw new NumberFormatException(GMP.MSG_INVALID_STRING_CONVERSION);
         }
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     /**
@@ -1612,14 +1613,14 @@ public class MPF extends Number implements Comparable<MPF> {
         mpfNative = new MpfT();
         var s = (String) in.readObject();
         mpf_init_set_str(mpfNative, s.replace(".", decimalSeparator), 62);
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
         mpfNative = new MpfT();
         mpf_init(mpfNative);
-        GMP.cleaner.register(this, new MPFCleaner(mpfNative));
+        GMP.cleaner.register(mpfNative, new MPFCleaner(mpfNative));
     }
 
 }

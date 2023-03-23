@@ -25,6 +25,7 @@ import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 
 import com.sun.jna.NativeLong;
+import com.sun.jna.Pointer;
 
 import it.unich.jgmp.nativelib.MpBitcntT;
 import it.unich.jgmp.nativelib.MpqT;
@@ -62,15 +63,15 @@ public class MPQ extends Number implements Comparable<MPQ> {
      * Cleaning action for the {@code MPQ} class.
      */
     private static class MPQCleaner implements Runnable {
-        private MpqT mpqNative;
+        private Pointer mpqPointer;
 
         MPQCleaner(MpqT mpqNative) {
-            this.mpqNative = mpqNative;
+            mpqPointer = mpqNative.getPointer();
         }
 
         @Override
         public void run() {
-            mpq_clear(mpqNative);
+            mpq_clear(new MpqT(mpqPointer));
         }
     }
 
@@ -80,7 +81,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
      */
     private MPQ(MpqT pointer) {
         this.mpqNative = pointer;
-        GMP.cleaner.register(this, new MPQCleaner(pointer));
+        GMP.cleaner.register(mpqNative, new MPQCleaner(pointer));
     }
 
     /**
@@ -604,7 +605,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     public MPQ() {
         mpqNative = new MpqT();
         mpq_init(mpqNative);
-        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
+        GMP.cleaner.register(mpqNative, new MPQCleaner(mpqNative));
     }
 
     /**
@@ -887,14 +888,14 @@ public class MPQ extends Number implements Comparable<MPQ> {
         mpqNative = new MpqT();
         mpq_init(mpqNative);
         mpq_set_str(mpqNative, (String) in.readObject(), 62);
-        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
+        GMP.cleaner.register(mpqNative, new MPQCleaner(mpqNative));
     }
 
     @SuppressWarnings("unused")
     private void readObjectNoData() throws ObjectStreamException {
         mpqNative = new MpqT();
         mpq_init(mpqNative);
-        GMP.cleaner.register(this, new MPQCleaner(mpqNative));
+        GMP.cleaner.register(mpqNative, new MPQCleaner(mpqNative));
     }
 
 }
