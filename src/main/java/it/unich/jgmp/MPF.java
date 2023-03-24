@@ -83,7 +83,7 @@ public class MPF extends Number implements Comparable<MPF> {
 
         @Override
         public void run() {
-            mpf_clear(new MpfT(mpfPointer));
+            __gmpf_clear(mpfPointer);
         }
     }
 

@@ -254,6 +254,9 @@ public class LibGmp {
 
     public static native void mpz_clear(MpzT x);
 
+    // Version of mpz_clear which may be called with a Pointer... used by the MPZCleaner class.
+    public static native void __gmpz_clear(Pointer x);
+
     public static void mpz_clears(MpzT... xs) {
         gmpextra.mpz_clears(xs);
     }
@@ -577,6 +580,9 @@ public class LibGmp {
 
     public static native void mpq_clear(MpqT x);
 
+    // Version of mpq_clear which may be called with a Pointer... used by the MPQCleaner class.
+    public static native void __gmpq_clear(Pointer x);
+
     public static void mpq_clears(MpqT... xs) {
         gmpextra.mpq_clears(xs);
     }
@@ -668,6 +674,9 @@ public class LibGmp {
     }
 
     public static native void mpf_clear(MpfT x);
+
+    // Version of mpf_clear which may be called with a Pointer... used by the MPFCleaner class.
+    public static native void __gmpf_clear(Pointer x);
 
     public static void mpf_clears(MpfT... xs) {
         gmpextra.mpf_clears(xs);
@@ -810,6 +819,9 @@ public class LibGmp {
     public static native void gmp_randinit(GmpRandstateT state, int alg, NativeLong l);
 
     public static native void gmp_randclear(GmpRandstateT state);
+
+    // Version of gmp_randclear which may be called with a Pointer... used by the RandomStateCleaner class.
+    public static native void __gmp_randclear(Pointer x);
 
     public static native void gmp_randseed(GmpRandstateT state, MpzT seed);
 

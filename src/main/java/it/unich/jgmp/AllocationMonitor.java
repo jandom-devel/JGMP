@@ -40,9 +40,9 @@ import it.unich.jgmp.nativelib.SizeT;
  * In order to keep track of allocated native memory, this class uses the GMP
  * fuctions {@code mp_set_memory_functions} and {@code mp_get_memory_functions}
  * (see the
- * <a href="https://gmplib.org/manual/Custom-Allocation" target=
- * "_blank">Custom Allocation</a> page of the GMP manual). Since this slows down
- * allocation, the feature is normally disabled and may be enable by calling the
+ * <a href="https://gmplib.org/manual/Custom-Allocation" target= "_blank">Custom
+ * Allocation</a> page of the GMP manual). Since this slows down allocation, the
+ * feature is normally disabled and may be enable by calling the
  * {@code enable()} static method.
  * <p>
  * It is important to enable allocation monitor when a program builds many big

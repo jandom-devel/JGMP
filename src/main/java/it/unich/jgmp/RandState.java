@@ -72,7 +72,7 @@ public class RandState {
 
         @Override
         public void run() {
-            gmp_randclear(new GmpRandstateT(randstatePointer));
+            __gmp_randclear(randstatePointer);
         }
     }
 

@@ -97,7 +97,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
 
         @Override
         public void run() {
-            mpz_clear(new MpzT(mpzPointer));
+            __gmpz_clear(mpzPointer);
         }
     }
 

@@ -71,7 +71,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
 
         @Override
         public void run() {
-            mpq_clear(new MpqT(mpqPointer));
+            __gmpq_clear(mpqPointer);
         }
     }
 
