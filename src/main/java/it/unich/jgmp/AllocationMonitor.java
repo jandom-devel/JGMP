@@ -69,11 +69,9 @@ public class AllocationMonitor {
     }
 
     /**
-     * The debug level of the allocation monitor. We do not think it is important to
-     * declare this variable as volatile, since it is only used for debugging
-     * purposes.
+     * The debug level of the allocation monitor.
      */
-    private static int debugLevel = 0;
+    private static volatile int debugLevel = 0;
 
     /**
      * Set the debug level of the allocation monitor. The greater the value, the
@@ -154,12 +152,12 @@ public class AllocationMonitor {
     /**
      * The maximum delay for a single timeout step.
      */
-    private static int maxStepTimeout = 200 / TIMEOUT_STEPS;
+    private static volatile int maxStepTimeout = 200 / TIMEOUT_STEPS;
 
     /**
      * The current delay for a single timeout step.
      */
-    private static int stepTimeout = maxStepTimeout;
+    private static volatile int stepTimeout = maxStepTimeout;
 
     /**
      * Set the maximum timeout value. The default value is 200 ms.
@@ -192,7 +190,7 @@ public class AllocationMonitor {
     /**
      * The maximum amount of memory allocated by GMP.
      */
-    private static long maxAllocatedSize = 0;
+    private static volatile long maxAllocatedSize = 0;
 
     /**
      * Return the maximum amount of memory ever allocated by the JGMP at the same
@@ -225,7 +223,8 @@ public class AllocationMonitor {
      * Check if the garbage collector needs to be invoked, and update the numCrossed
      * and allocation thresholds.
      */
-    static void checkGC(long newSize) {
+    static synchronized void checkGC(long increase) {
+	long newSize = allocatedSize.addAndGet(increase);
         maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
         if (newSize > allocationThreshold) {
             gcCalls += 1;
@@ -264,7 +263,7 @@ public class AllocationMonitor {
                 System.err.print("Allocate " + String.format("%,d", alloc_size.longValue()) + " bytes");
                 debugInfo();
             }
-            checkGC(allocatedSize.addAndGet(alloc_size.longValue()));
+            checkGC(alloc_size.longValue());
             return afp.value.invoke(alloc_size);
         }
     }
@@ -287,9 +286,8 @@ public class AllocationMonitor {
                 debugInfo();
             }
             long increase = new_size.longValue() - old_size.longValue();
-            long increased = allocatedSize.addAndGet(increase);
             if (increase > 0)
-                checkGC(increased);
+                checkGC(increase);
             return rfp.value.invoke(ptr, old_size, new_size);
         }
     }
