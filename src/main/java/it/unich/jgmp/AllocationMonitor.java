@@ -1,4 +1,4 @@
-/**
+/*
 * Copyright 2022, 2023 Gianluca Amato <gianluca.amato@unich.it>
 *                  and Francesca Scozzari <francesca.scozzari@unich.it>
 *
@@ -41,13 +41,13 @@ import it.unich.jgmp.nativelib.SizeT;
  * fuctions {@code mp_set_memory_functions} and {@code mp_get_memory_functions}
  * ( see the *
  * <a href="https://gmplib.org/manual/Floating_002dpoint-Functions" target=
- * "_blank">Custom Allocation</a> page of the GMP manual). Since this slows downs
- * allocation, the feature is normally disabled and may be enable by calling the
- * {@code enable()} static method.
+ * "_blank">Custom Allocation</a> page of the GMP manual). Since this slows
+ * downs allocation, the feature is normally disabled and may be enable by
+ * calling the {@code enable()} static method.
  *
- * It is important to enable allocation monitor when a program builds many
- * big JGMP objects. In this case, since the size occupied by a JGMP object in
- * the Java heap is only a fraction of the size occupied in native memory, the
+ * It is important to enable allocation monitor when a program builds many big
+ * JGMP objects. In this case, since the size occupied by a JGMP object in the
+ * Java heap is only a fraction of the size occupied in native memory, the
  * program may consume all the native memory without the JVM feeling the need to
  * call the garbage collector to reclaim heap space. This may happen, in
  * particular, when making use of the immutable API.
@@ -99,6 +99,12 @@ public class AllocationMonitor {
         return allocatedSize.get();
     }
 
+    private static long maxAllocatedSize = 0;
+
+    public static long getMaxAllocatedSize() {
+        return maxAllocatedSize;
+    }
+
     /**
      * The threshold of allocated memory. Any allocation or reallocation of native
      * memory by GMP which causes `allocatedSize` to become larger than this value
@@ -106,6 +112,8 @@ public class AllocationMonitor {
      * Java heap size.
      */
     private static volatile long allocationThreshold = Runtime.getRuntime().maxMemory() / 16;
+
+    private static volatile long minAllocationThreshold = Runtime.getRuntime().maxMemory() / 16;
 
     /**
      * The maximum value that allocationThreshold may assume.
@@ -129,12 +137,13 @@ public class AllocationMonitor {
     }
 
     /**
-     * Set the current allocation threshold. The initial value is equal to 1/16th
-     * of the maximum size of the heap returned by
-     * `Runtime.getRuntime().maxMemory()`.
+     * Set the current allocation threshold. The initial value is equal to 1/16th of
+     * the maximum size of the heap returned by `Runtime.getRuntime().maxMemory()`.
      */
     public static void setAllocationThreshold(long allocationThreshold) {
-        AllocationMonitor.allocationThreshold = Math.min(allocationThreshold, maxAllocationThreshold);
+	
+        AllocationMonitor.minAllocationThreshold = Math.min(allocationThreshold, maxAllocationThreshold);
+        AllocationMonitor.allocationThreshold =  AllocationMonitor.minAllocationThreshold;
     }
 
     /**
@@ -201,11 +210,78 @@ public class AllocationMonitor {
      */
     private static boolean gcAllowed = true;
 
+    private static int time = 0;
+
+    public static int getPauseDuration() {
+        return time;
+    }
+
+    public static void setPauseDuration(int t) {
+        time = t;
+    }
+
     /**
-     * Check if the garbage collector needs to be invoked, and update the numCrossed and
-     * allocation thresholds.
+     * Check if the garbage collector needs to be invoked, and update the numCrossed
+     * and allocation thresholds.
      */
-    static void checkGC(long newSize) {
+    static void checkGC1a(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
+        if (newSize > allocationThreshold) {
+            numCrossed += 1;
+            allocationThreshold *= 2;
+            System.gc();
+            int count = 0;
+            do {
+                try {
+                    Thread.sleep(time);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ;
+                count += 1;
+            } while (allocatedSize.get() > allocationThreshold / 4 && count < 10);
+            time = Math.min(100, time * count);
+            if (debugLevel >= 1)
+                System.err.println("checkGC: num crossed: " + numCrossed + " allocated: "
+                        + String.format("%,d", newSize) + " allocated threshold: "
+                        + String.format("%,d", allocationThreshold) + " time: " + time);
+        } else if (newSize <= allocationThreshold / 4 && newSize >= maxAllocationThreshold / 4) {
+            allocationThreshold = Math.max(allocationThreshold / 2, maxAllocationThreshold);
+            if (time > 1)
+                time /= 2;
+            if (debugLevel >= 1)
+                System.err.println("checkGC: allocation threshold halved " + " allocated: "
+                        + String.format("%,d", newSize) + " allocated threshold: "
+                        + String.format("%,d", allocationThreshold) + " time: " + time);
+        }
+    }
+
+   static void checkGC(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
+        if (newSize > allocationThreshold) {
+            numCrossed += 1;
+            System.gc();
+            int count = 0;
+            do {
+                try {
+                    Thread.sleep(time);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                ;
+                count += 1;
+		//System.out.println(count);
+            } while (allocatedSize.get() > (allocationThreshold / 16) * 15 && count < 10);
+            time = Math.max(1, Math.min(20, (count-1)*time + time/2));
+            if (debugLevel >= 1)
+                System.err.println("checkGC: num crossed: " + numCrossed + " allocated: "
+                        + String.format("%,d", newSize) + " allocated threshold: "
+                        + String.format("%,d", allocationThreshold) + " time: " + time);
+        }
+    }
+
+    static void checkGC2(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
         if (newSize >= allocationThreshold) {
             if (debugLevel >= 1)
                 System.err
@@ -232,6 +308,58 @@ public class AllocationMonitor {
         }
     }
 
+    static void checkGC3(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
+        if (newSize >= allocationThreshold) {
+            if (debugLevel >= 1)
+                System.err
+                        .println("checkGC: num crossed: " + numCrossed + " allocated: " + String.format("%,d", newSize)
+                                + " allocated threshold: " + String.format("%,d", allocationThreshold));
+            if (gcAllowed || newSize >= 2 * allocationThreshold) {
+   	        numCrossed += 1;
+		if (debugLevel >= 1)
+                    System.err.println("checkGC: GC called and disabled");
+                 gcAllowed = false;
+                 System.gc();
+            } else if (debugLevel >= 1)
+                System.err.println("checkGC: GC not called");
+        } else if (newSize < allocationThreshold) {	    
+            if (! gcAllowed && debugLevel >= 1)
+                System.err.println("checkGC: GC enabled");
+	    if (! gcAllowed) time += 1;
+            gcAllowed = true;
+        }
+    }
+
+    
+    final static int DIV = 10;
+    
+    static void checkGC4(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
+        if (newSize > allocationThreshold) {
+             numCrossed += 1;
+      	     time = Math.min(time + 1, DIV);
+	     allocationThreshold = ((DIV-time)*minAllocationThreshold + time*maxAllocationThreshold)/DIV;
+	     //System.out.println("UP: "+ time);
+             System.gc();
+        } else {
+	    var newTime = Math.max(0, (int) (DIV*(newSize - minAllocationThreshold)/(maxAllocationThreshold - minAllocationThreshold)));	   
+	    if (newTime < time) {
+		time = newTime;
+  	        //System.out.println("DOWN: "+ time);
+	    }
+	    allocationThreshold = ((DIV-time)*minAllocationThreshold + time*maxAllocationThreshold)/DIV;
+       }
+    }
+
+    /**
+     * Never calls the garbage collector, effectively disabling the allocation
+     * monitor.
+     */
+    static void checkGC0(long newSize) {
+        maxAllocatedSize = Math.max(maxAllocatedSize, newSize);
+    }
+
     /**
      * The custom allocator function.
      */
@@ -251,7 +379,8 @@ public class AllocationMonitor {
                 System.err.println("GC called " + numCrossed + " times with threshold "
                         + String.format("%,d", allocationThreshold) + " bytes");
             }
-            checkGC(allocatedSize.addAndGet(alloc_size.longValue()));
+            var increased = allocatedSize.addAndGet(alloc_size.longValue());
+            checkGC(increased);
             return afp.value.invoke(alloc_size);
         }
     }
@@ -277,8 +406,9 @@ public class AllocationMonitor {
             }
             long increase = new_size.longValue() - old_size.longValue();
             long increased = allocatedSize.addAndGet(increase);
-            if (increase > 0)
-                checkGC(increased);
+            if (increase > 0) {
+                //checkGC(increased);
+            }
             return rfp.value.invoke(ptr, old_size, new_size);
         }
     }
