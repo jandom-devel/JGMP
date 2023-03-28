@@ -13,5 +13,7 @@ The documentation is available in [javadoc.io](https://javadoc.io/doc/it.unich.j
 
 A set of benchmarks and examples is available in [JGMPBenchmarks](https://github.com/jandom-devel/JGMPBenchmarks)
 
+The JGMP library has been tested on Linux, Windows 10 and mac OS (on the x86-64 architecture).
+
 Authors:
 Gianluca Amato and Francesca Scozzari
