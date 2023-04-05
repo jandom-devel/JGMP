@@ -15,6 +15,18 @@
         It should work with all GMP versions from 5.1.0 onward.
         The JGMP library has been tested on Linux, Windows 10 and mac OS (on the x86-64 architecture) with GMP 6.2.1.
     </p>
+    <p>
+        Before working with JGMP you need to install the native GNU Multiple Precision Arithmetic Library
+        <a href="https://gmplib.org/" target="_blank">GMP</a>. The native library is loaded by a static class
+        initializer using the
+        <a href="https://java-native-access.github.io/jna/5.13.0/javadoc/com/sun/jna/NativeLibrary.html"
+            target="_blank">NativeLibrary</a>.getInstance
+        method of JNA, and it must be placed in a path where it is discoverable.
+    </p>
+    <p>
+        In Linux and macOS you may generally install GMP with your preferite package manager. In Windows you can put the
+        <code>gmp.dll</code> file directly in the main folder of the application using JGMP.
+    </p>
 </body>
 
 </html>
