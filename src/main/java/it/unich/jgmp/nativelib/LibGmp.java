@@ -495,7 +495,8 @@ public class LibGmp {
     public static native int mpz_cmpabs_ui(MpzT op1, NativeUnsignedLong op2);
 
     public static int mpz_sgn(MpzT op) {
-        return mpz_cmp(op, mpz_zero);
+        var sign = mpz_cmp(op, mpz_zero);
+        return sign > 0 ? 1 : (sign < 0 ? -1 : 0);
     }
 
     public static native void mpz_and(MpzT rop, MpzT op1, MpzT op2);
@@ -634,7 +635,8 @@ public class LibGmp {
     public static native int mpq_cmp_si(MpqT op1, NativeLong op2, NativeUnsignedLong den2);
 
     public static int mpq_sgn(MpqT op) {
-        return mpq_cmp(op, mpq_zero);
+        var sign = mpq_cmp(op, mpq_zero);
+        return sign > 0 ? 1 : (sign < 0 ? -1 : 0);
     }
 
     public static native boolean mpq_equal(MpqT op1, MpqT op2);
@@ -773,7 +775,8 @@ public class LibGmp {
     public static native int mpf_reldiff(MpfT rop, MpfT op1, MpfT op2);
 
     public static int mpf_sgn(MpfT op) {
-        return mpf_cmp(op, mpf_zero);
+        var sign = mpf_cmp(op, mpf_zero);
+        return sign > 0 ? 1 : (sign < 0 ? -1 : 0);
     }
 
     public static native SizeT mpf_out_str(Pointer stream, int base, SizeT nDigits, MpfT op);

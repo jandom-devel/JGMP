@@ -404,7 +404,9 @@ public class MpzTest {
         assertTrue(a.cmpabs(b) > 0);
         assertEquals(0, a.cmpabs(-10.0));
         assertTrue(a.cmpabsUi(-1) < 0);
-        assertTrue(a.sgn() > 0);
+        assertEquals(1, a.sgn());
+        assertEquals(-1, new MPZ(-1).sgn());
+        assertEquals(0, new MPZ().sgn());
     }
 
     @Test
