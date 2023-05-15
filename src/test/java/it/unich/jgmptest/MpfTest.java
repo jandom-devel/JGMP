@@ -24,6 +24,7 @@ import it.unich.jgmp.MPF;
 import it.unich.jgmp.MPQ;
 import it.unich.jgmp.MPZ;
 import it.unich.jgmp.RandState;
+import it.unich.jgmp.nativelib.LibGmp;
 
 public class MpfTest {
 
@@ -108,7 +109,9 @@ public class MpfTest {
     @Test
     void testConversion() {
         assertEquals(-4.25, new MPF(-4.25).getD());
-        assertEquals(new Pair<>(-0.53125, 3l), new MPF(-4.25).getD2Exp());
+        // only check for newer GMP versions since older ones are bugged
+        if (LibGmp.__GNU_MP_VERSION > 6 || (LibGmp.__GNU_MP_VERSION == 6 && LibGmp.__GNU_MP_VERSION_MINOR >= 2))
+            assertEquals(new Pair<>(-0.53125, 3l), new MPF(-4.25).getD2Exp());
         assertEquals(4l, new MPF(-4.25).getUi());
         assertEquals(-4l, new MPF(-4.25).getSi());
         assertEquals(new Pair<>("12525", 3l), new MPF(125.25).getStr(10, 0));
