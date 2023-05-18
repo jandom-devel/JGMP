@@ -6,7 +6,7 @@ library for computing with arbitrary precision arithmetic. The library has
 bindings for many programming languages, including .NET, OCaml, Perl,
 PHP, Python, R, Ruby, and Rust, with the notable exception of Java.
 
-The JGMP library provides Java bindings and wrappers for using GMP from within any JVM-based language.  It should work with all GMP versions from 5.1.0 onward. The JGMP library has been tested on Linux, Windows 10 and mac OS (on the x86-64 architecture) with GMP 6.2.1.
+The JGMP library provides Java bindings and wrappers for using GMP from within any JVM-based language.  It should work with all GMP versions from 6.1.0 onward. The JGMP library has been tested on Linux, Windows 10 and mac OS (on the x86-64 architecture) with GMP 6.2.1.
 
 The documentation is available on [javadoc.io](https://javadoc.io/doc/it.unich.jgmp/jgmp/latest/index.html).
 

@@ -628,6 +628,7 @@ public class LibGmp {
 
     public static native int mpq_cmp(MpqT op1, MpqT op2);
 
+    // This has been introduced in GMP 6.1.0
     public static native int mpq_cmp_z(MpqT op1, MpzT op2);
 
     public static native int mpq_cmp_ui(MpqT op1, NativeUnsignedLong num2, NativeUnsignedLong den2);
