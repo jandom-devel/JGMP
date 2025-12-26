@@ -811,7 +811,7 @@ public class MPQ extends Number implements Comparable<MPQ> {
     @Override
     public int hashCode() {
         var num = mpz_get_si(mpq_numref(mpqNative)).intValue();
-        var den = mpz_get_si(mpq_numref(mpqNative)).intValue();
+        var den = mpz_get_si(mpq_denref(mpqNative)).intValue();
         return num ^ den;
     }
 
