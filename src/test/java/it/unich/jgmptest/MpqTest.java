@@ -2,6 +2,7 @@ package it.unich.jgmptest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertSame;
@@ -128,6 +129,18 @@ public class MpqTest {
         assertTrue(a.compareTo(b) > 0);
         assertTrue(b.compareTo(a) < 0);
         assertTrue(b.compareTo(b) == 0);
+    }
+
+    @Test
+    void testHashCodeUsesDenominator() {
+        var first = new MPQ(1, 2);
+        var second = new MPQ(1, 3);
+        assertNotEquals(first, second);
+        assertNotEquals(first.hashCode(), second.hashCode());
+
+        var equivalent = new MPQ(2, 4);
+        assertEquals(first, equivalent);
+        assertEquals(first.hashCode(), equivalent.hashCode());
     }
 
     @Test
