@@ -126,15 +126,10 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-                <version>1.7.0</version>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
                 <extensions>true</extensions>
-                <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                    <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                </configuration>
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
@@ -225,13 +220,5 @@
         <url>https://github.com/jandom-devel/JGMP</url>
         <tag>HEAD</tag>
     </scm>
-    <distributionManagement>
-        <downloadUrl>https://raw.githubusercontent.com/jandom-devel/JGMP/master/pom.xml</downloadUrl>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <name>Sonatype OSSRH for snapshots</name>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
 
 </project>
