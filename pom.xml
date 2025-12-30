@@ -145,6 +145,26 @@
         </resources>
     </build>
 
+    <profiles>
+        <profile>
+            <id>native-access-jdk24plus</id>
+            <activation>
+                <!-- Activate only when Maven runs on JDK 24+ -->
+                <jdk>[24,)</jdk>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <argLine>--enable-native-access=ALL-UNNAMED</argLine>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <reporting>
         <plugins>
             <plugin>
