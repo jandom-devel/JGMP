@@ -68,7 +68,7 @@ public class MPZ extends Number implements Comparable<MPZ> {
     private transient MpzT mpzNative;
 
     /**
-     * Result enumeration for the {@link isProbabPrime} method.
+     * Result enumeration for the {@link isProbabPrime(int)} method.
      */
     public static enum PrimalityStatus {
         /**
