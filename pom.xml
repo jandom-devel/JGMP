@@ -169,6 +169,13 @@
                             <argLine>--enable-native-access=ALL-UNNAMED</argLine>
                         </configuration>
                     </plugin>
+                    <plugin>
+                        <groupId>pw.krejci</groupId>
+                        <artifactId>jmh-maven-plugin</artifactId>
+                        <configuration>
+                            <jvmArgsAppend>--enable-native-access=ALL-UNNAMED</jvmArgsAppend>
+                        </configuration>
+                    </plugin>
                 </plugins>
             </build>
         </profile>
