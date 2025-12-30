@@ -514,6 +514,9 @@ public class MpzTest {
 
         assertEquals(bi, z.getBigInteger());
         assertEquals(bineg, zneg.getBigInteger());
+        
+        // Test zero conversion
+        assertEquals(BigInteger.ZERO, new MPZ(0).getBigInteger());
     }
 
 }
