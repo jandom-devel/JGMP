@@ -3386,6 +3386,10 @@ public class MPZ extends Number implements Comparable<MPZ> {
     public ByteBuffer bufferExport(int order, int size, int endian, long nails) {
         var count = new SizeTByReference();
         var p = mpz_export(null, count, order, new SizeT(size), endian, new SizeT(nails), mpzNative);
+        if (p == null) {
+            // mpz_export returns null when the value is zero
+            return ByteBuffer.allocate(0);
+        }
         return p.getByteBuffer(0, count.getValue().longValue());
     }
 
